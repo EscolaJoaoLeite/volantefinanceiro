@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volante Financeiro - Sistema de Gestão Financeira</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .app-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .header-text h1 {
+            color: #16a34a;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: #22c55e;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .dev-logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #374151, #1f2937);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: 120px;
+            margin: 2px;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .transaction-item.expense {
+            border-left-color: #e53e3e;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-description {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .transaction-category {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .transaction-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .transaction-value.positive {
+            color: #16a34a;
+        }
+
+        .transaction-value.negative {
+            color: #e53e3e;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-warning {
+            background: #fefcbf;
+            color: #744210;
+            border: 1px solid #f6e05e;
+        }
+
+        .alert-danger {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+        }
+
+        .admin-panel {
+            background: linear-gradient(135deg, #1f2937, #374151);
+            color: white;
+        }
+
+        .admin-panel .card {
+            background: linear-gradient(135deg, #374151, #4b5563);
+            color: white;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .user-table th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .apoiadores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .apoiador-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .apoiador-logo {
+            width: 80px;
+            height: 80px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="login-screen" class="login-container">
+        <div class="logo-container" style="justify-content: center; margin-bottom: 30px;">
+            <div class="app-logo">🚗</div>
+            <div class="header-text">
+                <h1 style="font-size: 2rem;">Volante Financeiro</h1>
+                <p>Sistema de Gestão Financeira</p>
+            </div>
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label>CPF</label>
+                <input type="text" id="login-cpf" placeholder="000.000.000-00" required>
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="login-senha" required>
+            </div>
+            <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">🔐 Entrar</button>
+            <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="showCadastro()">👤 Criar Conta</button>
+        </form>
+    </div>
+
+    <!-- Tela de Cadastro -->
+    <div id="cadastro-screen" class="login-container hidden">
+        <div class="logo-container" style="justify-content: center; margin-bottom: 30px;">
+            <div class="app-logo">🚗</div>
+            <div class="header-text">
+                <h1 style="font-size: 2rem;">Criar Conta</h1>
+                <p>Cadastre-se no Volante Financeiro</p>
+            </div>
+        </div>
+
+        <form id="cadastro-form">
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" id="cadastro-nome" required>
+            </div>
+            <div class="form-group">
+                <label>CPF</label>
+                <input type="text" id="cadastro-cpf" placeholder="000.000.000-00" required>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" id="cadastro-email" required>
+            </div>
+            <div class="form-group">
+                <label>WhatsApp</label>
+                <input type="text" id="cadastro-whatsapp" placeholder="(67) 99999-9999" required>
+            </div>
+            <div class="form-group">
+                <label>Criar Senha</label>
+                <input type="password" id="cadastro-senha" required>
+            </div>
+            <div class="form-group">
+                <label>Confirmar Senha</label>
+                <input type="password" id="cadastro-confirma-senha" required>
+            </div>
+            <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">✅ Criar Conta</button>
+            <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="showLogin()">🔙 Voltar ao Login</button>
+        </form>
+    </div>
+
+    <!-- Aplicativo Principal -->
+    <div id="main-app" class="container hidden">
+        <div class="header">
+            <div class="logo-container">
+                <div class="app-logo">🚗</div>
+                <div class="header-text">
+                    <h1>Volante Financeiro</h1>
+                    <p>Sistema de Gestão Financeira para Motoristas</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <span id="user-name">Usuário</span>
+                <button class="logout-btn" onclick="logout()">Sair</button>
+            </div>
+            <div class="dev-logo">JLB</div>
+        </div>
+
+        <div class="nav-tabs" id="main-nav">
+            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showTab('receitas')">💰 Receitas</button>
+            <button class="nav-tab" onclick="showTab('despesas')">💸 Despesas</button>
+            <button class="nav-tab" onclick="showTab('planejamento')">🎯 Metas</button>
+            <button class="nav-tab" onclick="showTab('relatorios')">📈 Relatórios</button>
+            <button class="nav-tab" onclick="showTab('apoiadores')">🤝 Apoiadores</button>
+            <button class="nav-tab" onclick="showTab('sobre')">ℹ️ Sobre</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div id="alerts-container"></div>
+            
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Receita do Mês</div>
+                    <div class="card-value" id="receita-mes">R$ 0,00</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💸</div>
+                    <div class="card-title">Despesas do Mês</div>
+                    <div class="card-value" id="despesas-mes">R$ 0,00</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">Lucro Líquido</div>
+                    <div class="card-value" id="lucro-mes">R$ 0,00</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-title">Meta do Mês</div>
+                    <div class="card-value" id="meta-mes">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="dashboardChart"></canvas>
+            </div>
+
+            <h3>📋 Últimas Transações</h3>
+            <div class="transaction-list" id="recent-transactions"></div>
+        </div>
+
+        <!-- Receitas Tab -->
+        <div id="receitas" class="tab-content">
+            <h2>💰 Controle de Receitas</h2>
+            
+            <form id="receita-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Plataforma</label>
+                        <select id="receita-app" required>
+                            <option value="">Selecione a plataforma</option>
+                            <option value="BR Car">BR Car</option>
+                            <option value="I Boltt">I Boltt</option>
+                            <option value="iFood">iFood</option>
+                            <option value="InDriver">InDriver</option>
+                            <option value="Taxi-Connect">Taxi-Connect</option>
+                            <option value="Tô Aqui!">Tô Aqui!</option>
+                            <option value="Uber">Uber</option>
+                            <option value="Urban">Urban</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="receita-valor" step="0.01" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="receita-data" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Corridas/Entregas</label>
+                        <input type="number" id="receita-corridas" min="1" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Observações</label>
+                    <input type="text" id="receita-obs" placeholder="Ex: Região centro, pico noturno...">
+                </div>
+
+                <button type="submit" class="btn">➕ Adicionar Receita</button>
+            </form>
+
+            <div class="transaction-list" id="receitas-list"></div>
+        </div>
+
+        <!-- Despesas Tab -->
+        <div id="despesas" class="tab-content">
+            <h2>💸 Controle de Despesas</h2>
+            
+            <form id="despesa-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select id="despesa-categoria" required>
+                            <option value="">Selecione a categoria</option>
+                            <optgroup label="Despesas Operacionais">
+                                <option value="Combustível">⛽ Combustível</option>
+                                <option value="Manutenção">🔧 Manutenção</option>
+                                <option value="Seguro">🛡️ Seguro</option>
+                                <option value="IPVA">📋 IPVA</option>
+                                <option value="Licenciamento">📄 Licenciamento</option>
+                                <option value="Lavagem">🧽 Lavagem</option>
+                            </optgroup>
+                            <optgroup label="Despesas Pessoais">
+                                <option value="Alimentação">🍽️ Alimentação</option>
+                                <option value="Moradia">🏠 Moradia</option>
+                                <option value="Lazer">🎮 Lazer</option>
+                                <option value="Saúde">🏥 Saúde</option>
+                                <option value="Outros">📦 Outros</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor (R$)</label>
+                        <input type="number" id="despesa-valor" step="0.01" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="despesa-data" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" id="despesa-descricao" placeholder="Ex: Abastecimento posto Shell" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">➕ Adicionar Despesa</button>
+            </form>
+
+            <div class="transaction-list" id="despesas-list"></div>
+        </div>
+
+        <!-- Planejamento Tab -->
+        <div id="planejamento" class="tab-content">
+            <h2>🎯 Planejamento e Metas</h2>
+            
+            <form id="meta-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Meta de Lucro Mensal (R$)</label>
+                        <input type="number" id="meta-valor" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Limite de Gastos Diários (R$)</label>
+                        <input type="number" id="limite-diario" step="0.01" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">💾 Salvar Configurações</button>
+            </form>
+
+            <div id="progresso-meta" style="margin-top: 30px;">
+                <h3>📊 Progresso da Meta</h3>
+                <div class="card">
+                    <div class="card-title">Progresso do Mês Atual</div>
+                    <div style="background: #e2e8f0; border-radius: 10px; height: 20px; margin: 15px 0;">
+                        <div id="progress-bar" style="background: linear-gradient(135deg, #22c55e, #16a34a); height: 100%; border-radius: 10px; width: 0%; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div id="progress-text">0% da meta atingida</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatórios Tab -->
+        <div id="relatorios" class="tab-content">
+            <h2>📈 Relatórios e Análises</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Período</label>
+                    <select id="periodo-relatorio">
+                        <option value="mes">Mês Atual</option>
+                        <option value="trimestre">Últimos 3 Meses</option>
+                        <option value="semestre">Últimos 6 Meses</option>
+                        <option value="ano">Ano Atual</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button class="btn" onclick="gerarRelatorio()">📊 Gerar Relatório</button>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="reportChart"></canvas>
+            </div>
+
+            <div id="relatorio-resumo" style="margin-top: 20px;"></div>
+        </div>
+
+        <!-- Apoiadores Tab -->
+        <div id="apoiadores" class="tab-content">
+            <h2>🤝 Apoiadores e Parceiros</h2>
+            
+            <div class="apoiadores-grid" id="apoiadores-list">
+                <div class="apoiador-card">
+                    <div class="apoiador-logo">🏢</div>
+                    <h3>Patrocinador Principal</h3>
+                    <p><strong>Em breve...</strong></p>
+                    <p>Seja nosso parceiro e apoie o desenvolvimento de soluções para motoristas!</p>
+                </div>
+                
+                <div class="apoiador-card">
+                    <div class="apoiador-logo">🎓</div>
+                    <h3>Instituição de Ensino</h3>
+                    <p><strong>IFMS - Campus Corumbá</strong></p>
+                    <p>Instituto Federal de Mato Grosso do Sul</p>
+                </div>
+                
+                <div class="apoiador-card">
+                    <div class="apoiador-logo">💼</div>
+                    <h3>Parceiros Comerciais</h3>
+                    <p><strong>Oportunidade Aberta</strong></p>
+                    <p>Entre em contato para ser nosso parceiro comercial!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sobre Tab -->
+        <div id="sobre" class="tab-content">
+            <h2>ℹ️ Sobre o Volante Financeiro</h2>
+            
+            <div class="card" style="text-align: left; margin-bottom: 20px;">
+                <h3 style="color: #16a34a; margin-bottom: 15px;">📱 Sistema de Gestão Financeira para Motoristas</h3>
+                
+                <h4 style="margin-top: 25px; margin-bottom: 10px; color: #374151;">🎯 Sobre o Projeto</h4>
+                <p style="line-height: 1.6; color: #4b5563;">
+                    O Volante Financeiro é um aplicativo desenvolvido especialmente para motoristas de aplicativo e profissionais do transporte em Corumbá-MS e Ladário-MS. O sistema permite organizar despesas pessoais e operacionais, planejar ganhos, monitorar custos e otimizar a rentabilidade, adaptando-se à realidade local da região.
+                </p>
+
+                <h4 style="margin-top: 25px; margin-bottom: 10px; color: #374151;">👥 Equipe de Desenvolvimento</h4>
+                <ul style="line-height: 1.8; color: #4b5563; margin-left: 20px;">
+                    <li>João Victor Ribeiro de Souza</li>
+                    <li>Odilon Chalis</li>
+                    <li>Thaviny Maria Moraes de Toledo Soares</li>
+                    <li>Wallace Kauã Samosa Coronel</li>
+                </ul>
+
+                <h4 style="margin-top: 25px; margin-bottom: 10px; color: #374151;">👨‍🏫 Professores Responsáveis</h4>
+                <ul style="line-height: 1.8; color: #4b5563; margin-left: 20px;">
+                    <li>Gabriela Luiza da Costa Neves</li>
+                    <li>Wellington Cesar de Oliveira</li>
+                </ul>
+
+                <h4 style="margin-top: 25px; margin-bottom: 10px; color: #374151;">⚙️ Funcionalidades</h4>
+                <ul style="line-height: 1.8; color: #4b5563; margin-left: 20px;">
+                    <li>Controle de ganhos por corrida/entrega</li>
+                    <li>Gestão de despesas operacionais</li>
+                    <li>Sistema de reservas financeiras</li>
+                    <li>Análises e relatórios detalhados</li>
+                    <li>Suporte a múltiplas plataformas</li>
+                    <li>Interface responsiva e intuitiva</li>
+                    <li>Painel administrativo completo</li>
+                    <li>Notificações via WhatsApp</li>
+                </ul>
+
+                <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb;">
+                    <p style="color: #16a34a; font-weight: 600;">
+                        Versão 1.0 - 2024 | Desenvolvido com ❤️ para a comunidade de motoristas
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Painel Administrativo -->
+    <div id="admin-panel" class="container admin-panel hidden">
+        <div class="header">
+            <div class="logo-container">
+                <div class="app-logo">⚙️</div>
+                <div class="header-text">
+                    <h1 style="color: #374151;">Painel Administrativo</h1>
+                    <p style="color: #6b7280;">Volante Financeiro</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <span style="color: #374151;">Administrador</span>
+                <button class="logout-btn" onclick="logout()">Sair</button>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showAdminTab('admin-usuarios')">👥 Usuários</button>
+            <button class="nav-tab" onclick="showAdminTab('admin-config')">⚙️ Configurações</button>
+            <button class="nav-tab" onclick="showAdminTab('admin-apoiadores')">🤝 Apoiadores</button>
+            <button class="nav-tab" onclick="showAdminTab('admin-sobre')">📝 Editar Sobre</button>
+        </div>
+
+        <!-- Admin Usuários -->
+        <div id="admin-usuarios" class="tab-content active">
+            <h2>👥 Gerenciar Usuários</h2>
+            
+            <button class="btn" onclick="showNovoUsuario()" style="margin-bottom: 20px;">➕ Novo Usuário</button>
+            
+            <div id="novo-usuario-form" class="hidden" style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3>Cadastrar Novo Usuário</h3>
+                <form id="admin-usuario-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome Completo</label>
+                            <input type="text" id="admin-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>CPF</label>
+                            <input type="text" id="admin-cpf" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="admin-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>WhatsApp</label>
+                            <input type="text" id="admin-whatsapp" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha Inicial</label>
+                        <input type="text" id="admin-senha" required>
+                        <button type="button" class="btn btn-secondary" onclick="gerarSenha()" style="margin-top: 5px;">🎲 Gerar Senha</button>
+                    </div>
+                    <button type="submit" class="btn">💾 Salvar Usuário</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelarNovoUsuario()">❌ Cancelar</button>
+                </form>
+            </div>
+
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>E-mail</th>
+                        <th>WhatsApp</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="usuarios-table">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Admin Configurações -->
+        <div id="admin-config" class="tab-content">
+            <h2>⚙️ Configurações do Sistema</h2>
+            
+            <form id="config-form">
+                <div class="form-group">
+                    <label>Logo do Aplicativo (Emoji ou Texto)</label>
+                    <input type="text" id="config-app-logo" value="🚗">
+                </div>
+                <div class="form-group">
+                    <label>Logo do Desenvolvedor</label>
+                    <input type="text" id="config-dev-logo" value="JLB">
+                </div>
+                <button type="submit" class="btn">💾 Salvar Configurações</button>
+            </form>
+        </div>
+
+        <!-- Admin Apoiadores -->
+        <div id="admin-apoiadores" class="tab-content">
+            <h2>🤝 Gerenciar Apoiadores</h2>
+            
+            <button class="btn" onclick="showNovoApoiador()" style="margin-bottom: 20px;">➕ Novo Apoiador</button>
+            
+            <div id="novo-apoiador-form" class="hidden" style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3>Adicionar Apoiador/Parceiro</h3>
+                <form id="admin-apoiador-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome/Empresa</label>
+                            <input type="text" id="apoiador-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="apoiador-tipo" required>
+                                <option value="Patrocinador Principal">Patrocinador Principal</option>
+                                <option value="Parceiro Comercial">Parceiro Comercial</option>
+                                <option value="Apoiador">Apoiador</option>
+                                <option value="Instituição">Instituição</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Logo (Emoji ou Texto)</label>
+                        <input type="text" id="apoiador-logo" placeholder="🏢">
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea id="apoiador-descricao" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">💾 Salvar Apoiador</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelarNovoApoiador()">❌ Cancelar</button>
+                </form>
+            </div>
+
+            <div class="apoiadores-grid" id="admin-apoiadores-list"></div>
+        </div>
+
+        <!-- Admin Sobre -->
+        <div id="admin-sobre" class="tab-content">
+            <h2>📝 Editar Informações</h2>
+            
+            <form id="admin-sobre-form">
+                <div class="form-group">
+                    <label>Nome da Escola/Instituição</label>
+                    <input type="text" id="sobre-escola" value="IFMS - Campus Corumbá">
+                </div>
+                
+                <div class="form-group">
+                    <label>Equipe de Desenvolvimento (um por linha)</label>
+                    <textarea id="sobre-equipe" rows="5">João Victor Ribeiro de Souza
+Odilon Chalis
+Thaviny Maria Moraes de Toledo Soares
+Wallace Kauã Samosa Coronel</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Professores Responsáveis (um por linha)</label>
+                    <textarea id="sobre-professores" rows="3">Gabriela Luiza da Costa Neves
+Wellington Cesar de Oliveira</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Versão do Sistema</label>
+                    <input type="text" id="sobre-versao" value="1.0">
+                </div>
+                
+                <button type="submit" class="btn">💾 Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Dados do aplicativo
+        let receitas = JSON.parse(localStorage.getItem('receitas')) || [];
+        let despesas = JSON.parse(localStorage.getItem('despesas')) || [];
+        let metas = JSON.parse(localStorage.getItem('metas')) || { lucroMensal: 0, limiteDiario: 0 };
+        let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+        let apoiadores = JSON.parse(localStorage.getItem('apoiadores')) || [];
+        let currentUser = null;
+        let isAdmin = false;
+
+        // Usuário admin padrão
+        const adminUser = { cpf: 'adminjlb', senha: 'jlb@1964', nome: 'Administrador' };
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Definir data atual nos campos de data
+            const hoje = new Date().toISOString().split('T')[0];
+            const receitaData = document.getElementById('receita-data');
+            const despesaData = document.getElementById('despesa-data');
+            if (receitaData) receitaData.value = hoje;
+            if (despesaData) despesaData.value = hoje;
+
+            // Aplicar máscaras
+            aplicarMascaras();
+            
+            // Configurar formulários
+            configurarFormularios();
+        });
+
+        // Aplicar máscaras nos campos
+        function aplicarMascaras() {
+            // Máscara CPF
+            document.querySelectorAll('input[id*="cpf"]').forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                    e.target.value = value;
+                });
+            });
+
+            // Máscara WhatsApp
+            document.querySelectorAll('input[id*="whatsapp"]').forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
+                    e.target.value = value;
+                });
+            });
+        }
+
+        // Configurar formulários
+        function configurarFormularios() {
+            // Login
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                fazerLogin();
+            });
+
+            // Cadastro
+            document.getElementById('cadastro-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                criarConta();
+            });
+
+            // Receitas
+            const receitaForm = document.getElementById('receita-form');
+            if (receitaForm) {
+                receitaForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    adicionarReceita();
+                });
+            }
+
+            // Despesas
+            const despesaForm = document.getElementById('despesa-form');
+            if (despesaForm) {
+                despesaForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    adicionarDespesa();
+                });
+            }
+
+            // Metas
+            const metaForm = document.getElementById('meta-form');
+            if (metaForm) {
+                metaForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    salvarMetas();
+                });
+            }
+
+            // Admin forms
+            const adminUsuarioForm = document.getElementById('admin-usuario-form');
+            if (adminUsuarioForm) {
+                adminUsuarioForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    salvarUsuarioAdmin();
+                });
+            }
+
+            const configForm = document.getElementById('config-form');
+            if (configForm) {
+                configForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    salvarConfiguracoes();
+                });
+            }
+
+            const adminApoiadorForm = document.getElementById('admin-apoiador-form');
+            if (adminApoiadorForm) {
+                adminApoiadorForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    salvarApoiador();
+                });
+            }
+
+            const adminSobreForm = document.getElementById('admin-sobre-form');
+            if (adminSobreForm) {
+                adminSobreForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    salvarSobre();
+                });
+            }
+        }
+
+        // Validar CPF
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            if (cpf.length !== 11) return false;
+            
+            // Verificar se todos os dígitos são iguais
+            if (/^(\d)\1{10}$/.test(cpf)) return false;
+            
+            // Validar dígitos verificadores
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(cpf.charAt(i)) * (10 - i);
+            }
+            let resto = 11 - (soma % 11);
+            let dv1 = resto < 2 ? 0 : resto;
+            
+            if (parseInt(cpf.charAt(9)) !== dv1) return false;
+            
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+                soma += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+            resto = 11 - (soma % 11);
+            let dv2 = resto < 2 ? 0 : resto;
+            
+            return parseInt(cpf.charAt(10)) === dv2;
+        }
+
+        // Fazer login
+        function fazerLogin() {
+            const cpf = document.getElementById('login-cpf').value;
+            const senha = document.getElementById('login-senha').value;
+
+            // Verificar admin
+            if (cpf === adminUser.cpf && senha === adminUser.senha) {
+                currentUser = adminUser;
+                isAdmin = true;
+                showAdminPanel();
+                return;
+            }
+
+            // Verificar usuário comum
+            const usuario = usuarios.find(u => u.cpf === cpf && u.senha === senha && u.ativo);
+            
+            if (usuario) {
+                currentUser = usuario;
+                isAdmin = false;
+                showMainApp();
+            } else {
+                alert('❌ CPF ou senha incorretos, ou usuário inativo!');
+            }
+        }
+
+        // Criar conta
+        function criarConta() {
+            const nome = document.getElementById('cadastro-nome').value;
+            const cpf = document.getElementById('cadastro-cpf').value;
+            const email = document.getElementById('cadastro-email').value;
+            const whatsapp = document.getElementById('cadastro-whatsapp').value;
+            const senha = document.getElementById('cadastro-senha').value;
+            const confirmaSenha = document.getElementById('cadastro-confirma-senha').value;
+
+            // Validações
+            if (!validarCPF(cpf)) {
+                alert('❌ CPF inválido!');
+                return;
+            }
+
+            if (usuarios.find(u => u.cpf === cpf)) {
+                alert('❌ CPF já cadastrado!');
+                return;
+            }
+
+            if (senha !== confirmaSenha) {
+                alert('❌ Senhas não conferem!');
+                return;
+            }
+
+            if (senha.length < 6) {
+                alert('❌ Senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+
+            // Criar usuário
+            const novoUsuario = {
+                id: Date.now(),
+                nome,
+                cpf,
+                email,
+                whatsapp,
+                senha,
+                ativo: true,
+                dataCadastro: new Date().toISOString()
+            };
+
+            usuarios.push(novoUsuario);
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+            alert('✅ Conta criada com sucesso! Faça login para continuar.');
+            showLogin();
+        }
+
+        // Mostrar telas
+        function showLogin() {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('cadastro-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        function showCadastro() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('cadastro-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('cadastro-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+            
+            document.getElementById('user-name').textContent = currentUser.nome;
+            carregarDadosUsuario();
+            atualizarDashboard();
+            atualizarListas();
+            verificarAlertas();
+        }
+
+        function showAdminPanel() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('cadastro-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('admin-panel').classList.remove('hidden');
+            
+            carregarUsuariosAdmin();
+            carregarApoiadoresAdmin();
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            isAdmin = false;
+            showLogin();
+        }
+
+        // Navegação entre abas
+        function showTab(tabName) {
+            // Esconder todas as abas
+            const tabs = document.querySelectorAll('#main-app .tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remover classe active dos botões
+            const buttons = document.querySelectorAll('#main-nav .nav-tab');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Mostrar aba selecionada
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Atualizar gráficos se necessário
+            if (tabName === 'dashboard') {
+                setTimeout(atualizarGraficoDashboard, 100);
+            } else if (tabName === 'relatorios') {
+                setTimeout(gerarRelatorio, 100);
+            }
+        }
+
+        function showAdminTab(tabName) {
+            // Esconder todas as abas admin
+            const tabs = document.querySelectorAll('#admin-panel .tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remover classe active dos botões
+            const buttons = document.querySelectorAll('#admin-panel .nav-tab');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Mostrar aba selecionada
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Carregar dados do usuário
+        function carregarDadosUsuario() {
+            const userKey = `user_${currentUser.id}`;
+            const userData = JSON.parse(localStorage.getItem(userKey)) || {};
+            
+            receitas = userData.receitas || [];
+            despesas = userData.despesas || [];
+            metas = userData.metas || { lucroMensal: 0, limiteDiario: 0 };
+            
+            carregarMetas();
+        }
+
+        // Salvar dados do usuário
+        function salvarDadosUsuario() {
+            if (!currentUser) return;
+            
+            const userKey = `user_${currentUser.id}`;
+            const userData = {
+                receitas,
+                despesas,
+                metas
+            };
+            
+            localStorage.setItem(userKey, JSON.stringify(userData));
+        }
+
+        // Adicionar receita
+        function adicionarReceita() {
+            const receita = {
+                id: Date.now(),
+                app: document.getElementById('receita-app').value,
+                valor: parseFloat(document.getElementById('receita-valor').value),
+                data: document.getElementById('receita-data').value,
+                corridas: parseInt(document.getElementById('receita-corridas').value),
+                observacoes: document.getElementById('receita-obs').value,
+                tipo: 'receita'
+            };
+
+            receitas.push(receita);
+            salvarDadosUsuario();
+            
+            document.getElementById('receita-form').reset();
+            document.getElementById('receita-data').value = new Date().toISOString().split('T')[0];
+            
+            atualizarDashboard();
+            atualizarListas();
+            verificarAlertas();
+        }
+
+        // Adicionar despesa
+        function adicionarDespesa() {
+            const despesa = {
+                id: Date.now(),
+                categoria: document.getElementById('despesa-categoria').value,
+                valor: parseFloat(document.getElementById('despesa-valor').value),
+                data: document.getElementById('despesa-data').value,
+                descricao: document.getElementById('despesa-descricao').value,
+                tipo: 'despesa'
+            };
+
+            despesas.push(despesa);
+            salvarDadosUsuario();
+            
+            document.getElementById('despesa-form').reset();
+            document.getElementById('despesa-data').value = new Date().toISOString().split('T')[0];
+            
+            atualizarDashboard();
+            atualizarListas();
+            verificarAlertas();
+        }
+
+        // Salvar metas
+        function salvarMetas() {
+            metas.lucroMensal = parseFloat(document.getElementById('meta-valor').value);
+            metas.limiteDiario = parseFloat(document.getElementById('limite-diario').value);
+            
+            salvarDadosUsuario();
+            
+            atualizarDashboard();
+            verificarAlertas();
+            
+            alert('✅ Metas salvas com sucesso!');
+        }
+
+        // Carregar metas salvas
+        function carregarMetas() {
+            document.getElementById('meta-valor').value = metas.lucroMensal || '';
+            document.getElementById('limite-diario').value = metas.limiteDiario || '';
+        }
+
+        // Atualizar dashboard
+        function atualizarDashboard() {
+            const mesAtual = new Date().toISOString().slice(0, 7);
+            
+            const receitasMes = receitas
+                .filter(r => r.data.startsWith(mesAtual))
+                .reduce((sum, r) => sum + r.valor, 0);
+            
+            const despesasMes = despesas
+                .filter(d => d.data.startsWith(mesAtual))
+                .reduce((sum, d) => sum + d.valor, 0);
+            
+            const lucroMes = receitasMes - despesasMes;
+            
+            document.getElementById('receita-mes').textContent = `R$ ${receitasMes.toFixed(2)}`;
+            document.getElementById('despesas-mes').textContent = `R$ ${despesasMes.toFixed(2)}`;
+            document.getElementById('lucro-mes').textContent = `R$ ${lucroMes.toFixed(2)}`;
+            document.getElementById('meta-mes').textContent = `R$ ${metas.lucroMensal.toFixed(2)}`;
+
+            // Atualizar progresso da meta
+            const progresso = metas.lucroMensal > 0 ? (lucroMes / metas.lucroMensal) * 100 : 0;
+            document.getElementById('progress-bar').style.width = `${Math.min(progresso, 100)}%`;
+            document.getElementById('progress-text').textContent = `${progresso.toFixed(1)}% da meta atingida`;
+
+            // Atualizar transações recentes
+            atualizarTransacoesRecentes();
+            
+            // Atualizar gráfico
+            setTimeout(atualizarGraficoDashboard, 100);
+        }
+
+        // Atualizar listas
+        function atualizarListas() {
+            atualizarListaReceitas();
+            atualizarListaDespesas();
+        }
+
+        // Atualizar lista de receitas
+        function atualizarListaReceitas() {
+            const lista = document.getElementById('receitas-list');
+            if (!lista) return;
+            
+            lista.innerHTML = '';
+
+            receitas.sort((a, b) => new Date(b.data) - new Date(a.data)).forEach(receita => {
+                const item = document.createElement('div');
+                item.className = 'transaction-item';
+                item.innerHTML = `
+                    <div class="transaction-info">
+                        <div class="transaction-description">${receita.app} - ${receita.corridas} corridas</div>
+                        <div class="transaction-category">${new Date(receita.data).toLocaleDateString('pt-BR')} ${receita.observacoes ? '• ' + receita.observacoes : ''}</div>
+                    </div>
+                    <div class="transaction-value positive">+R$ ${receita.valor.toFixed(2)}</div>
+                    <button class="btn btn-danger" onclick="removerItem('receitas', ${receita.id})" style="margin-left: 10px; padding: 5px 10px;">🗑️</button>
+                `;
+                lista.appendChild(item);
+            });
+        }
+
+        // Atualizar lista de despesas
+        function atualizarListaDespesas() {
+            const lista = document.getElementById('despesas-list');
+            if (!lista) return;
+            
+            lista.innerHTML = '';
+
+            despesas.sort((a, b) => new Date(b.data) - new Date(a.data)).forEach(despesa => {
+                const item = document.createElement('div');
+                item.className = 'transaction-item expense';
+                item.innerHTML = `
+                    <div class="transaction-info">
+                        <div class="transaction-description">${despesa.descricao}</div>
+                        <div class="transaction-category">${despesa.categoria} • ${new Date(despesa.data).toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <div class="transaction-value negative">-R$ ${despesa.valor.toFixed(2)}</div>
+                    <button class="btn btn-danger" onclick="removerItem('despesas', ${despesa.id})" style="margin-left: 10px; padding: 5px 10px;">🗑️</button>
+                `;
+                lista.appendChild(item);
+            });
+        }
+
+        // Atualizar transações recentes
+        function atualizarTransacoesRecentes() {
+            const lista = document.getElementById('recent-transactions');
+            if (!lista) return;
+            
+            lista.innerHTML = '';
+
+            const todasTransacoes = [...receitas, ...despesas]
+                .sort((a, b) => new Date(b.data) - new Date(a.data))
+                .slice(0, 5);
+
+            todasTransacoes.forEach(transacao => {
+                const item = document.createElement('div');
+                item.className = `transaction-item ${transacao.tipo === 'despesa' ? 'expense' : ''}`;
+                
+                const descricao = transacao.tipo === 'receita' 
+                    ? `${transacao.app} - ${transacao.corridas} corridas`
+                    : transacao.descricao;
+                
+                const categoria = transacao.tipo === 'receita'
+                    ? new Date(transacao.data).toLocaleDateString('pt-BR')
+                    : `${transacao.categoria} • ${new Date(transacao.data).toLocaleDateString('pt-BR')}`;
+
+                item.innerHTML = `
+                    <div class="transaction-info">
+                        <div class="transaction-description">${descricao}</div>
+                        <div class="transaction-category">${categoria}</div>
+                    </div>
+                    <div class="transaction-value ${transacao.tipo === 'receita' ? 'positive' : 'negative'}">
+                        ${transacao.tipo === 'receita' ? '+' : '-'}R$ ${transacao.valor.toFixed(2)}
+                    </div>
+                `;
+                lista.appendChild(item);
+            });
+        }
+
+        // Remover item
+        function removerItem(tipo, id) {
+            if (confirm('Tem certeza que deseja remover este item?')) {
+                if (tipo === 'receitas') {
+                    receitas = receitas.filter(r => r.id !== id);
+                } else {
+                    despesas = despesas.filter(d => d.id !== id);
+                }
+                
+                salvarDadosUsuario();
+                atualizarDashboard();
+                atualizarListas();
+                verificarAlertas();
+            }
+        }
+
+        // Verificar alertas
+        function verificarAlertas() {
+            const alertsContainer = document.getElementById('alerts-container');
+            if (!alertsContainer) return;
+            
+            alertsContainer.innerHTML = '';
+
+            const hoje = new Date().toISOString().split('T')[0];
+            const mesAtual = new Date().toISOString().slice(0, 7);
+            
+            // Verificar gastos diários
+            const gastosHoje = despesas
+                .filter(d => d.data === hoje)
+                .reduce((sum, d) => sum + d.valor, 0);
+
+            if (metas.limiteDiario > 0 && gastosHoje > metas.limiteDiario) {
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-warning';
+                alert.innerHTML = `⚠️ Atenção! Você já gastou R$ ${gastosHoje.toFixed(2)} hoje, ultrapassando seu limite diário de R$ ${metas.limiteDiario.toFixed(2)}.`;
+                alertsContainer.appendChild(alert);
+            }
+
+            // Verificar progresso da meta
+            const receitasMes = receitas
+                .filter(r => r.data.startsWith(mesAtual))
+                .reduce((sum, r) => sum + r.valor, 0);
+            
+            const despesasMes = despesas
+                .filter(d => d.data.startsWith(mesAtual))
+                .reduce((sum, d) => sum + d.valor, 0);
+            
+            const lucroMes = receitasMes - despesasMes;
+
+            if (metas.lucroMensal > 0) {
+                const progresso = (lucroMes / metas.lucroMensal) * 100;
+                
+                if (progresso >= 100) {
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-success';
+                    alert.innerHTML = `🎉 Parabéns! Você atingiu sua meta mensal de lucro!`;
+                    alertsContainer.appendChild(alert);
+                } else if (progresso < 50 && new Date().getDate() > 15) {
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-warning';
+                    alert.innerHTML = `📊 Você está com ${progresso.toFixed(1)}% da sua meta mensal. Considere aumentar o ritmo de trabalho.`;
+                    alertsContainer.appendChild(alert);
+                }
+            }
+        }
+
+        // Gráfico do dashboard
+        let dashboardChart;
+        function atualizarGraficoDashboard() {
+            const ctx = document.getElementById('dashboardChart');
+            if (!ctx) return;
+            
+            if (dashboardChart) {
+                dashboardChart.destroy();
+            }
+
+            const ultimosMeses = [];
+            const receitasData = [];
+            const despesasData = [];
+            
+            for (let i = 5; i >= 0; i--) {
+                const data = new Date();
+                data.setMonth(data.getMonth() - i);
+                const mesAno = data.toISOString().slice(0, 7);
+                
+                ultimosMeses.push(data.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' }));
+                
+                const receitaMes = receitas
+                    .filter(r => r.data.startsWith(mesAno))
+                    .reduce((sum, r) => sum + r.valor, 0);
+                
+                const despesaMes = despesas
+                    .filter(d => d.data.startsWith(mesAno))
+                    .reduce((sum, d) => sum + d.valor, 0);
+                
+                receitasData.push(receitaMes);
+                despesasData.push(despesaMes);
+            }
+
+            dashboardChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ultimosMeses,
+                    datasets: [{
+                        label: 'Receitas',
+                        data: receitasData,
+                        borderColor: '#16a34a',
+                        backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Despesas',
+                        data: despesasData,
+                        borderColor: '#e53e3e',
+                        backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Evolução Financeira - Últimos 6 Meses'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(0);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gerar relatório
+        let reportChart;
+        function gerarRelatorio() {
+            const periodo = document.getElementById('periodo-relatorio').value;
+            const ctx = document.getElementById('reportChart');
+            if (!ctx) return;
+            
+            if (reportChart) {
+                reportChart.destroy();
+            }
+
+            let dadosRelatorio = [];
+            let labels = [];
+            
+            const hoje = new Date();
+            
+            if (periodo === 'mes') {
+                // Últimos 30 dias
+                for (let i = 29; i >= 0; i--) {
+                    const data = new Date(hoje);
+                    data.setDate(data.getDate() - i);
+                    const dataStr = data.toISOString().split('T')[0];
+                    
+                    labels.push(data.getDate().toString());
+                    
+                    const receitaDia = receitas
+                        .filter(r => r.data === dataStr)
+                        .reduce((sum, r) => sum + r.valor, 0);
+                    
+                    const despesaDia = despesas
+                        .filter(d => d.data === dataStr)
+                        .reduce((sum, d) => sum + d.valor, 0);
+                    
+                    dadosRelatorio.push(receitaDia - despesaDia);
+                }
+            } else {
+                // Por mês
+                const meses = periodo === 'trimestre' ? 3 : periodo === 'semestre' ? 6 : 12;
+                
+                for (let i = meses - 1; i >= 0; i--) {
+                    const data = new Date(hoje);
+                    data.setMonth(data.getMonth() - i);
+                    const mesAno = data.toISOString().slice(0, 7);
+                    
+                    labels.push(data.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' }));
+                    
+                    const receitaMes = receitas
+                        .filter(r => r.data.startsWith(mesAno))
+                        .reduce((sum, r) => sum + r.valor, 0);
+                    
+                    const despesaMes = despesas
+                        .filter(d => d.data.startsWith(mesAno))
+                        .reduce((sum, d) => sum + d.valor, 0);
+                    
+                    dadosRelatorio.push(receitaMes - despesaMes);
+                }
+            }
+
+            reportChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Lucro Líquido',
+                        data: dadosRelatorio,
+                        backgroundColor: dadosRelatorio.map(valor => 
+                            valor >= 0 ? 'rgba(22, 163, 74, 0.8)' : 'rgba(229, 62, 62, 0.8)'
+                        ),
+                        borderColor: dadosRelatorio.map(valor => 
+                            valor >= 0 ? '#16a34a' : '#e53e3e'
+                        ),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Relatório de Lucro - ${periodo.charAt(0).toUpperCase() + periodo.slice(1)}`
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toFixed(0);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gerar resumo
+            const totalLucro = dadosRelatorio.reduce((sum, valor) => sum + valor, 0);
+            const mediaLucro = totalLucro / dadosRelatorio.length;
+            const melhorPeriodo = Math.max(...dadosRelatorio);
+            const piorPeriodo = Math.min(...dadosRelatorio);
+
+            const resumo = document.getElementById('relatorio-resumo');
+            if (resumo) {
+                resumo.innerHTML = `
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <div class="card-icon">💰</div>
+                            <div class="card-title">Lucro Total</div>
+                            <div class="card-value">R$ ${totalLucro.toFixed(2)}</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">📊</div>
+                            <div class="card-title">Média ${periodo === 'mes' ? 'Diária' : 'Mensal'}</div>
+                            <div class="card-value">R$ ${mediaLucro.toFixed(2)}</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">📈</div>
+                            <div class="card-title">Melhor Resultado</div>
+                            <div class="card-value">R$ ${melhorPeriodo.toFixed(2)}</div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">📉</div>
+                            <div class="card-title">Pior Resultado</div>
+                            <div class="card-value">R$ ${piorPeriodo.toFixed(2)}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Funções Admin
+        function showNovoUsuario() {
+            document.getElementById('novo-usuario-form').classList.remove('hidden');
+        }
+
+        function cancelarNovoUsuario() {
+            document.getElementById('novo-usuario-form').classList.add('hidden');
+            document.getElementById('admin-usuario-form').reset();
+        }
+
+        function gerarSenha() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let senha = '';
+            for (let i = 0; i < 8; i++) {
+                senha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('admin-senha').value = senha;
+        }
+
+        function salvarUsuarioAdmin() {
+            const nome = document.getElementById('admin-nome').value;
+            const cpf = document.getElementById('admin-cpf').value;
+            const email = document.getElementById('admin-email').value;
+            const whatsapp = document.getElementById('admin-whatsapp').value;
+            const senha = document.getElementById('admin-senha').value;
+
+            if (!validarCPF(cpf)) {
+                alert('❌ CPF inválido!');
+                return;
+            }
+
+            if (usuarios.find(u => u.cpf === cpf)) {
+                alert('❌ CPF já cadastrado!');
+                return;
+            }
+
+            const novoUsuario = {
+                id: Date.now(),
+                nome,
+                cpf,
+                email,
+                whatsapp,
+                senha,
+                ativo: true,
+                dataCadastro: new Date().toISOString()
+            };
+
+            usuarios.push(novoUsuario);
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+            alert(`✅ Usuário criado com sucesso!\n\nSenha: ${senha}\n\nCopie esta senha para enviar ao usuário.`);
+            
+            cancelarNovoUsuario();
+            carregarUsuariosAdmin();
+        }
+
+        function carregarUsuariosAdmin() {
+            const tbody = document.getElementById('usuarios-table');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+
+            usuarios.forEach(usuario => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${usuario.nome}</td>
+                    <td>${usuario.cpf}</td>
+                    <td>${usuario.email}</td>
+                    <td>${usuario.whatsapp}</td>
+                    <td>${usuario.ativo ? '✅ Ativo' : '❌ Inativo'}</td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="toggleUsuario(${usuario.id})" style="margin-right: 5px; padding: 5px 10px;">
+                            ${usuario.ativo ? '⏸️' : '▶️'}
+                        </button>
+                        <button class="btn" onclick="gerarNovaSenha(${usuario.id})" style="margin-right: 5px; padding: 5px 10px;">🔑</button>
+                        <button class="btn btn-danger" onclick="excluirUsuario(${usuario.id})" style="padding: 5px 10px;">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleUsuario(id) {
+            const usuario = usuarios.find(u => u.id === id);
+            if (usuario) {
+                usuario.ativo = !usuario.ativo;
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                carregarUsuariosAdmin();
+            }
+        }
+
+        function gerarNovaSenha(id) {
+            const usuario = usuarios.find(u => u.id === id);
+            if (usuario) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let novaSenha = '';
+                for (let i = 0; i < 8; i++) {
+                    novaSenha += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                
+                usuario.senha = novaSenha;
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                
+                alert(`✅ Nova senha gerada para ${usuario.nome}:\n\n${novaSenha}\n\nCopie esta senha para enviar ao usuário via WhatsApp: ${usuario.whatsapp}`);
+            }
+        }
+
+        function excluirUsuario(id) {
+            if (confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
+                usuarios = usuarios.filter(u => u.id !== id);
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                carregarUsuariosAdmin();
+            }
+        }
+
+        function salvarConfiguracoes() {
+            const appLogo = document.getElementById('config-app-logo').value;
+            const devLogo = document.getElementById('config-dev-logo').value;
+            
+            // Atualizar logos na interface
+            document.querySelectorAll('.app-logo').forEach(el => {
+                el.textContent = appLogo;
+            });
+            
+            document.querySelectorAll('.dev-logo').forEach(el => {
+                el.textContent = devLogo;
+            });
+            
+            // Salvar configurações
+            const config = { appLogo, devLogo };
+            localStorage.setItem('config', JSON.stringify(config));
+            
+            alert('✅ Configurações salvas com sucesso!');
+        }
+
+        function showNovoApoiador() {
+            document.getElementById('novo-apoiador-form').classList.remove('hidden');
+        }
+
+        function cancelarNovoApoiador() {
+            document.getElementById('novo-apoiador-form').classList.add('hidden');
+            document.getElementById('admin-apoiador-form').reset();
+        }
+
+        function salvarApoiador() {
+            const nome = document.getElementById('apoiador-nome').value;
+            const tipo = document.getElementById('apoiador-tipo').value;
+            const logo = document.getElementById('apoiador-logo').value;
+            const descricao = document.getElementById('apoiador-descricao').value;
+
+            const novoApoiador = {
+                id: Date.now(),
+                nome,
+                tipo,
+                logo,
+                descricao
+            };
+
+            apoiadores.push(novoApoiador);
+            localStorage.setItem('apoiadores', JSON.stringify(apoiadores));
+
+            alert('✅ Apoiador adicionado com sucesso!');
+            
+            cancelarNovoApoiador();
+            carregarApoiadoresAdmin();
+        }
+
+        function carregarApoiadoresAdmin() {
+            const container = document.getElementById('admin-apoiadores-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+
+            apoiadores.forEach(apoiador => {
+                const card = document.createElement('div');
+                card.className = 'apoiador-card';
+                card.innerHTML = `
+                    <div class="apoiador-logo">${apoiador.logo}</div>
+                    <h3>${apoiador.nome}</h3>
+                    <p><strong>${apoiador.tipo}</strong></p>
+                    <p>${apoiador.descricao}</p>
+                    <button class="btn btn-danger" onclick="excluirApoiador(${apoiador.id})" style="margin-top: 10px;">🗑️ Excluir</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function excluirApoiador(id) {
+            if (confirm('Tem certeza que deseja excluir este apoiador?')) {
+                apoiadores = apoiadores.filter(a => a.id !== id);
+                localStorage.setItem('apoiadores', JSON.stringify(apoiadores));
+                carregarApoiadoresAdmin();
+            }
+        }
+
+        function salvarSobre() {
+            const escola = document.getElementById('sobre-escola').value;
+            const equipe = document.getElementById('sobre-equipe').value;
+            const professores = document.getElementById('sobre-professores').value;
+            const versao = document.getElementById('sobre-versao').value;
+            
+            const sobreInfo = { escola, equipe, professores, versao };
+            localStorage.setItem('sobre', JSON.stringify(sobreInfo));
+            
+            alert('✅ Informações salvas com sucesso!');
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97541c373397f213',t:'MTc1NjIxOTQ5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
