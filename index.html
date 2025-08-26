@@ -554,7 +554,7 @@
                 </div>
             </div>
             <h1 style="font-size: 2.2rem; margin-bottom: 15px; background: linear-gradient(135deg, #2563eb, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                🚗 Volante Financeiro 💰
+                Volante Financeiro
             </h1>
             <p style="color: #16a34a; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">Sistema de Gestão Financeira</p>
             <p style="color: #6b7280; font-size: 1rem; font-weight: 500;">Para Motoristas de Aplicativo</p>
@@ -562,17 +562,17 @@
 
         <form id="login-form">
             <div class="form-group">
-                <label>CPF</label>
-                <input type="text" id="login-cpf" placeholder="000.000.000-00" required>
-                <div id="cpf-status" style="margin-top: 5px; font-size: 0.9rem; font-weight: 600;"></div>
+                <label>Telefone ou E-mail</label>
+                <input type="text" id="login-usuario" placeholder="(67) 99999-9999 ou email@exemplo.com" required>
+                <div id="usuario-status" style="margin-top: 5px; font-size: 0.9rem; font-weight: 600;"></div>
             </div>
             <div class="form-group">
                 <label>Senha</label>
                 <input type="password" id="login-senha" required>
             </div>
-            <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">🔐 Entrar</button>
-            <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;" onclick="console.log('Botão Criar Conta clicado'); showCadastro();">👤 Criar Conta</button>
-            <button type="button" class="btn" style="width: 100%; background: linear-gradient(135deg, #374151, #1f2937);" onclick="console.log('Botão Admin clicado'); showAdminLogin();">⚙️ Acesso Administrador</button>
+            <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">Entrar</button>
+            <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;" onclick="showCadastro();">Criar Conta</button>
+            <button type="button" class="btn" style="width: 100%; background: linear-gradient(135deg, #374151, #1f2937);" onclick="showAdminLogin();">Acesso Administrador</button>
         </form>
     </div>
 
@@ -648,7 +648,7 @@
             <div class="header-content">
                 <div class="header-text">
                     <h1 style="background: linear-gradient(135deg, #2563eb, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800;">
-                        🚗 Volante Financeiro 💰
+                        Volante Financeiro
                     </h1>
                     <div class="app-logo">
                         <div class="volante-logo">
@@ -1233,7 +1233,7 @@
                 
                 <div class="form-group">
                     <label>Nome da Escola/Instituição</label>
-                    <input type="text" id="sobre-escola" value="IFMS - Campus Corumbá">
+                    <input type="text" id="sobre-escola" value="Escola Estadual Dr. João Leite de Barros">
                 </div>
                 
                 <div class="form-group">
@@ -1330,8 +1330,8 @@ Wellington Cesar de Oliveira</textarea>
             // Aplicar máscaras
             aplicarMascaras();
             
-            // Configurar verificação de CPF
-            configurarVerificacaoCPF();
+            // Configurar verificação de usuário
+            configurarVerificacaoUsuario();
             
             // Configurar formulários
             configurarFormularios();
@@ -1397,33 +1397,45 @@ Wellington Cesar de Oliveira</textarea>
             }
         }
 
-        // Configurar verificação de CPF em tempo real
-        function configurarVerificacaoCPF() {
-            const cpfInput = document.getElementById('login-cpf');
-            const cpfStatus = document.getElementById('cpf-status');
+        // Configurar verificação de usuário em tempo real
+        function configurarVerificacaoUsuario() {
+            const usuarioInput = document.getElementById('login-usuario');
+            const usuarioStatus = document.getElementById('usuario-status');
             
-            if (cpfInput && cpfStatus) {
-                cpfInput.addEventListener('input', function() {
-                    const cpf = this.value;
+            if (usuarioInput && usuarioStatus) {
+                usuarioInput.addEventListener('input', function() {
+                    const valor = this.value.trim();
                     
-                    if (cpf.length >= 14) { // CPF completo com máscara
-                        if (validarCPF(cpf)) {
-                            // Normalizar CPF para comparação
-                            const cpfLimpo = cpf.replace(/\D/g, '');
-                            const usuario = usuarios.find(u => u.cpf.replace(/\D/g, '') === cpfLimpo);
+                    if (valor.length >= 10) { // Mínimo para telefone ou email
+                        // Verificar se é telefone ou email
+                        const isEmail = valor.includes('@');
+                        const isPhone = /^\(\d{2}\)\s\d{4,5}-\d{4}$/.test(valor) || /^\d{10,11}$/.test(valor.replace(/\D/g, ''));
+                        
+                        if (isEmail || isPhone) {
+                            // Buscar usuário por email ou telefone
+                            const usuario = usuarios.find(u => {
+                                if (isEmail) {
+                                    return u.email.toLowerCase() === valor.toLowerCase();
+                                } else {
+                                    const telefoneDigitado = valor.replace(/\D/g, '');
+                                    const telefoneUsuario = u.whatsapp.replace(/\D/g, '');
+                                    return telefoneUsuario === telefoneDigitado;
+                                }
+                            });
+                            
                             if (usuario) {
-                                cpfStatus.innerHTML = '✅ CPF encontrado! Digite sua senha.';
-                                cpfStatus.style.color = '#16a34a';
+                                usuarioStatus.innerHTML = '✅ Usuário encontrado! Digite sua senha.';
+                                usuarioStatus.style.color = '#16a34a';
                             } else {
-                                cpfStatus.innerHTML = '❌ CPF não cadastrado. <a href="#" onclick="showCadastro()" style="color: #2563eb; text-decoration: underline;">Criar conta</a>';
-                                cpfStatus.style.color = '#e53e3e';
+                                usuarioStatus.innerHTML = '❌ Usuário não cadastrado. <a href="#" onclick="showCadastro()" style="color: #2563eb; text-decoration: underline;">Criar conta</a>';
+                                usuarioStatus.style.color = '#e53e3e';
                             }
                         } else {
-                            cpfStatus.innerHTML = '❌ CPF inválido!';
-                            cpfStatus.style.color = '#e53e3e';
+                            usuarioStatus.innerHTML = '❌ Digite um telefone ou e-mail válido!';
+                            usuarioStatus.style.color = '#e53e3e';
                         }
                     } else {
-                        cpfStatus.innerHTML = '';
+                        usuarioStatus.innerHTML = '';
                     }
                 });
             }
@@ -1451,6 +1463,23 @@ Wellington Cesar de Oliveira</textarea>
                     e.target.value = value;
                 });
             });
+
+            // Máscara para campo de login (telefone)
+            const loginUsuario = document.getElementById('login-usuario');
+            if (loginUsuario) {
+                loginUsuario.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    // Só aplicar máscara se não contém @ (não é email)
+                    if (!value.includes('@')) {
+                        let digits = value.replace(/\D/g, '');
+                        if (digits.length <= 11) {
+                            digits = digits.replace(/(\d{2})(\d)/, '($1) $2');
+                            digits = digits.replace(/(\d{5})(\d)/, '$1-$2');
+                            e.target.value = digits;
+                        }
+                    }
+                });
+            }
         }
 
         // Configurar formulários
@@ -1575,27 +1604,30 @@ Wellington Cesar de Oliveira</textarea>
 
         // Fazer login
         function fazerLogin() {
-            const cpf = document.getElementById('login-cpf').value.trim();
+            const usuario = document.getElementById('login-usuario').value.trim();
             const senha = document.getElementById('login-senha').value.trim();
 
-            if (!cpf || !senha) {
-                mostrarAviso('❌ Por favor, preencha CPF e senha!', 'danger');
+            if (!usuario || !senha) {
+                mostrarAviso('❌ Por favor, preencha telefone/e-mail e senha!', 'danger');
                 return;
             }
 
-            // Normalizar CPF (remover pontos e traços para comparação)
-            const cpfLimpo = cpf.replace(/\D/g, '');
+            // Verificar se é email ou telefone
+            const isEmail = usuario.includes('@');
             
-            if (!validarCPF(cpf)) {
-                mostrarAviso('❌ CPF inválido! Verifique o formato: 000.000.000-00', 'danger');
-                return;
-            }
-
-            // Verificar se usuário existe (comparar CPF sem formatação)
-            const usuarioExiste = usuarios.find(u => u.cpf.replace(/\D/g, '') === cpfLimpo);
+            // Buscar usuário por email ou telefone
+            const usuarioExiste = usuarios.find(u => {
+                if (isEmail) {
+                    return u.email.toLowerCase() === usuario.toLowerCase();
+                } else {
+                    const telefoneDigitado = usuario.replace(/\D/g, '');
+                    const telefoneUsuario = u.whatsapp.replace(/\D/g, '');
+                    return telefoneUsuario === telefoneDigitado;
+                }
+            });
             
             if (!usuarioExiste) {
-                mostrarAviso('❌ CPF não cadastrado! Para acessar o sistema, você precisa criar uma conta primeiro. Clique em "Criar Conta" para se cadastrar.', 'warning');
+                mostrarAviso('❌ Usuário não cadastrado! Para acessar o sistema, você precisa criar uma conta primeiro. Clique em "Criar Conta" para se cadastrar.', 'warning');
                 return;
             }
 
@@ -1740,8 +1772,8 @@ Wellington Cesar de Oliveira</textarea>
                 // Voltar para tela de login após 3 segundos
                 setTimeout(() => {
                     showLogin();
-                    // Preencher CPF automaticamente
-                    document.getElementById('login-cpf').value = cpf;
+                    // Preencher telefone automaticamente
+                    document.getElementById('login-usuario').value = whatsapp;
                 }, 3000);
                 
             } catch (error) {
@@ -3086,5 +3118,5 @@ Wellington Cesar de Oliveira</textarea>
             }
         };
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9754b069001cf217',t:'MTc1NjIyNTU2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9754bfea57180d0b',t:'MTc1NjIyNjIwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
