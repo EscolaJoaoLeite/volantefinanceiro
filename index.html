@@ -113,9 +113,16 @@
         }
 
         .header-text h1 {
-            color: #16a34a;
             font-size: 2.5rem;
             margin-bottom: 5px;
+        }
+        
+        .header-text h1 .volante {
+            color: #2563eb;
+        }
+        
+        .header-text h1 .financeiro {
+            color: #16a34a;
         }
 
         .header-text p {
@@ -448,6 +455,50 @@
             display: none !important;
         }
 
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -486,7 +537,7 @@
                 </div>
             </div>
             <div class="header-text">
-                <h1 style="font-size: 2rem;">Volante Financeiro</h1>
+                <h1 style="font-size: 2rem;"><span class="volante">Volante</span> <span class="financeiro">Financeiro</span></h1>
                 <p>Sistema de Gestão Financeira</p>
             </div>
         </div>
@@ -541,7 +592,7 @@
             </div>
             <div class="header-text">
                 <h1 style="font-size: 2rem;">Criar Conta</h1>
-                <p>Cadastre-se no Volante Financeiro</p>
+                <p>Cadastre-se no <span class="volante">Volante</span> <span class="financeiro">Financeiro</span></p>
             </div>
         </div>
 
@@ -585,7 +636,7 @@
                     </div>
                 </div>
                 <div class="header-text">
-                    <h1>Volante Financeiro</h1>
+                    <h1><span class="volante">Volante</span> <span class="financeiro">Financeiro</span></h1>
                     <p>Sistema de Gestão Financeira para Motoristas</p>
                 </div>
             </div>
@@ -639,6 +690,11 @@
 
             <h3>📋 Últimas Transações</h3>
             <div class="transaction-list" id="recent-transactions"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Desenvolvido por <a href="#" onclick="alert('Escola Estadual Dr. João Leite de Barros\\nCorumbá - MS\\n\\nSistema desenvolvido pelos alunos do curso técnico.')">Escola Estadual Dr. João Leite de Barros</a></p>
         </div>
 
         <!-- Receitas Tab -->
@@ -1126,6 +1182,11 @@ Wellington Cesar de Oliveira</textarea>
                 <button type="submit" class="btn">💾 Salvar Alterações</button>
             </form>
         </div>
+
+        <!-- Footer Admin -->
+        <div class="footer">
+            <p>Desenvolvido por <a href="#" onclick="alert('Escola Estadual Dr. João Leite de Barros\\nCorumbá - MS\\n\\nSistema desenvolvido pelos alunos do curso técnico.')">Escola Estadual Dr. João Leite de Barros</a></p>
+        </div>
     </div>
 
     <script>
@@ -1138,6 +1199,33 @@ Wellington Cesar de Oliveira</textarea>
         let administradores = JSON.parse(localStorage.getItem('administradores')) || [];
         let currentUser = null;
         let isAdmin = false;
+
+        // Função para mostrar avisos
+        function mostrarAviso(mensagem, tipo = 'success') {
+            // Criar elemento do aviso
+            const aviso = document.createElement('div');
+            aviso.className = `alert alert-${tipo}`;
+            aviso.style.position = 'fixed';
+            aviso.style.top = '20px';
+            aviso.style.right = '20px';
+            aviso.style.zIndex = '9999';
+            aviso.style.minWidth = '300px';
+            aviso.style.animation = 'slideIn 0.3s ease-out';
+            aviso.innerHTML = mensagem;
+            
+            // Adicionar ao body
+            document.body.appendChild(aviso);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                aviso.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (aviso.parentNode) {
+                        aviso.parentNode.removeChild(aviso);
+                    }
+                }, 300);
+            }, 3000);
+        }
 
         // Inicializar administrador padrão se não existir
         if (administradores.length === 0) {
@@ -1356,12 +1444,12 @@ Wellington Cesar de Oliveira</textarea>
             const senha = document.getElementById('login-senha').value;
 
             if (!cpf || !senha) {
-                alert('❌ Por favor, preencha CPF e senha!');
+                mostrarAviso('❌ Por favor, preencha CPF e senha!', 'danger');
                 return;
             }
 
             if (!validarCPF(cpf)) {
-                alert('❌ CPF inválido! Verifique o formato: 000.000.000-00');
+                mostrarAviso('❌ CPF inválido! Verifique o formato: 000.000.000-00', 'danger');
                 return;
             }
 
@@ -1369,19 +1457,19 @@ Wellington Cesar de Oliveira</textarea>
             const usuarioExiste = usuarios.find(u => u.cpf === cpf);
             
             if (!usuarioExiste) {
-                alert('❌ CPF não cadastrado!\n\nPara acessar o sistema, você precisa criar uma conta primeiro.\n\nClique em "Criar Conta" para se cadastrar.');
+                mostrarAviso('❌ CPF não cadastrado! Para acessar o sistema, você precisa criar uma conta primeiro. Clique em "Criar Conta" para se cadastrar.', 'warning');
                 return;
             }
 
             // Verificar se usuário está ativo
             if (!usuarioExiste.ativo) {
-                alert('❌ Sua conta está inativa!\n\nEntre em contato com o administrador do sistema para reativar sua conta.');
+                mostrarAviso('❌ Sua conta está inativa! Entre em contato com o administrador do sistema para reativar sua conta.', 'danger');
                 return;
             }
 
             // Verificar senha
             if (usuarioExiste.senha !== senha) {
-                alert('❌ Senha incorreta!\n\nVerifique sua senha e tente novamente.');
+                mostrarAviso('❌ Senha incorreta! Verifique sua senha e tente novamente.', 'danger');
                 return;
             }
 
@@ -1389,7 +1477,8 @@ Wellington Cesar de Oliveira</textarea>
             console.log('Login bem-sucedido:', usuarioExiste);
             currentUser = usuarioExiste;
             isAdmin = false;
-            showMainApp();
+            mostrarAviso('✅ Login realizado com sucesso! Bem-vindo(a) ao sistema!', 'success');
+            setTimeout(() => showMainApp(), 1000);
         }
 
         // Fazer login administrativo
@@ -1397,15 +1486,21 @@ Wellington Cesar de Oliveira</textarea>
             const login = document.getElementById('admin-login-user').value;
             const senha = document.getElementById('admin-login-senha').value;
 
+            if (!login || !senha) {
+                mostrarAviso('❌ Por favor, preencha login e senha!', 'danger');
+                return;
+            }
+
             // Verificar administrador
             const admin = administradores.find(a => a.login === login && a.senha === senha && a.ativo);
             
             if (admin) {
                 currentUser = admin;
                 isAdmin = true;
-                showAdminPanel();
+                mostrarAviso('✅ Login administrativo realizado com sucesso!', 'success');
+                setTimeout(() => showAdminPanel(), 1000);
             } else {
-                alert('❌ Login ou senha incorretos, ou administrador inativo!');
+                mostrarAviso('❌ Login ou senha incorretos, ou administrador inativo!', 'danger');
             }
         }
 
@@ -1422,53 +1517,53 @@ Wellington Cesar de Oliveira</textarea>
 
             // Validações básicas
             if (!nome || !cpf || !email || !whatsapp || !senha || !confirmaSenha) {
-                alert('❌ Por favor, preencha todos os campos obrigatórios!');
+                mostrarAviso('❌ Por favor, preencha todos os campos obrigatórios!', 'warning');
                 return;
             }
 
             if (nome.length < 3) {
-                alert('❌ Nome deve ter pelo menos 3 caracteres!');
+                mostrarAviso('❌ Nome deve ter pelo menos 3 caracteres!', 'warning');
                 return;
             }
 
             if (!validarCPF(cpf)) {
-                alert('❌ CPF inválido! Verifique o formato: 000.000.000-00');
+                mostrarAviso('❌ CPF inválido! Verifique o formato: 000.000.000-00', 'danger');
                 return;
             }
 
             // Verificar se CPF já existe
             if (usuarios.find(u => u.cpf === cpf)) {
-                alert('❌ Este CPF já está cadastrado!\n\nSe você já tem uma conta, use a opção "Entrar" para fazer login.');
+                mostrarAviso('❌ Este CPF já está cadastrado! Se você já tem uma conta, use a opção "Entrar" para fazer login.', 'warning');
                 return;
             }
 
             // Verificar se email já existe
             if (usuarios.find(u => u.email === email)) {
-                alert('❌ Este e-mail já está cadastrado!\n\nUse um e-mail diferente ou faça login se já tem uma conta.');
+                mostrarAviso('❌ Este e-mail já está cadastrado! Use um e-mail diferente ou faça login se já tem uma conta.', 'warning');
                 return;
             }
 
             // Validar email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                alert('❌ E-mail inválido! Digite um e-mail válido.');
+                mostrarAviso('❌ E-mail inválido! Digite um e-mail válido.', 'danger');
                 return;
             }
 
             // Validar WhatsApp
             const whatsappLimpo = whatsapp.replace(/\D/g, '');
             if (whatsappLimpo.length < 10 || whatsappLimpo.length > 11) {
-                alert('❌ WhatsApp inválido! Digite um número válido com DDD.');
+                mostrarAviso('❌ WhatsApp inválido! Digite um número válido com DDD.', 'danger');
                 return;
             }
 
             if (senha !== confirmaSenha) {
-                alert('❌ As senhas não conferem! Digite a mesma senha nos dois campos.');
+                mostrarAviso('❌ As senhas não conferem! Digite a mesma senha nos dois campos.', 'danger');
                 return;
             }
 
             if (senha.length < 6) {
-                alert('❌ A senha deve ter pelo menos 6 caracteres!');
+                mostrarAviso('❌ A senha deve ter pelo menos 6 caracteres!', 'danger');
                 return;
             }
 
@@ -1491,17 +1586,21 @@ Wellington Cesar de Oliveira</textarea>
                 console.log('✅ Usuário criado com sucesso:', novoUsuario);
                 console.log('Total de usuários cadastrados:', usuarios.length);
 
-                alert(`🎉 Conta criada com sucesso!\n\n👤 Nome: ${nome}\n📱 CPF: ${cpf}\n📧 E-mail: ${email}\n📞 WhatsApp: ${whatsapp}\n\n✅ Agora você pode fazer login com seu CPF e senha!`);
+                mostrarAviso(`🎉 Conta criada com sucesso! Nome: ${nome} | CPF: ${cpf} | E-mail: ${email} | WhatsApp: ${whatsapp}. Agora você pode fazer login!`, 'success');
                 
                 // Limpar formulário
                 document.getElementById('cadastro-form').reset();
                 
-                // Voltar para tela de login
-                showLogin();
+                // Voltar para tela de login após 3 segundos
+                setTimeout(() => {
+                    showLogin();
+                    // Preencher CPF automaticamente
+                    document.getElementById('login-cpf').value = cpf;
+                }, 3000);
                 
             } catch (error) {
                 console.error('Erro ao salvar usuário:', error);
-                alert('❌ Erro ao criar conta! Tente novamente.');
+                mostrarAviso('❌ Erro ao criar conta! Tente novamente.', 'danger');
             }
         }
 
@@ -1682,7 +1781,7 @@ Wellington Cesar de Oliveira</textarea>
             atualizarDashboard();
             verificarAlertas();
             
-            alert('✅ Metas salvas com sucesso!');
+            mostrarAviso('✅ Metas salvas com sucesso!', 'success');
         }
 
         // Carregar metas salvas
@@ -2253,7 +2352,7 @@ Wellington Cesar de Oliveira</textarea>
             usuarios.push(novoUsuario);
             localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
-            alert(`✅ Usuário criado com sucesso!\n\nSenha: ${senha}\n\nCopie esta senha para enviar ao usuário.`);
+            mostrarAviso(`✅ Usuário criado com sucesso! Senha: ${senha} - Copie esta senha para enviar ao usuário.`, 'success');
             
             cancelarNovoUsuario();
             carregarUsuariosAdmin();
@@ -2357,7 +2456,7 @@ Wellington Cesar de Oliveira</textarea>
             };
             localStorage.setItem('config', JSON.stringify(config));
             
-            alert('✅ Configurações salvas com sucesso!');
+            mostrarAviso('✅ Configurações salvas com sucesso!', 'success');
         }
 
         function showNovoApoiador() {
@@ -2532,5 +2631,5 @@ Wellington Cesar de Oliveira</textarea>
             document.getElementById('apoiador-logo-preview').innerHTML = '<span style="font-size: 2rem;">🏢</span>';
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97545dc38353f1f6',t:'MTc1NjIyMjE4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'975488bb66c5f24e',t:'MTc1NjIyMzk0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
