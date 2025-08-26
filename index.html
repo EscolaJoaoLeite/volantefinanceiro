@@ -1266,7 +1266,108 @@ Wellington Cesar de Oliveira</textarea>
     </div>
 
     <script>
-        // Dados do aplicativo
+        // ===== DEFINIR FUNÇÕES GLOBAIS PRIMEIRO =====
+        
+        // Funções de navegação - DEVEM estar no escopo global
+        function showLogin() {
+            console.log('🔄 Navegando para tela de login');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('admin-login-screen').classList.add('hidden');
+            document.getElementById('cadastro-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        function showAdminLogin() {
+            console.log('🔄 Navegando para tela de login administrativo');
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.remove('hidden');
+            document.getElementById('cadastro-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        function showCadastro() {
+            console.log('🔄 Navegando para tela de cadastro');
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.add('hidden');
+            document.getElementById('cadastro-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.add('hidden');
+            document.getElementById('cadastro-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+            
+            if (currentUser) {
+                document.getElementById('user-name').textContent = currentUser.nome;
+                carregarDadosUsuario();
+                atualizarDashboard();
+                atualizarListas();
+                verificarAlertas();
+            }
+        }
+
+        function showAdminPanel() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.add('hidden');
+            document.getElementById('cadastro-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('admin-panel').classList.remove('hidden');
+            
+            carregarUsuariosAdmin();
+            carregarAdministradoresAdmin();
+            carregarApoiadoresAdmin();
+            carregarEstatisticasBackup();
+            carregarLogsRecentes();
+        }
+
+        function logout() {
+            currentUser = null;
+            isAdmin = false;
+            showLogin();
+        }
+
+        function showTab(tabName) {
+            // Esconder todas as abas
+            const tabs = document.querySelectorAll('#main-app .tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remover classe active dos botões
+            const buttons = document.querySelectorAll('#main-nav .nav-tab');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Mostrar aba selecionada
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Atualizar gráficos se necessário
+            if (tabName === 'dashboard') {
+                setTimeout(atualizarGraficoDashboard, 100);
+            } else if (tabName === 'relatorios') {
+                setTimeout(gerarRelatorio, 100);
+            }
+        }
+
+        function showAdminTab(tabName) {
+            // Esconder todas as abas admin
+            const tabs = document.querySelectorAll('#admin-panel .tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remover classe active dos botões
+            const buttons = document.querySelectorAll('#admin-panel .nav-tab');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Mostrar aba selecionada
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // ===== DADOS DO APLICATIVO =====
         let receitas = JSON.parse(localStorage.getItem('receitas')) || [];
         let despesas = JSON.parse(localStorage.getItem('despesas')) || [];
         let metas = JSON.parse(localStorage.getItem('metas')) || { lucroMensal: 0, limiteDiario: 0 };
@@ -1317,16 +1418,6 @@ Wellington Cesar de Oliveira</textarea>
             }];
             localStorage.setItem('administradores', JSON.stringify(administradores));
         }
-
-        // Tornar funções globais para os botões
-        window.showLogin = showLogin;
-        window.showAdminLogin = showAdminLogin;
-        window.showCadastro = showCadastro;
-        window.showMainApp = showMainApp;
-        window.showAdminPanel = showAdminPanel;
-        window.logout = logout;
-        window.showTab = showTab;
-        window.showAdminTab = showAdminTab;
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
@@ -1802,107 +1893,6 @@ Wellington Cesar de Oliveira</textarea>
             }
         }
 
-        // Mostrar telas
-        function showLogin() {
-            console.log('🔄 Navegando para tela de login');
-            document.getElementById('login-screen').classList.remove('hidden');
-            document.getElementById('admin-login-screen').classList.add('hidden');
-            document.getElementById('cadastro-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('admin-panel').classList.add('hidden');
-        }
-
-        function showAdminLogin() {
-            console.log('🔄 Navegando para tela de login administrativo');
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('admin-login-screen').classList.remove('hidden');
-            document.getElementById('cadastro-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('admin-panel').classList.add('hidden');
-        }
-
-        function showCadastro() {
-            console.log('🔄 Navegando para tela de cadastro');
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('admin-login-screen').classList.add('hidden');
-            document.getElementById('cadastro-screen').classList.remove('hidden');
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('admin-panel').classList.add('hidden');
-        }
-
-        function showMainApp() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('admin-login-screen').classList.add('hidden');
-            document.getElementById('cadastro-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('admin-panel').classList.add('hidden');
-            
-            if (currentUser) {
-                document.getElementById('user-name').textContent = currentUser.nome;
-                carregarDadosUsuario();
-                atualizarDashboard();
-                atualizarListas();
-                verificarAlertas();
-            }
-        }
-
-        function showAdminPanel() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('admin-login-screen').classList.add('hidden');
-            document.getElementById('cadastro-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('admin-panel').classList.remove('hidden');
-            
-            carregarUsuariosAdmin();
-            carregarAdministradoresAdmin();
-            carregarApoiadoresAdmin();
-            carregarEstatisticasBackup();
-            carregarLogsRecentes();
-        }
-
-        // Logout
-        function logout() {
-            currentUser = null;
-            isAdmin = false;
-            showLogin();
-        }
-
-        // Navegação entre abas
-        function showTab(tabName) {
-            // Esconder todas as abas
-            const tabs = document.querySelectorAll('#main-app .tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
-
-            // Remover classe active dos botões
-            const buttons = document.querySelectorAll('#main-nav .nav-tab');
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            // Mostrar aba selecionada
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-
-            // Atualizar gráficos se necessário
-            if (tabName === 'dashboard') {
-                setTimeout(atualizarGraficoDashboard, 100);
-            } else if (tabName === 'relatorios') {
-                setTimeout(gerarRelatorio, 100);
-            }
-        }
-
-        function showAdminTab(tabName) {
-            // Esconder todas as abas admin
-            const tabs = document.querySelectorAll('#admin-panel .tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
-
-            // Remover classe active dos botões
-            const buttons = document.querySelectorAll('#admin-panel .nav-tab');
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            // Mostrar aba selecionada
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-
         // Carregar dados do usuário
         function carregarDadosUsuario() {
             const userKey = `user_${currentUser.id}`;
@@ -2157,7 +2147,7 @@ Wellington Cesar de Oliveira</textarea>
             });
         }
 
-        // Remover item
+        // Função para remover itens
         function removerItem(tipo, id) {
             let item;
             if (tipo === 'receitas') {
@@ -2315,6 +2305,7 @@ Wellington Cesar de Oliveira</textarea>
 
         // Gerar relatório
         let reportChart;
+        
         function gerarRelatorio() {
             const periodo = document.getElementById('periodo-relatorio').value;
             const ctx = document.getElementById('reportChart');
@@ -2443,6 +2434,8 @@ Wellington Cesar de Oliveira</textarea>
                 `;
             }
         }
+
+
 
         // Funções Admin
         function showNovoAdmin() {
@@ -3194,5 +3187,5 @@ Wellington Cesar de Oliveira</textarea>
             }
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9754d62057fa6eb0',t:'MTc1NjIyNzExMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9754e0d971616eb0',t:'MTc1NjIyNzU1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
