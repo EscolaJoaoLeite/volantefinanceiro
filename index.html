@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volante Financeiro - Sistema de Gestão Financeira</title>
+    <link id="favicon" rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -546,16 +547,17 @@
 <body>
     <!-- Tela de Login -->
     <div id="login-screen" class="login-container">
-        <div class="logo-container" style="justify-content: center; margin-bottom: 30px;">
-            <div class="app-logo">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div class="app-logo" style="margin: 0 auto 20px;">
                 <div class="volante-logo">
                     <div class="dollar-center">$</div>
                 </div>
             </div>
-            <div class="header-text">
-                <h1 style="font-size: 2rem;"><span class="volante">Volante</span> <span class="financeiro">Financeiro</span></h1>
-                <p>Sistema de Gestão Financeira</p>
-            </div>
+            <h1 style="font-size: 2.2rem; margin-bottom: 15px; background: linear-gradient(135deg, #2563eb, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                🚗 Volante Financeiro 💰
+            </h1>
+            <p style="color: #16a34a; font-size: 1.2rem; font-weight: 600; margin-bottom: 5px;">Sistema de Gestão Financeira</p>
+            <p style="color: #6b7280; font-size: 1rem; font-weight: 500;">Para Motoristas de Aplicativo</p>
         </div>
 
         <form id="login-form">
@@ -569,19 +571,18 @@
                 <input type="password" id="login-senha" required>
             </div>
             <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">🔐 Entrar</button>
-            <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;" onclick="showCadastro()">👤 Criar Conta</button>
-            <button type="button" class="btn" style="width: 100%; background: linear-gradient(135deg, #374151, #1f2937);" onclick="showAdminLogin()">⚙️ Acesso Administrador</button>
+            <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;" onclick="console.log('Botão Criar Conta clicado'); showCadastro();">👤 Criar Conta</button>
+            <button type="button" class="btn" style="width: 100%; background: linear-gradient(135deg, #374151, #1f2937);" onclick="console.log('Botão Admin clicado'); showAdminLogin();">⚙️ Acesso Administrador</button>
         </form>
     </div>
 
     <!-- Tela de Login Administrativo -->
     <div id="admin-login-screen" class="login-container hidden">
-        <div class="logo-container" style="justify-content: center; margin-bottom: 30px;">
-            <div class="app-logo">⚙️</div>
-            <div class="header-text">
-                <h1 style="font-size: 2rem; color: #374151;">Acesso Administrativo</h1>
-                <p style="color: #6b7280;">Volante Financeiro</p>
-            </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div class="app-logo" style="margin: 0 auto 20px; background: linear-gradient(135deg, #374151, #1f2937);">⚙️</div>
+            <h1 style="font-size: 2rem; color: #374151; margin-bottom: 10px; font-weight: 700;">⚙️ Acesso Administrativo</h1>
+            <p style="color: #6b7280; font-size: 1.1rem; font-weight: 600;">Volante Financeiro</p>
+            <p style="color: #9ca3af; font-size: 0.95rem;">Painel de Controle do Sistema</p>
         </div>
 
         <form id="admin-login-form">
@@ -600,16 +601,15 @@
 
     <!-- Tela de Cadastro -->
     <div id="cadastro-screen" class="login-container hidden">
-        <div class="logo-container" style="justify-content: center; margin-bottom: 30px;">
-            <div class="app-logo">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div class="app-logo" style="margin: 0 auto 20px;">
                 <div class="volante-logo">
                     <div class="dollar-center">$</div>
                 </div>
             </div>
-            <div class="header-text">
-                <h1 style="font-size: 2rem;">Criar Conta</h1>
-                <p>Cadastre-se no <span class="volante">Volante</span> <span class="financeiro">Financeiro</span></p>
-            </div>
+            <h1 style="font-size: 2rem; margin-bottom: 10px; color: #2563eb; font-weight: 700;">👤 Criar Conta</h1>
+            <p style="color: #16a34a; font-size: 1.1rem; font-weight: 600;">Cadastre-se no Volante Financeiro</p>
+            <p style="color: #6b7280; font-size: 0.95rem;">Sistema para Motoristas de Aplicativo</p>
         </div>
 
         <form id="cadastro-form">
@@ -647,13 +647,15 @@
         <div class="header">
             <div class="header-content">
                 <div class="header-text">
-                    <h1><span class="volante">Volante</span> <span class="financeiro">Financeiro</span></h1>
+                    <h1 style="background: linear-gradient(135deg, #2563eb, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 800;">
+                        🚗 Volante Financeiro 💰
+                    </h1>
                     <div class="app-logo">
                         <div class="volante-logo">
                             <div class="dollar-center">$</div>
                         </div>
                     </div>
-                    <p>Sistema de Gestão Financeira para Motoristas</p>
+                    <p style="color: #16a34a; font-weight: 600;">Sistema de Gestão Financeira para Motoristas</p>
                 </div>
             </div>
             <div class="user-info">
@@ -1110,6 +1112,19 @@
                     </div>
                     <button type="button" class="btn btn-secondary" onclick="limparLogoDev()" style="padding: 5px 10px; font-size: 0.9rem;">🗑️ Limpar</button>
                 </div>
+                <div class="form-group">
+                    <label>Favicon do Sistema</label>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                        <input type="text" id="config-favicon" value="🚗" placeholder="Emoji" style="flex: 1;">
+                        <span>ou</span>
+                        <input type="file" id="config-favicon-image" accept="image/png,image/jpeg,image/jpg,image/ico" style="flex: 1;">
+                    </div>
+                    <div id="favicon-preview" style="width: 32px; height: 32px; border: 2px dashed #ccc; border-radius: 5px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; background: #f8fafc;">
+                        <span style="font-size: 1rem;">🚗</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="limparFavicon()" style="padding: 5px 10px; font-size: 0.9rem;">🗑️ Limpar</button>
+                    <p style="font-size: 0.8rem; color: #6b7280; margin-top: 5px;">O favicon aparece na aba do navegador. Recomendado: 32x32px</p>
+                </div>
                 <button type="submit" class="btn">💾 Salvar Configurações</button>
             </form>
         </div>
@@ -1323,7 +1338,64 @@ Wellington Cesar de Oliveira</textarea>
             
             // Configurar uploads de imagem
             configurarUploads();
+            
+            // Carregar configurações salvas
+            carregarConfiguracoesSalvas();
         });
+
+        // Carregar configurações salvas
+        function carregarConfiguracoesSalvas() {
+            const config = JSON.parse(localStorage.getItem('config')) || {};
+            
+            // Carregar favicon salvo
+            if (config.favicon) {
+                atualizarFavicon(config.favicon, config.faviconIsImage);
+                
+                // Atualizar campos do admin se existirem
+                const faviconInput = document.getElementById('config-favicon');
+                const faviconPreview = document.getElementById('favicon-preview');
+                
+                if (faviconInput && faviconPreview) {
+                    if (config.faviconIsImage) {
+                        faviconPreview.innerHTML = `<img src="${config.favicon}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 3px;">`;
+                        faviconInput.value = '';
+                    } else {
+                        faviconInput.value = config.favicon;
+                        faviconPreview.innerHTML = `<span style="font-size: 1rem;">${config.favicon}</span>`;
+                    }
+                }
+            }
+            
+            // Carregar outras configurações se necessário
+            if (config.appLogo) {
+                const appInput = document.getElementById('config-app-logo');
+                const appPreview = document.getElementById('app-logo-preview');
+                
+                if (appInput && appPreview) {
+                    if (config.appIsImage) {
+                        appPreview.innerHTML = `<img src="${config.appLogo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                        appInput.value = '';
+                    } else {
+                        appInput.value = config.appLogo;
+                    }
+                }
+            }
+            
+            if (config.devLogo) {
+                const devInput = document.getElementById('config-dev-logo');
+                const devPreview = document.getElementById('dev-logo-preview');
+                
+                if (devInput && devPreview) {
+                    if (config.devIsImage) {
+                        devPreview.innerHTML = `<img src="${config.devLogo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                        devInput.value = '';
+                    } else {
+                        devInput.value = config.devLogo;
+                        devPreview.innerHTML = `<span style="font-size: 1.5rem;">${config.devLogo}</span>`;
+                    }
+                }
+            }
+        }
 
         // Configurar verificação de CPF em tempo real
         function configurarVerificacaoCPF() {
@@ -1592,8 +1664,15 @@ Wellington Cesar de Oliveira</textarea>
                 return;
             }
 
+            // Verificar se CPF tem pelo menos 11 dígitos
+            const cpfLimpo = cpf.replace(/\D/g, '');
+            if (cpfLimpo.length !== 11) {
+                mostrarAviso('❌ CPF deve ter 11 dígitos! Digite no formato: 000.000.000-00', 'warning');
+                return;
+            }
+
             if (!validarCPF(cpf)) {
-                mostrarAviso('❌ CPF inválido! Verifique o formato: 000.000.000-00', 'danger');
+                mostrarAviso('❌ CPF inválido! Os dígitos verificadores não conferem.', 'danger');
                 return;
             }
 
@@ -1673,6 +1752,7 @@ Wellington Cesar de Oliveira</textarea>
 
         // Mostrar telas
         function showLogin() {
+            console.log('Mostrando tela de login');
             document.getElementById('login-screen').classList.remove('hidden');
             document.getElementById('admin-login-screen').classList.add('hidden');
             document.getElementById('cadastro-screen').classList.add('hidden');
@@ -1681,6 +1761,7 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         function showAdminLogin() {
+            console.log('Mostrando tela de login admin');
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-login-screen').classList.remove('hidden');
             document.getElementById('cadastro-screen').classList.add('hidden');
@@ -1689,6 +1770,7 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         function showCadastro() {
+            console.log('Mostrando tela de cadastro');
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-login-screen').classList.add('hidden');
             document.getElementById('cadastro-screen').classList.remove('hidden');
@@ -2584,15 +2666,19 @@ Wellington Cesar de Oliveira</textarea>
         function salvarConfiguracoes() {
             const appLogo = document.getElementById('config-app-logo').value;
             const devLogo = document.getElementById('config-dev-logo').value;
+            const favicon = document.getElementById('config-favicon').value;
             
             // Verificar se há imagens carregadas
             const appPreview = document.getElementById('app-logo-preview');
             const devPreview = document.getElementById('dev-logo-preview');
+            const faviconPreview = document.getElementById('favicon-preview');
             const appImg = appPreview.querySelector('img');
             const devImg = devPreview.querySelector('img');
+            const faviconImg = faviconPreview.querySelector('img');
             
             const appLogoFinal = appImg ? appImg.src : appLogo;
             const devLogoFinal = devImg ? devImg.src : devLogo;
+            const faviconFinal = faviconImg ? faviconImg.src : favicon;
             
             // Atualizar logos na interface
             document.querySelectorAll('.app-logo').forEach(el => {
@@ -2611,16 +2697,21 @@ Wellington Cesar de Oliveira</textarea>
                 }
             });
             
+            // Atualizar favicon
+            atualizarFavicon(faviconFinal, !!faviconImg);
+            
             // Salvar configurações
             const config = { 
                 appLogo: appLogoFinal, 
                 devLogo: devLogoFinal,
+                favicon: faviconFinal,
                 appIsImage: !!appImg,
-                devIsImage: !!devImg
+                devIsImage: !!devImg,
+                faviconIsImage: !!faviconImg
             };
             localStorage.setItem('config', JSON.stringify(config));
             
-            mostrarAviso('✅ Configurações salvas com sucesso!', 'success');
+            mostrarAviso('✅ Configurações salvas com sucesso! O favicon foi atualizado na aba do navegador.', 'success');
         }
 
         function showNovoApoiador() {
@@ -2738,6 +2829,28 @@ Wellington Cesar de Oliveira</textarea>
             mostrarAviso('✅ Informações sobre o sistema foram salvas com sucesso!', 'success');
         }
 
+        // Função para atualizar favicon
+        function atualizarFavicon(favicon, isImage) {
+            const faviconElement = document.getElementById('favicon');
+            
+            if (isImage) {
+                faviconElement.href = favicon;
+                faviconElement.type = 'image/x-icon';
+            } else {
+                // Criar SVG com emoji
+                const svgFavicon = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${favicon}</text></svg>`;
+                faviconElement.href = svgFavicon;
+                faviconElement.type = 'image/svg+xml';
+            }
+        }
+
+        // Função para limpar favicon
+        function limparFavicon() {
+            document.getElementById('config-favicon').value = '🚗';
+            document.getElementById('config-favicon-image').value = '';
+            document.getElementById('favicon-preview').innerHTML = '<span style="font-size: 1rem;">🚗</span>';
+        }
+
         // Configurar uploads de imagem
         function configurarUploads() {
             // Upload logo do app
@@ -2800,6 +2913,28 @@ Wellington Cesar de Oliveira</textarea>
                             const preview = document.getElementById('apoiador-logo-preview');
                             preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
                             document.getElementById('apoiador-logo').value = ''; // Limpar texto
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Upload favicon
+            const faviconImageInput = document.getElementById('config-favicon-image');
+            if (faviconImageInput) {
+                faviconImageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (file.size > 1 * 1024 * 1024) { // 1MB para favicon
+                            mostrarAviso('❌ Imagem muito grande para favicon! Máximo 1MB.', 'warning');
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('favicon-preview');
+                            preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 3px;">`;
+                            document.getElementById('config-favicon').value = ''; // Limpar texto
                         };
                         reader.readAsDataURL(file);
                     }
@@ -2951,5 +3086,5 @@ Wellington Cesar de Oliveira</textarea>
             }
         };
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97549d7dc2b3f217',t:'MTc1NjIyNDc5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9754b069001cf217',t:'MTc1NjIyNTU2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
