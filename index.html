@@ -948,6 +948,7 @@
             <button class="nav-tab" onclick="showAdminTab('admin-administradores')">👨‍💼 Administradores</button>
             <button class="nav-tab" onclick="showAdminTab('admin-config')">⚙️ Configurações</button>
             <button class="nav-tab" onclick="showAdminTab('admin-apoiadores')">🤝 Apoiadores</button>
+            <button class="nav-tab" onclick="showAdminTab('admin-backup')">💾 Backup & Logs</button>
             <button class="nav-tab" onclick="showAdminTab('admin-sobre')">📝 Editar Sobre</button>
         </div>
 
@@ -1143,6 +1144,50 @@
             </div>
 
             <div class="apoiadores-grid" id="admin-apoiadores-list"></div>
+        </div>
+
+        <!-- Admin Backup & Logs -->
+        <div id="admin-backup" class="tab-content">
+            <h2>💾 Backup e Logs do Sistema</h2>
+            
+            <div class="dashboard-grid" style="margin-bottom: 30px;">
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">Total de Usuários</div>
+                    <div class="card-value" id="total-usuarios">0</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-title">Total de Receitas</div>
+                    <div class="card-value" id="total-receitas">0</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💸</div>
+                    <div class="card-title">Total de Despesas</div>
+                    <div class="card-value" id="total-despesas">0</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📝</div>
+                    <div class="card-title">Logs Registrados</div>
+                    <div class="card-value" id="total-logs">0</div>
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-bottom: 30px;">
+                <div class="form-group">
+                    <button class="btn" onclick="exportarBackup()" style="width: 100%;">📥 Exportar Backup Completo</button>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-secondary" onclick="limparLogsAntigos()" style="width: 100%;">🧹 Limpar Logs Antigos</button>
+                </div>
+            </div>
+
+            <h3>📋 Logs Recentes do Sistema</h3>
+            <div style="max-height: 400px; overflow-y: auto; background: #f8fafc; border-radius: 10px; padding: 15px;">
+                <div id="logs-container">
+                    <p style="text-align: center; color: #6b7280;">Carregando logs...</p>
+                </div>
+            </div>
         </div>
 
         <!-- Admin Sobre -->
@@ -2630,6 +2675,131 @@ Wellington Cesar de Oliveira</textarea>
             document.getElementById('apoiador-image').value = '';
             document.getElementById('apoiador-logo-preview').innerHTML = '<span style="font-size: 2rem;">🏢</span>';
         }
+
+        // Funções de Backup e Logs
+        async function exportarBackup() {
+            try {
+                mostrarAviso('📥 Gerando backup completo...', 'success');
+                
+                const dados = await db.exportarDados();
+                
+                // Criar arquivo de download
+                const dataStr = JSON.stringify(dados, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(dataBlob);
+                link.download = `volante-financeiro-backup-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                mostrarAviso('✅ Backup exportado com sucesso!', 'success');
+                
+            } catch (error) {
+                console.error('Erro ao exportar backup:', error);
+                mostrarAviso('❌ Erro ao exportar backup.', 'danger');
+            }
+        }
+
+        async function limparLogsAntigos() {
+            if (!confirm('Tem certeza que deseja limpar logs com mais de 1 ano? Esta ação não pode ser desfeita.')) return;
+            
+            try {
+                const deletedCount = await db.limparDadosAntigos(365);
+                mostrarAviso(`✅ ${deletedCount} logs antigos foram removidos!`, 'success');
+                carregarEstatisticasBackup();
+                carregarLogsRecentes();
+                
+            } catch (error) {
+                console.error('Erro ao limpar logs:', error);
+                mostrarAviso('❌ Erro ao limpar logs antigos.', 'danger');
+            }
+        }
+
+        async function carregarEstatisticasBackup() {
+            try {
+                const usuarios = await db.listarUsuarios();
+                const logs = await db.listarLogs(1);
+                
+                let totalReceitas = 0;
+                let totalDespesas = 0;
+                
+                for (const usuario of usuarios) {
+                    const receitas = await db.listarReceitasUsuario(usuario.id);
+                    const despesas = await db.listarDespesasUsuario(usuario.id);
+                    totalReceitas += receitas.length;
+                    totalDespesas += despesas.length;
+                }
+                
+                document.getElementById('total-usuarios').textContent = usuarios.length;
+                document.getElementById('total-receitas').textContent = totalReceitas;
+                document.getElementById('total-despesas').textContent = totalDespesas;
+                
+                // Contar logs totais (aproximado)
+                const logsCompletos = await db.listarLogs(10000);
+                document.getElementById('total-logs').textContent = logsCompletos.length;
+                
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        async function carregarLogsRecentes() {
+            try {
+                const logs = await db.listarLogs(50);
+                const container = document.getElementById('logs-container');
+                
+                if (logs.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #6b7280;">Nenhum log encontrado.</p>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                logs.forEach(log => {
+                    const logElement = document.createElement('div');
+                    logElement.style.cssText = 'padding: 10px; margin-bottom: 8px; background: white; border-radius: 8px; border-left: 4px solid #22c55e; font-size: 0.9rem;';
+                    
+                    const timestamp = new Date(log.timestamp).toLocaleString('pt-BR');
+                    const usuario = log.userId ? ` (ID: ${log.userId})` : '';
+                    
+                    logElement.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${log.acao}</strong>: ${log.descricao}${usuario}
+                            </div>
+                            <div style="color: #6b7280; font-size: 0.8rem;">
+                                ${timestamp}
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(logElement);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar logs:', error);
+                document.getElementById('logs-container').innerHTML = '<p style="text-align: center; color: #ef4444;">Erro ao carregar logs.</p>';
+            }
+        }
+
+        // Atualizar função showAdminPanel para carregar dados de backup
+        const originalShowAdminPanel = showAdminPanel;
+        showAdminPanel = function() {
+            originalShowAdminPanel();
+            carregarEstatisticasBackup();
+            carregarLogsRecentes();
+        };
+
+        // Atualizar função showAdminTab para carregar dados quando necessário
+        const originalShowAdminTab = showAdminTab;
+        showAdminTab = function(tabName) {
+            originalShowAdminTab(tabName);
+            
+            if (tabName === 'admin-backup') {
+                carregarEstatisticasBackup();
+                carregarLogsRecentes();
+            }
+        };
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'975488bb66c5f24e',t:'MTc1NjIyMzk0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97549624b059f217',t:'MTc1NjIyNDQ5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
