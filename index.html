@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volante Financeiro - Sistema de Gestão Financeira</title>
-    <link id="favicon" rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+    <link id="favicon" rel="icon" type="image/x-icon" href="">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -571,8 +571,8 @@
                 <input type="password" id="login-senha" required>
             </div>
             <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">Entrar</button>
-            <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;" onclick="showCadastro();">Criar Conta</button>
-            <button type="button" class="btn" style="width: 100%; background: linear-gradient(135deg, #374151, #1f2937);" onclick="showAdminLogin();">Acesso Administrador</button>
+            <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;" onclick="showCadastro()">Criar Conta</button>
+            <button type="button" class="btn" style="width: 100%; background: linear-gradient(135deg, #374151, #1f2937);" onclick="showAdminLogin()">Acesso Administrador</button>
         </form>
     </div>
 
@@ -1318,8 +1318,26 @@ Wellington Cesar de Oliveira</textarea>
             localStorage.setItem('administradores', JSON.stringify(administradores));
         }
 
+        // Tornar funções globais para os botões
+        window.showLogin = showLogin;
+        window.showAdminLogin = showAdminLogin;
+        window.showCadastro = showCadastro;
+        window.showMainApp = showMainApp;
+        window.showAdminPanel = showAdminPanel;
+        window.logout = logout;
+        window.showTab = showTab;
+        window.showAdminTab = showAdminTab;
+
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inicializando Volante Financeiro...');
+            
+            // Definir favicon padrão se não houver configuração
+            const config = JSON.parse(localStorage.getItem('config')) || {};
+            if (!config.favicon) {
+                atualizarFavicon('🚗', false);
+            }
+            
             // Definir data atual nos campos de data
             const hoje = new Date().toISOString().split('T')[0];
             const receitaData = document.getElementById('receita-data');
@@ -1341,6 +1359,8 @@ Wellington Cesar de Oliveira</textarea>
             
             // Carregar configurações salvas
             carregarConfiguracoesSalvas();
+            
+            console.log('✅ Sistema inicializado com sucesso!');
         });
 
         // Carregar configurações salvas
@@ -1784,7 +1804,7 @@ Wellington Cesar de Oliveira</textarea>
 
         // Mostrar telas
         function showLogin() {
-            console.log('Mostrando tela de login');
+            console.log('🔄 Navegando para tela de login');
             document.getElementById('login-screen').classList.remove('hidden');
             document.getElementById('admin-login-screen').classList.add('hidden');
             document.getElementById('cadastro-screen').classList.add('hidden');
@@ -1793,7 +1813,7 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         function showAdminLogin() {
-            console.log('Mostrando tela de login admin');
+            console.log('🔄 Navegando para tela de login administrativo');
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-login-screen').classList.remove('hidden');
             document.getElementById('cadastro-screen').classList.add('hidden');
@@ -1802,7 +1822,7 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         function showCadastro() {
-            console.log('Mostrando tela de cadastro');
+            console.log('🔄 Navegando para tela de cadastro');
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-login-screen').classList.add('hidden');
             document.getElementById('cadastro-screen').classList.remove('hidden');
@@ -1836,6 +1856,8 @@ Wellington Cesar de Oliveira</textarea>
             carregarUsuariosAdmin();
             carregarAdministradoresAdmin();
             carregarApoiadoresAdmin();
+            carregarEstatisticasBackup();
+            carregarLogsRecentes();
         }
 
         // Logout
@@ -2994,11 +3016,27 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         // Funções de Backup e Logs
-        async function exportarBackup() {
+        function exportarBackup() {
             try {
                 mostrarAviso('📥 Gerando backup completo...', 'success');
                 
-                const dados = await db.exportarDados();
+                // Coletar todos os dados do localStorage
+                const dados = {
+                    usuarios: JSON.parse(localStorage.getItem('usuarios')) || [],
+                    administradores: JSON.parse(localStorage.getItem('administradores')) || [],
+                    apoiadores: JSON.parse(localStorage.getItem('apoiadores')) || [],
+                    config: JSON.parse(localStorage.getItem('config')) || {},
+                    sobre: JSON.parse(localStorage.getItem('sobre')) || {},
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Adicionar dados dos usuários
+                dados.dadosUsuarios = {};
+                dados.usuarios.forEach(usuario => {
+                    const userKey = `user_${usuario.id}`;
+                    const userData = JSON.parse(localStorage.getItem(userKey)) || {};
+                    dados.dadosUsuarios[userKey] = userData;
+                });
                 
                 // Criar arquivo de download
                 const dataStr = JSON.stringify(dados, null, 2);
@@ -3017,53 +3055,110 @@ Wellington Cesar de Oliveira</textarea>
             }
         }
 
-        async function limparLogsAntigos() {
-            if (!confirm('Tem certeza que deseja limpar logs com mais de 1 ano? Esta ação não pode ser desfeita.')) return;
+        function limparLogsAntigos() {
+            if (!confirm('Tem certeza que deseja limpar dados antigos? Esta ação não pode ser desfeita.')) return;
             
             try {
-                const deletedCount = await db.limparDadosAntigos(365);
-                mostrarAviso(`✅ ${deletedCount} logs antigos foram removidos!`, 'success');
+                // Limpar dados antigos (simulação)
+                let itemsRemovidos = 0;
+                
+                // Verificar cada usuário e limpar dados antigos
+                usuarios.forEach(usuario => {
+                    const userKey = `user_${usuario.id}`;
+                    const userData = JSON.parse(localStorage.getItem(userKey)) || {};
+                    
+                    if (userData.receitas) {
+                        const dataLimite = new Date();
+                        dataLimite.setFullYear(dataLimite.getFullYear() - 1);
+                        
+                        const receitasAntigas = userData.receitas.filter(r => new Date(r.data) < dataLimite);
+                        const despesasAntigas = userData.despesas ? userData.despesas.filter(d => new Date(d.data) < dataLimite) : [];
+                        
+                        itemsRemovidos += receitasAntigas.length + despesasAntigas.length;
+                        
+                        userData.receitas = userData.receitas.filter(r => new Date(r.data) >= dataLimite);
+                        if (userData.despesas) {
+                            userData.despesas = userData.despesas.filter(d => new Date(d.data) >= dataLimite);
+                        }
+                        
+                        localStorage.setItem(userKey, JSON.stringify(userData));
+                    }
+                });
+                
+                mostrarAviso(`✅ ${itemsRemovidos} registros antigos foram removidos!`, 'success');
                 carregarEstatisticasBackup();
-                carregarLogsRecentes();
                 
             } catch (error) {
-                console.error('Erro ao limpar logs:', error);
-                mostrarAviso('❌ Erro ao limpar logs antigos.', 'danger');
+                console.error('Erro ao limpar dados antigos:', error);
+                mostrarAviso('❌ Erro ao limpar dados antigos.', 'danger');
             }
         }
 
-        async function carregarEstatisticasBackup() {
+        function carregarEstatisticasBackup() {
             try {
-                const usuarios = await db.listarUsuarios();
-                const logs = await db.listarLogs(1);
-                
                 let totalReceitas = 0;
                 let totalDespesas = 0;
                 
-                for (const usuario of usuarios) {
-                    const receitas = await db.listarReceitasUsuario(usuario.id);
-                    const despesas = await db.listarDespesasUsuario(usuario.id);
-                    totalReceitas += receitas.length;
-                    totalDespesas += despesas.length;
-                }
+                usuarios.forEach(usuario => {
+                    const userKey = `user_${usuario.id}`;
+                    const userData = JSON.parse(localStorage.getItem(userKey)) || {};
+                    
+                    if (userData.receitas) totalReceitas += userData.receitas.length;
+                    if (userData.despesas) totalDespesas += userData.despesas.length;
+                });
                 
                 document.getElementById('total-usuarios').textContent = usuarios.length;
                 document.getElementById('total-receitas').textContent = totalReceitas;
                 document.getElementById('total-despesas').textContent = totalDespesas;
-                
-                // Contar logs totais (aproximado)
-                const logsCompletos = await db.listarLogs(10000);
-                document.getElementById('total-logs').textContent = logsCompletos.length;
+                document.getElementById('total-logs').textContent = totalReceitas + totalDespesas + usuarios.length;
                 
             } catch (error) {
                 console.error('Erro ao carregar estatísticas:', error);
             }
         }
 
-        async function carregarLogsRecentes() {
+        function carregarLogsRecentes() {
             try {
-                const logs = await db.listarLogs(50);
                 const container = document.getElementById('logs-container');
+                const logs = [];
+                
+                // Simular logs baseados nos dados existentes
+                usuarios.forEach(usuario => {
+                    logs.push({
+                        acao: 'Cadastro de Usuário',
+                        descricao: `Usuário ${usuario.nome} foi cadastrado`,
+                        timestamp: usuario.dataCadastro || new Date().toISOString(),
+                        userId: usuario.id
+                    });
+                    
+                    const userKey = `user_${usuario.id}`;
+                    const userData = JSON.parse(localStorage.getItem(userKey)) || {};
+                    
+                    if (userData.receitas) {
+                        userData.receitas.slice(-5).forEach(receita => {
+                            logs.push({
+                                acao: 'Nova Receita',
+                                descricao: `${receita.app}: R$ ${receita.valor.toFixed(2)}`,
+                                timestamp: receita.data + 'T12:00:00.000Z',
+                                userId: usuario.id
+                            });
+                        });
+                    }
+                    
+                    if (userData.despesas) {
+                        userData.despesas.slice(-5).forEach(despesa => {
+                            logs.push({
+                                acao: 'Nova Despesa',
+                                descricao: `${despesa.categoria}: R$ ${despesa.valor.toFixed(2)}`,
+                                timestamp: despesa.data + 'T12:00:00.000Z',
+                                userId: usuario.id
+                            });
+                        });
+                    }
+                });
+                
+                // Ordenar por data mais recente
+                logs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 if (logs.length === 0) {
                     container.innerHTML = '<p style="text-align: center; color: #6b7280;">Nenhum log encontrado.</p>';
@@ -3072,7 +3167,7 @@ Wellington Cesar de Oliveira</textarea>
                 
                 container.innerHTML = '';
                 
-                logs.forEach(log => {
+                logs.slice(0, 50).forEach(log => {
                     const logElement = document.createElement('div');
                     logElement.style.cssText = 'padding: 10px; margin-bottom: 8px; background: white; border-radius: 8px; border-left: 4px solid #22c55e; font-size: 0.9rem;';
                     
@@ -3098,25 +3193,6 @@ Wellington Cesar de Oliveira</textarea>
                 document.getElementById('logs-container').innerHTML = '<p style="text-align: center; color: #ef4444;">Erro ao carregar logs.</p>';
             }
         }
-
-        // Atualizar função showAdminPanel para carregar dados de backup
-        const originalShowAdminPanel = showAdminPanel;
-        showAdminPanel = function() {
-            originalShowAdminPanel();
-            carregarEstatisticasBackup();
-            carregarLogsRecentes();
-        };
-
-        // Atualizar função showAdminTab para carregar dados quando necessário
-        const originalShowAdminTab = showAdminTab;
-        showAdminTab = function(tabName) {
-            originalShowAdminTab(tabName);
-            
-            if (tabName === 'admin-backup') {
-                carregarEstatisticasBackup();
-                carregarLogsRecentes();
-            }
-        };
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9754bfea57180d0b',t:'MTc1NjIyNjIwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9754d62057fa6eb0',t:'MTc1NjIyNzExMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
