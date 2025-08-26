@@ -1,7 +1,7 @@
 # Volante Financeiro
-📱 Aplicativo de controle financeiro para motoristas de aplicativos em Corumbá-MS e região de fronteira.  
+Aplicativo de controle financeiro para motoristas de aplicativos em Corumbá-MS e região de fronteira.  
 
-## 📖 Sobre o Projeto  
+## Sobre o Projeto  
 O **Volante Financeiro** é um aplicativo desenvolvido para auxiliar motoristas de aplicativos no **controle de suas finanças pessoais e operacionais**, ajudando a separar receitas, despesas e planejar metas de lucro.  
 
 A expansão do transporte por aplicativos no Brasil trouxe novas oportunidades de trabalho, mas também desafios relacionados à **gestão financeira e logística**. Em regiões de fronteira, como **Corumbá-MS**, esses desafios se intensificam devido ao fluxo constante de pessoas e mercadorias entre Brasil e Bolívia.  
@@ -10,7 +10,7 @@ Este projeto busca oferecer uma **ferramenta prática, intuitiva e adaptada à r
 
 ---
 
-## 🚀 Funcionalidades  
+## Funcionalidades  
 - **Cadastro/Login seguro** (e-mail, senha ou Google).  
 - **Dashboard** com resumo financeiro do mês (receita, despesas e lucro líquido).  
 - **Registro de receitas** (corridas, ganhos por diferentes plataformas).  
@@ -22,7 +22,7 @@ Este projeto busca oferecer uma **ferramenta prática, intuitiva e adaptada à r
 
 ---
 
-## 🛠️ Tecnologias Utilizadas  
+## Tecnologias Utilizadas  
 - **Front-end:** Flutter  
 - **Back-end:** Firebase  
 - **Banco de Dados:** Firestore  
@@ -31,7 +31,7 @@ Este projeto busca oferecer uma **ferramenta prática, intuitiva e adaptada à r
 
 ---
 
-## 📱 Layout das Telas  
+## Layout das Telas  
 O design do **Volante Financeiro** foi pensado para ser simples e intuitivo:  
 1. Login/Cadastro  
 2. Dashboard (resumo financeiro)  
@@ -43,12 +43,12 @@ O design do **Volante Financeiro** foi pensado para ser simples e intuitivo:
 
 ---
 
-## 🌎 Contexto Social  
+##  Contexto Social  
 O **Volante Financeiro** integra o projeto **AUTONOMIA LOGÍSTICA E GESTÃO FINANCEIRA: Desafios e Estratégias para Motoristas de Aplicativos em Corumbá-MS e Região de Fronteira**, promovendo **educação financeira e fortalecimento da economia local**.  
 
 ---
 
-## 📌 Próximos Passos  
+##  Próximos Passos  
 - [ ] Implementar protótipo funcional em Flutter  
 - [ ] Testar com motoristas de Corumbá-MS  
 - [ ] Validar relatórios e exportação  
