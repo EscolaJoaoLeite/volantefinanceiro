@@ -267,8 +267,16 @@
                 <button onclick="showTab('about')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
                     Sobre
                 </button>
+                <button onclick="showTab('export')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    Exportar
+                </button>
             </div>
         </nav>
+
+        <!-- Sistema de Notificações -->
+        <div id="notificationContainer" class="fixed top-4 right-4 z-50 space-y-2">
+            <!-- Notificações aparecerão aqui -->
+        </div>
 
         <!-- Conteúdo das Abas -->
         <div class="p-4">
@@ -319,7 +327,25 @@
 
                 <!-- Lista de Ganhos -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-lg font-semibold mb-4">Ganhos Recentes</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Ganhos Recentes</h3>
+                        <div class="flex space-x-2">
+                            <input type="text" id="searchEarnings" placeholder="🔍 Buscar ganhos..." 
+                                   class="px-3 py-1 border rounded-lg text-sm w-40 focus:ring-2 focus:ring-green-500">
+                            <select id="filterEarningsPlatform" class="px-3 py-1 border rounded-lg text-sm focus:ring-2 focus:ring-green-500">
+                                <option value="">Todas as plataformas</option>
+                                <option value="BR Car">BR Car</option>
+                                <option value="IBolt">IBolt</option>
+                                <option value="Ifood">Ifood</option>
+                                <option value="InDriver">InDriver</option>
+                                <option value="Uber">Uber</option>
+                                <option value="Tô Aqui">Tô Aqui</option>
+                                <option value="Taxi-Connect">Taxi-Connect</option>
+                                <option value="Urban">Urban</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
                     <div id="earningsList" class="space-y-3">
                         <!-- Ganhos serão listados aqui -->
                     </div>
@@ -376,7 +402,31 @@
 
                 <!-- Lista de Despesas -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-lg font-semibold mb-4">Despesas Recentes</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Despesas Recentes</h3>
+                        <div class="flex space-x-2">
+                            <input type="text" id="searchExpenses" placeholder="🔍 Buscar despesas..." 
+                                   class="px-3 py-1 border rounded-lg text-sm w-40 focus:ring-2 focus:ring-red-500">
+                            <select id="filterExpensesCategory" class="px-3 py-1 border rounded-lg text-sm focus:ring-2 focus:ring-red-500">
+                                <option value="">Todas as categorias</option>
+                                <option value="Combustível">Combustível</option>
+                                <option value="Manutenção">Manutenção</option>
+                                <option value="Documentação">Documentação</option>
+                                <option value="Alimentação">Alimentação</option>
+                                <option value="Seguro">Seguro</option>
+                                <option value="IPVA">IPVA</option>
+                                <option value="Licenciamento">Licenciamento</option>
+                                <option value="Multas">Multas</option>
+                                <option value="Estacionamento">Estacionamento</option>
+                                <option value="Lavagem">Lavagem do Veículo</option>
+                                <option value="Pneus">Pneus</option>
+                                <option value="Óleo">Óleo e Filtros</option>
+                                <option value="Peças">Peças e Acessórios</option>
+                                <option value="Telefone">Telefone/Internet</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                    </div>
                     <div id="expensesList" class="space-y-3">
                         <!-- Despesas serão listadas aqui -->
                     </div>
@@ -386,7 +436,13 @@
             <!-- Aba Cofres -->
             <div id="savingsTab" class="tab-content hidden">
                 <div class="bg-white rounded-lg shadow p-6 mb-6">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">💰 Separar Dinheiro no Cofre</h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">💰 Separar Dinheiro no Cofre</h2>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-600">Saldo Disponível</p>
+                            <p class="text-lg font-bold text-green-600" id="availableBalance">R$ 0,00</p>
+                        </div>
+                    </div>
                     <form id="savingsForm" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
@@ -582,6 +638,161 @@
                         <div class="relative h-64">
                             <canvas id="monthlyChart"></canvas>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba Exportar -->
+            <div id="exportTab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">📊 Exportar Dados</h2>
+                    
+                    <!-- Seletor de Período para Exportação -->
+                    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                        <h3 class="text-lg font-semibold mb-4">Período dos Dados</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Data Inicial</label>
+                                <input type="date" id="exportStartDate" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Data Final</label>
+                                <input type="date" id="exportEndDate" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500">
+                            </div>
+                            <div class="flex items-end">
+                                <button onclick="setQuickPeriod('month')" class="w-full bg-blue-100 text-blue-700 px-3 py-2 rounded-lg text-sm hover:bg-blue-200 mr-2">
+                                    Este Mês
+                                </button>
+                                <button onclick="setQuickPeriod('all')" class="w-full bg-gray-100 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-200">
+                                    Todos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opções de Exportação -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Exportar Ganhos -->
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-green-800">Ganhos</h3>
+                                    <p class="text-sm text-green-600" id="earningsCount">0 registros</p>
+                                </div>
+                            </div>
+                            <button onclick="exportData('earnings')" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 font-semibold">
+                                📥 Exportar Ganhos
+                            </button>
+                        </div>
+
+                        <!-- Exportar Despesas -->
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-red-800">Despesas</h3>
+                                    <p class="text-sm text-red-600" id="expensesCount">0 registros</p>
+                                </div>
+                            </div>
+                            <button onclick="exportData('expenses')" class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-semibold">
+                                📥 Exportar Despesas
+                            </button>
+                        </div>
+
+                        <!-- Exportar Cofres -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                                        <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-blue-800">Cofres</h3>
+                                    <p class="text-sm text-blue-600" id="savingsCount">0 registros</p>
+                                </div>
+                            </div>
+                            <button onclick="exportData('savings')" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-semibold">
+                                📥 Exportar Cofres
+                            </button>
+                        </div>
+
+                        <!-- Exportar Metas -->
+                        <div class="bg-purple-50 border border-purple-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-purple-800">Metas</h3>
+                                    <p class="text-sm text-purple-600" id="goalsCount">0 registros</p>
+                                </div>
+                            </div>
+                            <button onclick="exportData('goals')" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 font-semibold">
+                                📥 Exportar Metas
+                            </button>
+                        </div>
+
+                        <!-- Relatório Completo -->
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">Relatório Completo</h3>
+                                    <p class="text-sm text-gray-600">Todos os dados</p>
+                                </div>
+                            </div>
+                            <button onclick="exportData('complete')" class="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 font-semibold">
+                                📋 Gerar Relatório
+                            </button>
+                        </div>
+
+                        <!-- Backup Completo -->
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-yellow-800">Backup</h3>
+                                    <p class="text-sm text-yellow-600">Dados + configurações</p>
+                                </div>
+                            </div>
+                            <button onclick="exportData('backup')" class="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700 font-semibold">
+                                💾 Fazer Backup
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Importar Backup -->
+                    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-4">📤 Importar Backup</h3>
+                        <div class="flex items-center space-x-4">
+                            <input type="file" id="importBackup" accept=".json" class="flex-1 px-3 py-2 border rounded-lg">
+                            <button onclick="importBackup()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">
+                                Importar
+                            </button>
+                        </div>
+                        <p class="text-sm text-blue-600 mt-2">⚠️ Atenção: Importar um backup substituirá todos os dados atuais!</p>
                     </div>
                 </div>
             </div>
@@ -993,14 +1204,167 @@
     </div>
 
     <script>
-        // Dados simulados em localStorage
-        let users = JSON.parse(localStorage.getItem('volante_users') || '[]');
+        // Sistema de Banco de Dados Local
+        class VolanteDB {
+            constructor() {
+                this.dbName = 'volante_financeiro_db';
+                this.version = 1;
+                this.db = null;
+                this.init();
+            }
+
+            async init() {
+                // Migrar dados do localStorage se existirem
+                this.migrateFromLocalStorage();
+            }
+
+            migrateFromLocalStorage() {
+                const tables = ['users', 'earnings', 'expenses', 'savings', 'supporters', 'goals'];
+                tables.forEach(table => {
+                    const data = JSON.parse(localStorage.getItem(`volante_${table}`) || '[]');
+                    if (data.length > 0) {
+                        this.setTable(table, data);
+                        localStorage.removeItem(`volante_${table}`);
+                    }
+                });
+            }
+
+            setTable(tableName, data) {
+                localStorage.setItem(`db_${this.dbName}_${tableName}`, JSON.stringify(data));
+            }
+
+            getTable(tableName) {
+                return JSON.parse(localStorage.getItem(`db_${this.dbName}_${tableName}`) || '[]');
+            }
+
+            insert(tableName, record) {
+                const table = this.getTable(tableName);
+                record.id = record.id || Date.now() + Math.random();
+                record.createdAt = record.createdAt || new Date().toISOString();
+                record.updatedAt = new Date().toISOString();
+                table.push(record);
+                this.setTable(tableName, table);
+                return record;
+            }
+
+            update(tableName, id, updates) {
+                const table = this.getTable(tableName);
+                const index = table.findIndex(record => record.id === id);
+                if (index !== -1) {
+                    table[index] = { ...table[index], ...updates, updatedAt: new Date().toISOString() };
+                    this.setTable(tableName, table);
+                    return table[index];
+                }
+                return null;
+            }
+
+            delete(tableName, id) {
+                const table = this.getTable(tableName);
+                const filtered = table.filter(record => record.id !== id);
+                this.setTable(tableName, filtered);
+                return filtered.length < table.length;
+            }
+
+            find(tableName, query = {}) {
+                const table = this.getTable(tableName);
+                if (Object.keys(query).length === 0) return table;
+                
+                return table.filter(record => {
+                    return Object.entries(query).every(([key, value]) => {
+                        if (typeof value === 'function') return value(record[key]);
+                        return record[key] === value;
+                    });
+                });
+            }
+
+            findOne(tableName, query) {
+                return this.find(tableName, query)[0] || null;
+            }
+
+            // Métodos específicos para cálculos financeiros
+            getAvailableBalance(userId) {
+                const userEarnings = this.find('earnings', { userId });
+                const userExpenses = this.find('expenses', { userId });
+                const userSavings = this.find('savings', { userId });
+
+                const totalEarnings = userEarnings.reduce((sum, e) => sum + e.amount, 0);
+                const totalExpenses = userExpenses.reduce((sum, e) => sum + e.amount, 0);
+                const totalSaved = userSavings.reduce((sum, s) => sum + s.amount, 0);
+
+                return totalEarnings - totalExpenses - totalSaved;
+            }
+
+            getTotalSavings(userId) {
+                const userSavings = this.find('savings', { userId });
+                return userSavings.reduce((sum, s) => sum + s.amount, 0);
+            }
+
+            getSavingsByPurpose(userId) {
+                const userSavings = this.find('savings', { userId });
+                return userSavings.reduce((groups, saving) => {
+                    const purpose = saving.purpose;
+                    if (!groups[purpose]) {
+                        groups[purpose] = { total: 0, goal: null, items: [] };
+                    }
+                    groups[purpose].total += saving.amount;
+                    groups[purpose].items.push(saving);
+                    if (saving.goal && saving.goal > (groups[purpose].goal || 0)) {
+                        groups[purpose].goal = saving.goal;
+                    }
+                    return groups;
+                }, {});
+            }
+
+            // Backup e restore
+            exportData(userId = null) {
+                const tables = ['users', 'earnings', 'expenses', 'savings', 'supporters', 'goals'];
+                const data = {};
+                
+                tables.forEach(table => {
+                    if (userId && ['earnings', 'expenses', 'savings', 'goals'].includes(table)) {
+                        data[table] = this.find(table, { userId });
+                    } else {
+                        data[table] = this.getTable(table);
+                    }
+                });
+
+                return {
+                    version: this.version,
+                    timestamp: new Date().toISOString(),
+                    data
+                };
+            }
+
+            importData(backupData, userId = null) {
+                if (userId) {
+                    // Importar apenas dados do usuário específico
+                    ['earnings', 'expenses', 'savings', 'goals'].forEach(table => {
+                        if (backupData.data[table]) {
+                            // Remover dados existentes do usuário
+                            const existingData = this.find(table, { userId: (id) => id !== userId });
+                            // Adicionar dados do backup
+                            const newData = backupData.data[table].map(item => ({
+                                ...item,
+                                userId,
+                                id: Date.now() + Math.random(),
+                                createdAt: item.createdAt || new Date().toISOString(),
+                                updatedAt: new Date().toISOString()
+                            }));
+                            this.setTable(table, [...existingData, ...newData]);
+                        }
+                    });
+                } else {
+                    // Importar todos os dados
+                    Object.entries(backupData.data).forEach(([table, records]) => {
+                        this.setTable(table, records);
+                    });
+                }
+            }
+        }
+
+        // Inicializar banco de dados
+        const db = new VolanteDB();
         let currentUser = null;
-        let earnings = JSON.parse(localStorage.getItem('volante_earnings') || '[]');
-        let expenses = JSON.parse(localStorage.getItem('volante_expenses') || '[]');
-        let savings = JSON.parse(localStorage.getItem('volante_savings') || '[]');
-        let supporters = JSON.parse(localStorage.getItem('volante_supporters') || '[]');
-        let goals = JSON.parse(localStorage.getItem('volante_goals') || '[]');
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
@@ -1033,6 +1397,12 @@
             document.getElementById('goalsForm').addEventListener('submit', handleAddGoal);
             document.getElementById('contactSettingsForm').addEventListener('submit', handleContactSettings);
 
+            // Event listeners para busca e filtros
+            document.getElementById('searchEarnings').addEventListener('input', filterEarnings);
+            document.getElementById('filterEarningsPlatform').addEventListener('change', filterEarnings);
+            document.getElementById('searchExpenses').addEventListener('input', filterExpenses);
+            document.getElementById('filterExpensesCategory').addEventListener('change', filterExpenses);
+
             // Carregar configurações de contato salvas
             loadContactSettings();
 
@@ -1058,15 +1428,14 @@
         function handleTestLogin() {
             try {
                 // Verificar se já existe um usuário de teste ativo
-                let testUser = users.find(u => u.isTestUser && u.active);
+                let testUser = db.findOne('users', { isTestUser: true, active: true });
                 
                 if (!testUser) {
                     // Criar novo usuário de teste
                     const testStartDate = new Date();
                     const testEndDate = new Date(testStartDate.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 dias
                     
-                    testUser = {
-                        id: Date.now(),
+                    testUser = db.insert('users', {
                         name: "Usuário Teste",
                         email: "teste@volantefinanceiro.com",
                         cpf: "000.000.000-00",
@@ -1079,16 +1448,12 @@
                         testStartDate: testStartDate.toISOString(),
                         testEndDate: testEndDate.toISOString(),
                         picture: null
-                    };
+                    });
                     
-                    users.push(testUser);
-                    localStorage.setItem('volante_users', JSON.stringify(users));
-                    
-                    alert(
-                        `🎉 Bem-vindo ao Teste Grátis!\n\n` +
-                        `Você pode usar o Volante Financeiro por 7 dias.\n` +
-                        `Período de teste: ${testStartDate.toLocaleDateString('pt-BR')} até ${testEndDate.toLocaleDateString('pt-BR')}\n\n` +
-                        `Aproveite para conhecer todas as funcionalidades!`
+                    showNotification(
+                        `🎉 Bem-vindo ao Teste Grátis! Você pode usar por 7 dias até ${testEndDate.toLocaleDateString('pt-BR')}`,
+                        'success',
+                        5000
                     );
                 } else {
                     // Verificar se o período de teste ainda é válido
@@ -1097,8 +1462,7 @@
                     
                     if (now > testEnd) {
                         // Período de teste expirado
-                        testUser.active = false;
-                        localStorage.setItem('volante_users', JSON.stringify(users));
+                        db.update('users', testUser.id, { active: false });
                         
                         const shouldRegister = confirm(
                             `⏰ Período de teste expirado!\n\n` +
@@ -1114,11 +1478,10 @@
                     } else {
                         // Período de teste ainda válido
                         const daysLeft = Math.ceil((testEnd - now) / (1000 * 60 * 60 * 24));
-                        alert(
-                            `✅ Bem-vindo de volta!\n\n` +
-                            `Seu período de teste ainda está ativo.\n` +
-                            `Restam ${daysLeft} dia${daysLeft > 1 ? 's' : ''} de teste gratuito.\n\n` +
-                            `Aproveite para explorar todas as funcionalidades!`
+                        showNotification(
+                            `✅ Bem-vindo de volta! Restam ${daysLeft} dia${daysLeft > 1 ? 's' : ''} de teste gratuito`,
+                            'info',
+                            4000
                         );
                     }
                 }
@@ -1133,7 +1496,7 @@
                 
             } catch (error) {
                 console.error('Erro no login de teste:', error);
-                alert('Erro ao iniciar teste. Tente novamente.');
+                showNotification('Erro ao iniciar teste. Tente novamente.', 'error');
             }
         }
 
@@ -1300,16 +1663,11 @@
             // Verificar se apenas o CPF foi preenchido
             if (cpf && !password) {
                 // Verificar se o CPF existe no sistema
-                const user = users.find(u => u.cpf === cpf);
+                const user = db.findOne('users', { cpf });
                 
                 if (!user) {
                     // CPF não encontrado - informar e sugerir cadastro
-                    alert(
-                        '❌ CPF não encontrado!\n\n' +
-                        'Este CPF não possui cadastro no sistema.\n' +
-                        'Para usar o Volante Financeiro, você precisa fazer seu cadastro primeiro.\n\n' +
-                        'Clique em "Cadastrar Nova Conta" para se registrar.'
-                    );
+                    showNotification('❌ CPF não encontrado! Faça seu cadastro primeiro.', 'error');
                     
                     // Limpar campo CPF e focar nele
                     document.getElementById('loginCpf').value = '';
@@ -1317,12 +1675,7 @@
                     return;
                 } else {
                     // CPF encontrado - solicitar senha
-                    alert(
-                        '✅ CPF encontrado!\n\n' +
-                        `Olá, ${user.name}!\n` +
-                        'Sua conta existe no sistema.\n' +
-                        'Agora digite sua senha para entrar.'
-                    );
+                    showNotification(`✅ CPF encontrado! Olá, ${user.name}! Digite sua senha.`, 'success');
                     
                     // Focar no campo senha
                     document.getElementById('loginPassword').focus();
@@ -1332,7 +1685,7 @@
 
             // Verificar se ambos os campos estão preenchidos
             if (!cpf || !password) {
-                alert('Por favor, preencha CPF e senha para fazer login!');
+                showNotification('Por favor, preencha CPF e senha para fazer login!', 'warning');
                 
                 // Focar no primeiro campo vazio
                 if (!cpf) {
@@ -1344,7 +1697,7 @@
             }
 
             // Ambos os campos preenchidos - fazer validação completa
-            const user = users.find(u => u.cpf === cpf);
+            const user = db.findOne('users', { cpf });
             
             if (!user) {
                 // CPF não encontrado
@@ -1372,13 +1725,9 @@
 
             // CPF existe, verificar senha
             if (user.password !== password) {
-                alert(
-                    '❌ Senha incorreta!\n\n' +
-                    `CPF: ${cpf} ✅ (encontrado)\n` +
-                    `Usuário: ${user.name}\n\n` +
-                    'A senha digitada está incorreta.\n' +
-                    'Verifique sua senha e tente novamente.\n\n' +
-                    'Esqueceu sua senha? Use a opção "Esqueci minha senha".'
+                showNotification(
+                    `❌ Senha incorreta para ${user.name}! Verifique sua senha.`,
+                    'error'
                 );
                 
                 // Limpar apenas o campo senha e focar nele
@@ -1389,11 +1738,9 @@
 
             // Verificar se a conta está ativa
             if (!user.active) {
-                alert(
-                    '⚠️ Conta pausada!\n\n' +
-                    `Olá, ${user.name}!\n` +
-                    'Sua conta está temporariamente pausada pelo administrador.\n\n' +
-                    'Entre em contato com o suporte para reativar sua conta.'
+                showNotification(
+                    `⚠️ Conta pausada! Olá, ${user.name}! Entre em contato com o suporte.`,
+                    'warning'
                 );
                 return;
             }
@@ -1407,6 +1754,7 @@
             saveLoginData(cpf, rememberLogin);
             
             showDashboard();
+            showNotification(`🎉 Login realizado com sucesso! Bem-vindo, ${user.name}!`, 'success');
             
             // Limpar formulário
             document.getElementById('loginForm').reset();
@@ -1422,13 +1770,12 @@
             const cpf = document.getElementById('regCpf').value;
             
             // Verificar se usuário já existe
-            if (users.find(u => u.cpf === cpf)) {
-                alert('Este CPF já possui cadastro no sistema!');
+            if (db.findOne('users', { cpf })) {
+                showNotification('Este CPF já possui cadastro no sistema!', 'error');
                 return;
             }
 
-            const newUser = {
-                id: Date.now(),
+            const newUser = db.insert('users', {
                 name: document.getElementById('regName').value,
                 cpf: cpf,
                 age: document.getElementById('regAge').value,
@@ -1437,12 +1784,9 @@
                 password: document.getElementById('regPassword').value,
                 platform: document.getElementById('regPlatform').value,
                 active: true
-            };
-
-            users.push(newUser);
-            localStorage.setItem('volante_users', JSON.stringify(users));
+            });
             
-            alert('Cadastro realizado com sucesso!');
+            showNotification('Cadastro realizado com sucesso!', 'success');
             showLogin();
         }
 
@@ -1450,12 +1794,12 @@
             e.preventDefault();
             const email = document.getElementById('resetEmail').value;
             
-            const user = users.find(u => u.email === email);
+            const user = db.findOne('users', { email });
             if (user) {
-                alert(`Nova senha enviada para ${email}!\n(Esta é uma demonstração - em produção seria enviado por email real)`);
+                showNotification(`Nova senha enviada para ${email}!`, 'success');
                 showLogin();
             } else {
-                alert('Email não encontrado no sistema!');
+                showNotification('Email não encontrado no sistema!', 'error');
             }
         }
 
@@ -1503,7 +1847,7 @@
                 }
 
                 // CPF válido - verificar se existe no sistema
-                const user = users.find(u => u.cpf === cpf);
+                const user = db.findOne('users', { cpf });
                 
                 if (user) {
                     // CPF encontrado no sistema
@@ -1584,6 +1928,9 @@
 
             if (tabName === 'analytics') {
                 updateAnalytics();
+            } else if (tabName === 'export') {
+                // Definir período padrão como este mês
+                setQuickPeriod('month');
             }
         }
 
@@ -1611,27 +1958,25 @@
         function handleAddEarning(e) {
             e.preventDefault();
             
-            const earning = {
-                id: Date.now(),
+            const earning = db.insert('earnings', {
                 userId: currentUser.id,
                 platform: document.getElementById('earningPlatform').value,
                 amount: parseFloat(document.getElementById('earningAmount').value),
                 date: document.getElementById('earningDate').value,
                 type: document.getElementById('earningType').value
-            };
-
-            earnings.push(earning);
-            localStorage.setItem('volante_earnings', JSON.stringify(earnings));
+            });
             
             document.getElementById('earningsForm').reset();
             document.getElementById('earningDate').value = new Date().toISOString().split('T')[0];
             
             updateEarningsList();
-            alert('Ganho adicionado com sucesso!');
+            updateDashboardSummary();
+            showNotification('💰 Ganho adicionado com sucesso!', 'success');
         }
 
         function updateEarningsList() {
-            const userEarnings = earnings.filter(e => e.userId === currentUser.id);
+            const userEarnings = db.find('earnings', { userId: currentUser.id })
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
             const list = document.getElementById('earningsList');
             
             if (userEarnings.length === 0) {
@@ -1639,7 +1984,7 @@
                 return;
             }
 
-            list.innerHTML = userEarnings.slice(-5).reverse().map(earning => `
+            list.innerHTML = userEarnings.slice(0, 5).map(earning => `
                 <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                     <div>
                         <p class="font-semibold">${earning.platform} - ${earning.type}</p>
@@ -1662,27 +2007,25 @@
         function handleAddExpense(e) {
             e.preventDefault();
             
-            const expense = {
-                id: Date.now(),
+            const expense = db.insert('expenses', {
                 userId: currentUser.id,
                 category: document.getElementById('expenseCategory').value,
                 amount: parseFloat(document.getElementById('expenseAmount').value),
                 date: document.getElementById('expenseDate').value,
                 description: document.getElementById('expenseDescription').value
-            };
-
-            expenses.push(expense);
-            localStorage.setItem('volante_expenses', JSON.stringify(expenses));
+            });
             
             document.getElementById('expensesForm').reset();
             document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
             
             updateExpensesList();
-            alert('Despesa adicionada com sucesso!');
+            updateDashboardSummary();
+            showNotification('💸 Despesa adicionada com sucesso!', 'success');
         }
 
         function updateExpensesList() {
-            const userExpenses = expenses.filter(e => e.userId === currentUser.id);
+            const userExpenses = db.find('expenses', { userId: currentUser.id })
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
             const list = document.getElementById('expensesList');
             
             if (userExpenses.length === 0) {
@@ -1690,7 +2033,7 @@
                 return;
             }
 
-            list.innerHTML = userExpenses.slice(-5).reverse().map(expense => `
+            list.innerHTML = userExpenses.slice(0, 5).map(expense => `
                 <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
                     <div>
                         <p class="font-semibold">${expense.category}</p>
@@ -1710,53 +2053,54 @@
             `).join('');
         }
 
-        // Funções de cofres
+        // Funções de cofres com validação de saldo
         function handleAddSaving(e) {
             e.preventDefault();
             
-            const saving = {
-                id: Date.now(),
+            const amount = parseFloat(document.getElementById('savingAmount').value);
+            const availableBalance = db.getAvailableBalance(currentUser.id);
+            
+            // Verificar se há saldo suficiente
+            if (amount > availableBalance) {
+                showNotification(
+                    `❌ Saldo insuficiente! Você tem R$ ${availableBalance.toFixed(2)} disponível para guardar.`,
+                    'error'
+                );
+                return;
+            }
+            
+            if (amount <= 0) {
+                showNotification('❌ O valor deve ser maior que zero!', 'error');
+                return;
+            }
+            
+            const saving = db.insert('savings', {
                 userId: currentUser.id,
-                amount: parseFloat(document.getElementById('savingAmount').value),
+                amount: amount,
                 purpose: document.getElementById('savingPurpose').value,
                 goal: parseFloat(document.getElementById('savingGoal').value) || null,
                 notes: document.getElementById('savingNotes').value,
-                date: new Date().toISOString().split('T')[0]
-            };
-
-            savings.push(saving);
-            localStorage.setItem('volante_savings', JSON.stringify(savings));
+                date: new Date().toISOString().split('T')[0],
+                type: 'deposit' // Tipo para identificar depósitos vs retiradas
+            });
             
             document.getElementById('savingsForm').reset();
             updateSavingsSummary();
             updateSavingsHistory();
-            alert('💰 Dinheiro guardado no cofre com sucesso!');
+            updateDashboardSummary();
+            showNotification(`💰 R$ ${amount.toFixed(2)} guardado no cofre com sucesso!`, 'success');
         }
 
         function updateSavingsSummary() {
-            const userSavings = savings.filter(s => s.userId === currentUser.id);
+            const purposeGroups = db.getSavingsByPurpose(currentUser.id);
             const summary = document.getElementById('savingsSummary');
             const totalElement = document.getElementById('totalSavingsAmount');
             
             // Calcular total geral
-            const totalAmount = userSavings.reduce((sum, s) => sum + s.amount, 0);
+            const totalAmount = db.getTotalSavings(currentUser.id);
             if (totalElement) {
                 totalElement.textContent = `R$ ${totalAmount.toFixed(2)}`;
             }
-            
-            // Agrupar por finalidade
-            const purposeGroups = userSavings.reduce((groups, saving) => {
-                const purpose = saving.purpose;
-                if (!groups[purpose]) {
-                    groups[purpose] = { total: 0, goal: null, items: [] };
-                }
-                groups[purpose].total += saving.amount;
-                groups[purpose].items.push(saving);
-                if (saving.goal && saving.goal > groups[purpose].goal) {
-                    groups[purpose].goal = saving.goal;
-                }
-                return groups;
-            }, {});
             
             if (Object.keys(purposeGroups).length === 0) {
                 summary.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">Nenhum cofre criado ainda. Comece guardando dinheiro!</div>';
@@ -1803,7 +2147,8 @@
         }
 
         function updateSavingsHistory() {
-            const userSavings = savings.filter(s => s.userId === currentUser.id);
+            const userSavings = db.find('savings', { userId: currentUser.id })
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
             const history = document.getElementById('savingsHistory');
             
             if (userSavings.length === 0) {
@@ -1811,19 +2156,23 @@
                 return;
             }
 
-            history.innerHTML = userSavings.slice(-10).reverse().map(saving => `
-                <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+            history.innerHTML = userSavings.slice(0, 10).map(saving => `
+                <div class="flex justify-between items-center p-3 ${saving.amount > 0 ? 'bg-blue-50 border-blue-200' : 'bg-green-50 border-green-200'} rounded-lg border">
                     <div>
-                        <p class="font-semibold text-blue-800">${saving.purpose.replace(/[🚨🔧📈🚗🛡️🏖️💼]/g, '').trim()}</p>
+                        <p class="font-semibold ${saving.amount > 0 ? 'text-blue-800' : 'text-green-800'}">${saving.purpose.replace(/[🚨🔧📈🚗🛡️🏖️💼]/g, '').trim()}</p>
                         <p class="text-sm text-gray-600">${new Date(saving.date).toLocaleDateString('pt-BR')}</p>
                         ${saving.notes ? `<p class="text-xs text-gray-500">${saving.notes}</p>` : ''}
                     </div>
                     <div class="text-right">
-                        <span class="font-bold text-blue-600">+ R$ ${saving.amount.toFixed(2)}</span>
+                        <span class="font-bold ${saving.amount > 0 ? 'text-blue-600' : 'text-green-600'}">
+                            ${saving.amount > 0 ? '+' : ''} R$ ${Math.abs(saving.amount).toFixed(2)}
+                        </span>
                         <div class="flex space-x-1 mt-1">
-                            <button onclick="editSaving(${saving.id})" class="text-blue-600 hover:text-blue-800 text-xs">
-                                ✏️
-                            </button>
+                            ${saving.amount > 0 ? `
+                                <button onclick="editSaving(${saving.id})" class="text-blue-600 hover:text-blue-800 text-xs">
+                                    ✏️
+                                </button>
+                            ` : ''}
                             <button onclick="deleteSaving(${saving.id})" class="text-red-600 hover:text-red-800 text-xs">
                                 🗑️
                             </button>
@@ -1834,45 +2183,69 @@
         }
 
         function withdrawFromSaving(purpose) {
-            const userSavings = savings.filter(s => s.userId === currentUser.id && s.purpose === purpose);
-            const total = userSavings.reduce((sum, s) => sum + s.amount, 0);
+            const purposeGroups = db.getSavingsByPurpose(currentUser.id);
+            const purposeData = purposeGroups[purpose];
             
-            if (total <= 0) {
-                alert('Este cofre está vazio!');
+            if (!purposeData || purposeData.total <= 0) {
+                showNotification('Este cofre está vazio!', 'warning');
                 return;
             }
 
-            const amount = prompt(`Cofre: ${purpose.replace(/[🚨🔧📈🚗🛡️🏖️💼]/g, '').trim()}\nSaldo: R$ ${total.toFixed(2)}\n\nQuanto deseja retirar?`);
+            const amount = prompt(`Cofre: ${purpose.replace(/[🚨🔧📈🚗🛡️🏖️💼]/g, '').trim()}\nSaldo: R$ ${purposeData.total.toFixed(2)}\n\nQuanto deseja retirar?`);
             
             if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
                 const withdrawAmount = parseFloat(amount);
                 
-                if (withdrawAmount > total) {
-                    alert('Valor maior que o saldo disponível!');
+                if (withdrawAmount > purposeData.total) {
+                    showNotification('Valor maior que o saldo disponível!', 'error');
                     return;
                 }
 
-                // Criar registro de retirada (valor negativo)
-                const withdrawal = {
-                    id: Date.now(),
+                // Criar registro de retirada (valor negativo) - volta para ganhos
+                const withdrawal = db.insert('savings', {
                     userId: currentUser.id,
                     amount: -withdrawAmount,
                     purpose: purpose,
-                    notes: `Retirada do cofre`,
-                    date: new Date().toISOString().split('T')[0]
-                };
+                    notes: `Retirada do cofre - valor retornado aos ganhos`,
+                    date: new Date().toISOString().split('T')[0],
+                    type: 'withdrawal'
+                });
 
-                savings.push(withdrawal);
-                localStorage.setItem('volante_savings', JSON.stringify(savings));
+                // Criar ganho correspondente à retirada
+                const returnedEarning = db.insert('earnings', {
+                    userId: currentUser.id,
+                    platform: 'Cofre',
+                    amount: withdrawAmount,
+                    date: new Date().toISOString().split('T')[0],
+                    type: 'Retirada do Cofre',
+                    notes: `Valor retirado do cofre: ${purpose.replace(/[🚨🔧📈🚗🛡️🏖️💼]/g, '').trim()}`
+                });
                 
                 updateSavingsSummary();
                 updateSavingsHistory();
-                alert(`💸 R$ ${withdrawAmount.toFixed(2)} retirado do cofre com sucesso!`);
+                updateDashboardSummary();
+                updateEarningsList();
+                showNotification(`💸 R$ ${withdrawAmount.toFixed(2)} retirado do cofre e retornado aos ganhos!`, 'success');
+            }
+        }
+
+        // Função para atualizar resumo do dashboard
+        function updateDashboardSummary() {
+            if (!currentUser) return;
+            
+            const availableBalance = db.getAvailableBalance(currentUser.id);
+            const availableBalanceEl = document.getElementById('availableBalance');
+            
+            if (availableBalanceEl) {
+                availableBalanceEl.textContent = `R$ ${availableBalance.toFixed(2)}`;
+                availableBalanceEl.className = availableBalance >= 0 ? 
+                    'text-lg font-bold text-green-600' : 
+                    'text-lg font-bold text-red-600';
             }
         }
 
         function editSaving(id) {
-            const saving = savings.find(s => s.id === id);
+            const saving = db.findOne('savings', { id });
             if (saving && saving.amount > 0) { // Só editar depósitos, não retiradas
                 document.getElementById('savingAmount').value = saving.amount;
                 document.getElementById('savingPurpose').value = saving.purpose;
@@ -1880,22 +2253,37 @@
                 document.getElementById('savingNotes').value = saving.notes || '';
                 
                 // Remover o registro original
-                savings = savings.filter(s => s.id !== id);
-                localStorage.setItem('volante_savings', JSON.stringify(savings));
+                db.delete('savings', id);
                 updateSavingsSummary();
                 updateSavingsHistory();
+                updateDashboardSummary();
                 
-                alert('Movimentação carregada para edição. Faça as alterações e clique em "Guardar no Cofre".');
+                showNotification('Movimentação carregada para edição. Faça as alterações e clique em "Guardar no Cofre".', 'info');
             }
         }
 
         function deleteSaving(id) {
             if (confirm('Tem certeza que deseja excluir esta movimentação?')) {
-                savings = savings.filter(s => s.id !== id);
-                localStorage.setItem('volante_savings', JSON.stringify(savings));
+                const saving = db.findOne('savings', { id });
+                
+                // Se for uma retirada (valor negativo), criar ganho correspondente
+                if (saving && saving.amount < 0) {
+                    db.insert('earnings', {
+                        userId: currentUser.id,
+                        platform: 'Cofre',
+                        amount: Math.abs(saving.amount),
+                        date: new Date().toISOString().split('T')[0],
+                        type: 'Cancelamento de Retirada',
+                        notes: `Cancelamento da retirada do cofre: ${saving.purpose}`
+                    });
+                    updateEarningsList();
+                }
+                
+                db.delete('savings', id);
                 updateSavingsSummary();
                 updateSavingsHistory();
-                alert('Movimentação excluída com sucesso!');
+                updateDashboardSummary();
+                showNotification('Movimentação excluída com sucesso!', 'success');
             }
         }
 
@@ -1936,25 +2324,25 @@
             const selectedDate = document.getElementById('analyticsMonth').value;
             
             // Filtrar dados baseado no período selecionado
-            const filteredEarnings = filterDataByPeriod(earnings.filter(e => e.userId === currentUser.id), period, selectedDate);
-            const filteredExpenses = filterDataByPeriod(expenses.filter(e => e.userId === currentUser.id), period, selectedDate);
-            const filteredSavings = filterDataByPeriod(savings.filter(s => s.userId === currentUser.id), period, selectedDate);
+            const filteredEarnings = filterDataByPeriod(db.find('earnings', { userId: currentUser.id }), period, selectedDate);
+            const filteredExpenses = filterDataByPeriod(db.find('expenses', { userId: currentUser.id }), period, selectedDate);
+            const filteredSavings = filterDataByPeriod(db.find('savings', { userId: currentUser.id }), period, selectedDate);
 
             const totalEarnings = filteredEarnings.reduce((sum, e) => sum + e.amount, 0);
             const totalExpenses = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
-            const totalSavings = filteredSavings.reduce((sum, s) => sum + s.amount, 0);
-            const netProfit = totalEarnings - totalExpenses - totalSavings;
+            const totalSavingsDeposits = filteredSavings.filter(s => s.amount > 0).reduce((sum, s) => sum + s.amount, 0);
+            const availableBalance = totalEarnings - totalExpenses - totalSavingsDeposits;
 
             document.getElementById('totalEarnings').textContent = `R$ ${totalEarnings.toFixed(2)}`;
             document.getElementById('totalExpenses').textContent = `R$ ${totalExpenses.toFixed(2)}`;
-            document.getElementById('totalSavings').textContent = `R$ ${totalSavings.toFixed(2)}`;
+            document.getElementById('totalSavings').textContent = `R$ ${totalSavingsDeposits.toFixed(2)}`;
             
             const profitElement = document.getElementById('netProfit');
-            profitElement.textContent = `R$ ${netProfit.toFixed(2)}`;
-            profitElement.className = netProfit >= 0 ? 'font-bold text-green-600' : 'font-bold text-red-600';
+            profitElement.textContent = `R$ ${availableBalance.toFixed(2)}`;
+            profitElement.className = availableBalance >= 0 ? 'font-bold text-green-600' : 'font-bold text-red-600';
 
             // Atualizar gráfico
-            updateChart(filteredEarnings, filteredExpenses, filteredSavings);
+            updateChart();
         }
 
         // Função para filtrar dados por período
@@ -1999,16 +2387,20 @@
                 window.monthlyChart.destroy();
             }
 
-            const userEarnings = earnings.filter(e => e.userId === currentUser.id);
-            const userExpenses = expenses.filter(e => e.userId === currentUser.id);
-            const userSavings = savings.filter(s => s.userId === currentUser.id);
+            const period = document.getElementById('analyticsPeriod')?.value || 'monthly';
+            const selectedDate = document.getElementById('analyticsMonth')?.value;
+            
+            // Filtrar dados baseado no período selecionado
+            const filteredEarnings = filterDataByPeriod(db.find('earnings', { userId: currentUser.id }), period, selectedDate);
+            const filteredExpenses = filterDataByPeriod(db.find('expenses', { userId: currentUser.id }), period, selectedDate);
+            const filteredSavings = filterDataByPeriod(db.find('savings', { userId: currentUser.id }), period, selectedDate);
 
-            const totalEarnings = userEarnings.reduce((sum, e) => sum + e.amount, 0);
-            const totalExpenses = userExpenses.reduce((sum, e) => sum + e.amount, 0);
-            const totalSavings = userSavings.reduce((sum, s) => sum + s.amount, 0);
+            const totalEarnings = filteredEarnings.reduce((sum, e) => sum + e.amount, 0);
+            const totalExpenses = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
+            const totalSavingsDeposits = filteredSavings.filter(s => s.amount > 0).reduce((sum, s) => sum + s.amount, 0);
 
             // Se não há dados, mostrar gráfico vazio
-            if (totalEarnings === 0 && totalExpenses === 0 && totalSavings === 0) {
+            if (totalEarnings === 0 && totalExpenses === 0 && totalSavingsDeposits === 0) {
                 window.monthlyChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
@@ -2025,6 +2417,9 @@
                         plugins: {
                             legend: {
                                 display: false
+                            },
+                            tooltip: {
+                                enabled: false
                             }
                         }
                     }
@@ -2039,19 +2434,19 @@
 
             if (totalEarnings > 0) {
                 chartData.push(totalEarnings);
-                chartLabels.push(`Ganhos (R$ ${totalEarnings.toFixed(2)})`);
+                chartLabels.push(`Ganhos`);
                 chartColors.push('#10b981');
             }
 
             if (totalExpenses > 0) {
                 chartData.push(totalExpenses);
-                chartLabels.push(`Despesas (R$ ${totalExpenses.toFixed(2)})`);
+                chartLabels.push(`Despesas`);
                 chartColors.push('#ef4444');
             }
 
-            if (totalSavings > 0) {
-                chartData.push(totalSavings);
-                chartLabels.push(`Cofres (R$ ${totalSavings.toFixed(2)})`);
+            if (totalSavingsDeposits > 0) {
+                chartData.push(totalSavingsDeposits);
+                chartLabels.push(`Cofres`);
                 chartColors.push('#3b82f6');
             }
 
@@ -2062,39 +2457,72 @@
                     datasets: [{
                         data: chartData,
                         backgroundColor: chartColors,
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverBorderWidth: 4,
+                        hoverBorderColor: '#ffffff'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '60%',
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: {
-                                padding: 20,
+                                padding: 15,
                                 usePointStyle: true,
+                                pointStyle: 'circle',
                                 font: {
-                                    size: 12
+                                    size: 11,
+                                    weight: '500'
+                                },
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    return data.labels.map((label, i) => ({
+                                        text: `${label}: R$ ${data.datasets[0].data[i].toFixed(2)}`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        strokeStyle: data.datasets[0].backgroundColor[i],
+                                        lineWidth: 0,
+                                        pointStyle: 'circle',
+                                        hidden: false,
+                                        index: i
+                                    }));
                                 }
                             }
                         },
                         tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#ffffff',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true,
                             callbacks: {
                                 label: function(context) {
                                     const label = context.label || '';
                                     const value = context.parsed;
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                     const percentage = ((value / total) * 100).toFixed(1);
-                                    return `${label}: ${percentage}%`;
+                                    return `${label}: R$ ${value.toFixed(2)} (${percentage}%)`;
                                 }
                             }
                         }
                     },
                     animation: {
                         animateRotate: true,
-                        duration: 1000
+                        animateScale: true,
+                        duration: 1200,
+                        easing: 'easeOutQuart'
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'nearest'
+                    },
+                    onHover: (event, elements) => {
+                        event.native.target.style.cursor = elements.length > 0 ? 'pointer' : 'default';
                     }
                 }
             });
@@ -2242,6 +2670,8 @@
             updateSavingsHistory();
             updateGoalsList();
             loadSupportersList();
+            updateExportCounts();
+            updateDashboardSummary();
         }
 
         // Funções administrativas
@@ -2478,7 +2908,7 @@
 
         // Funções de edição e exclusão
         function editEarning(id) {
-            const earning = earnings.find(e => e.id === id);
+            const earning = db.findOne('earnings', { id });
             if (earning) {
                 document.getElementById('earningPlatform').value = earning.platform;
                 document.getElementById('earningAmount').value = earning.amount;
@@ -2486,25 +2916,25 @@
                 document.getElementById('earningType').value = earning.type;
                 
                 // Remover o ganho original
-                earnings = earnings.filter(e => e.id !== id);
-                localStorage.setItem('volante_earnings', JSON.stringify(earnings));
+                db.delete('earnings', id);
                 updateEarningsList();
+                updateDashboardSummary();
                 
-                alert('Ganho carregado para edição. Faça as alterações e clique em "Adicionar Ganho".');
+                showNotification('Ganho carregado para edição. Faça as alterações e clique em "Adicionar Ganho".', 'info');
             }
         }
 
         function deleteEarning(id) {
             if (confirm('Tem certeza que deseja excluir este ganho?')) {
-                earnings = earnings.filter(e => e.id !== id);
-                localStorage.setItem('volante_earnings', JSON.stringify(earnings));
+                db.delete('earnings', id);
                 updateEarningsList();
-                alert('Ganho excluído com sucesso!');
+                updateDashboardSummary();
+                showNotification('Ganho excluído com sucesso!', 'success');
             }
         }
 
         function editExpense(id) {
-            const expense = expenses.find(e => e.id === id);
+            const expense = db.findOne('expenses', { id });
             if (expense) {
                 document.getElementById('expenseCategory').value = expense.category;
                 document.getElementById('expenseAmount').value = expense.amount;
@@ -2512,20 +2942,20 @@
                 document.getElementById('expenseDescription').value = expense.description;
                 
                 // Remover a despesa original
-                expenses = expenses.filter(e => e.id !== id);
-                localStorage.setItem('volante_expenses', JSON.stringify(expenses));
+                db.delete('expenses', id);
                 updateExpensesList();
+                updateDashboardSummary();
                 
-                alert('Despesa carregada para edição. Faça as alterações e clique em "Adicionar Despesa".');
+                showNotification('Despesa carregada para edição. Faça as alterações e clique em "Adicionar Despesa".', 'info');
             }
         }
 
         function deleteExpense(id) {
             if (confirm('Tem certeza que deseja excluir esta despesa?')) {
-                expenses = expenses.filter(e => e.id !== id);
-                localStorage.setItem('volante_expenses', JSON.stringify(expenses));
+                db.delete('expenses', id);
                 updateExpensesList();
-                alert('Despesa excluída com sucesso!');
+                updateDashboardSummary();
+                showNotification('Despesa excluída com sucesso!', 'success');
             }
         }
 
@@ -2885,6 +3315,498 @@
                 if (messageField) messageField.value = contactSettings.supporterMessage;
             }
         }
+
+        // Sistema de Notificações
+        function showNotification(message, type = 'success', duration = 3000) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+            
+            notification.className = `${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full opacity-0`;
+            notification.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        ✕
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Animar entrada
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full', 'opacity-0');
+            }, 100);
+            
+            // Auto remover
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.classList.add('translate-x-full', 'opacity-0');
+                    setTimeout(() => {
+                        if (notification.parentElement) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, duration);
+        }
+
+        // Funções de Exportação
+        function setQuickPeriod(period) {
+            const today = new Date();
+            const startDate = document.getElementById('exportStartDate');
+            const endDate = document.getElementById('exportEndDate');
+            
+            if (period === 'month') {
+                const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+                const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                startDate.value = firstDay.toISOString().split('T')[0];
+                endDate.value = lastDay.toISOString().split('T')[0];
+            } else if (period === 'all') {
+                startDate.value = '';
+                endDate.value = '';
+            }
+            
+            updateExportCounts();
+        }
+
+        function updateExportCounts() {
+            if (!currentUser) return;
+            
+            const startDate = document.getElementById('exportStartDate')?.value;
+            const endDate = document.getElementById('exportEndDate')?.value;
+            
+            const userEarnings = filterDataByDateRange(earnings.filter(e => e.userId === currentUser.id), startDate, endDate);
+            const userExpenses = filterDataByDateRange(expenses.filter(e => e.userId === currentUser.id), startDate, endDate);
+            const userSavings = filterDataByDateRange(savings.filter(s => s.userId === currentUser.id), startDate, endDate);
+            const userGoals = goals.filter(g => g.userId === currentUser.id);
+            
+            const earningsCountEl = document.getElementById('earningsCount');
+            const expensesCountEl = document.getElementById('expensesCount');
+            const savingsCountEl = document.getElementById('savingsCount');
+            const goalsCountEl = document.getElementById('goalsCount');
+            
+            if (earningsCountEl) earningsCountEl.textContent = `${userEarnings.length} registros`;
+            if (expensesCountEl) expensesCountEl.textContent = `${userExpenses.length} registros`;
+            if (savingsCountEl) savingsCountEl.textContent = `${userSavings.length} registros`;
+            if (goalsCountEl) goalsCountEl.textContent = `${userGoals.length} registros`;
+        }
+
+        function filterDataByDateRange(data, startDate, endDate) {
+            if (!startDate && !endDate) return data;
+            
+            return data.filter(item => {
+                const itemDate = new Date(item.date);
+                const start = startDate ? new Date(startDate) : new Date('1900-01-01');
+                const end = endDate ? new Date(endDate) : new Date('2100-12-31');
+                
+                return itemDate >= start && itemDate <= end;
+            });
+        }
+
+        function exportData(type) {
+            if (!currentUser) {
+                showNotification('Erro: Usuário não logado', 'error');
+                return;
+            }
+            
+            const startDate = document.getElementById('exportStartDate')?.value;
+            const endDate = document.getElementById('exportEndDate')?.value;
+            
+            let data, filename, headers;
+            
+            switch (type) {
+                case 'earnings':
+                    data = filterDataByDateRange(earnings.filter(e => e.userId === currentUser.id), startDate, endDate);
+                    filename = `ganhos_${currentUser.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+                    headers = ['Data', 'Plataforma', 'Tipo', 'Valor'];
+                    data = data.map(e => [
+                        new Date(e.date).toLocaleDateString('pt-BR'),
+                        e.platform,
+                        e.type,
+                        `R$ ${e.amount.toFixed(2)}`
+                    ]);
+                    break;
+                    
+                case 'expenses':
+                    data = filterDataByDateRange(expenses.filter(e => e.userId === currentUser.id), startDate, endDate);
+                    filename = `despesas_${currentUser.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+                    headers = ['Data', 'Categoria', 'Descrição', 'Valor'];
+                    data = data.map(e => [
+                        new Date(e.date).toLocaleDateString('pt-BR'),
+                        e.category,
+                        e.description || '',
+                        `R$ ${e.amount.toFixed(2)}`
+                    ]);
+                    break;
+                    
+                case 'savings':
+                    data = filterDataByDateRange(savings.filter(s => s.userId === currentUser.id), startDate, endDate);
+                    filename = `cofres_${currentUser.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+                    headers = ['Data', 'Finalidade', 'Valor', 'Meta', 'Observações'];
+                    data = data.map(s => [
+                        new Date(s.date).toLocaleDateString('pt-BR'),
+                        s.purpose,
+                        `R$ ${s.amount.toFixed(2)}`,
+                        s.goal ? `R$ ${s.goal.toFixed(2)}` : '',
+                        s.notes || ''
+                    ]);
+                    break;
+                    
+                case 'goals':
+                    data = goals.filter(g => g.userId === currentUser.id);
+                    filename = `metas_${currentUser.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+                    headers = ['Nome', 'Categoria', 'Valor Meta', 'Valor Atual', 'Data Limite', 'Status', 'Descrição'];
+                    data = data.map(g => [
+                        g.name,
+                        g.category,
+                        `R$ ${g.amount.toFixed(2)}`,
+                        `R$ ${g.currentAmount.toFixed(2)}`,
+                        new Date(g.date).toLocaleDateString('pt-BR'),
+                        g.completed ? 'Concluída' : 'Em andamento',
+                        g.description || ''
+                    ]);
+                    break;
+                    
+                case 'complete':
+                    generateCompleteReport();
+                    return;
+                    
+                case 'backup':
+                    generateBackup();
+                    return;
+                    
+                default:
+                    showNotification('Tipo de exportação inválido', 'error');
+                    return;
+            }
+            
+            if (data.length === 0) {
+                showNotification('Nenhum dado encontrado para exportar', 'warning');
+                return;
+            }
+            
+            downloadCSV([headers, ...data], filename);
+            showNotification(`${data.length} registros exportados com sucesso!`, 'success');
+        }
+
+        function downloadCSV(data, filename) {
+            const csvContent = data.map(row => 
+                row.map(field => `"${field}"`).join(',')
+            ).join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function generateCompleteReport() {
+            if (!currentUser) return;
+            
+            const startDate = document.getElementById('exportStartDate')?.value;
+            const endDate = document.getElementById('exportEndDate')?.value;
+            
+            const userEarnings = filterDataByDateRange(earnings.filter(e => e.userId === currentUser.id), startDate, endDate);
+            const userExpenses = filterDataByDateRange(expenses.filter(e => e.userId === currentUser.id), startDate, endDate);
+            const userSavings = filterDataByDateRange(savings.filter(s => s.userId === currentUser.id), startDate, endDate);
+            
+            const totalEarnings = userEarnings.reduce((sum, e) => sum + e.amount, 0);
+            const totalExpenses = userExpenses.reduce((sum, e) => sum + e.amount, 0);
+            const totalSavings = userSavings.reduce((sum, s) => sum + s.amount, 0);
+            const netProfit = totalEarnings - totalExpenses - totalSavings;
+            
+            const period = startDate && endDate ? 
+                `${new Date(startDate).toLocaleDateString('pt-BR')} a ${new Date(endDate).toLocaleDateString('pt-BR')}` :
+                'Todo o período';
+            
+            const reportContent = `
+RELATÓRIO FINANCEIRO COMPLETO
+Usuário: ${currentUser.name}
+Período: ${period}
+Gerado em: ${new Date().toLocaleString('pt-BR')}
+
+========================================
+
+RESUMO FINANCEIRO:
+- Total de Ganhos: R$ ${totalEarnings.toFixed(2)}
+- Total de Despesas: R$ ${totalExpenses.toFixed(2)}
+- Total em Cofres: R$ ${totalSavings.toFixed(2)}
+- Lucro Líquido: R$ ${netProfit.toFixed(2)}
+
+========================================
+
+GANHOS POR PLATAFORMA:
+${getEarningsByPlatform(userEarnings)}
+
+DESPESAS POR CATEGORIA:
+${getExpensesByCategory(userExpenses)}
+
+COFRES POR FINALIDADE:
+${getSavingsByPurpose(userSavings)}
+
+========================================
+Relatório gerado pelo Volante Financeiro
+            `.trim();
+            
+            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8;' });
+            const link = document.createElement('a');
+            const filename = `relatorio_completo_${currentUser.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+            
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Relatório completo gerado com sucesso!', 'success');
+        }
+
+        function getEarningsByPlatform(earnings) {
+            const byPlatform = earnings.reduce((acc, e) => {
+                acc[e.platform] = (acc[e.platform] || 0) + e.amount;
+                return acc;
+            }, {});
+            
+            return Object.entries(byPlatform)
+                .map(([platform, amount]) => `- ${platform}: R$ ${amount.toFixed(2)}`)
+                .join('\n') || 'Nenhum ganho registrado';
+        }
+
+        function getExpensesByCategory(expenses) {
+            const byCategory = expenses.reduce((acc, e) => {
+                acc[e.category] = (acc[e.category] || 0) + e.amount;
+                return acc;
+            }, {});
+            
+            return Object.entries(byCategory)
+                .map(([category, amount]) => `- ${category}: R$ ${amount.toFixed(2)}`)
+                .join('\n') || 'Nenhuma despesa registrada';
+        }
+
+        function getSavingsByPurpose(savings) {
+            const byPurpose = savings.reduce((acc, s) => {
+                acc[s.purpose] = (acc[s.purpose] || 0) + s.amount;
+                return acc;
+            }, {});
+            
+            return Object.entries(byPurpose)
+                .map(([purpose, amount]) => `- ${purpose}: R$ ${amount.toFixed(2)}`)
+                .join('\n') || 'Nenhuma reserva registrada';
+        }
+
+        function generateBackup() {
+            if (!currentUser) return;
+            
+            const backupData = {
+                version: '1.0',
+                timestamp: new Date().toISOString(),
+                user: currentUser,
+                data: {
+                    earnings: earnings.filter(e => e.userId === currentUser.id),
+                    expenses: expenses.filter(e => e.userId === currentUser.id),
+                    savings: savings.filter(s => s.userId === currentUser.id),
+                    goals: goals.filter(g => g.userId === currentUser.id)
+                },
+                settings: {
+                    contact: JSON.parse(localStorage.getItem('volante_contact_settings') || '{}'),
+                    about: JSON.parse(localStorage.getItem('volante_about_info') || '{}')
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            const filename = `backup_volante_${currentUser.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Backup criado com sucesso!', 'success');
+        }
+
+        function importBackup() {
+            const fileInput = document.getElementById('importBackup');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('Selecione um arquivo de backup', 'warning');
+                return;
+            }
+            
+            if (!confirm('⚠️ ATENÇÃO: Importar um backup substituirá TODOS os seus dados atuais. Esta ação não pode ser desfeita. Deseja continuar?')) {
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    if (!backupData.version || !backupData.data) {
+                        throw new Error('Arquivo de backup inválido');
+                    }
+                    
+                    // Restaurar dados
+                    const userId = currentUser.id;
+                    
+                    // Remover dados atuais do usuário
+                    earnings = earnings.filter(e => e.userId !== userId);
+                    expenses = expenses.filter(e => e.userId !== userId);
+                    savings = savings.filter(s => s.userId !== userId);
+                    goals = goals.filter(g => g.userId !== userId);
+                    
+                    // Adicionar dados do backup
+                    earnings.push(...backupData.data.earnings.map(e => ({...e, userId})));
+                    expenses.push(...backupData.data.expenses.map(e => ({...e, userId})));
+                    savings.push(...backupData.data.savings.map(s => ({...s, userId})));
+                    goals.push(...backupData.data.goals.map(g => ({...g, userId})));
+                    
+                    // Salvar no localStorage
+                    localStorage.setItem('volante_earnings', JSON.stringify(earnings));
+                    localStorage.setItem('volante_expenses', JSON.stringify(expenses));
+                    localStorage.setItem('volante_savings', JSON.stringify(savings));
+                    localStorage.setItem('volante_goals', JSON.stringify(goals));
+                    
+                    // Restaurar configurações se existirem
+                    if (backupData.settings?.contact) {
+                        localStorage.setItem('volante_contact_settings', JSON.stringify(backupData.settings.contact));
+                    }
+                    if (backupData.settings?.about) {
+                        localStorage.setItem('volante_about_info', JSON.stringify(backupData.settings.about));
+                    }
+                    
+                    // Atualizar interface
+                    updateDashboard();
+                    
+                    showNotification('Backup importado com sucesso!', 'success');
+                    fileInput.value = '';
+                    
+                } catch (error) {
+                    console.error('Erro ao importar backup:', error);
+                    showNotification('Erro ao importar backup: arquivo inválido', 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // Funções de Busca e Filtro
+        function filterEarnings() {
+            const searchTerm = document.getElementById('searchEarnings').value.toLowerCase();
+            const platformFilter = document.getElementById('filterEarningsPlatform').value;
+            
+            const userEarnings = earnings.filter(e => e.userId === currentUser.id);
+            
+            const filteredEarnings = userEarnings.filter(earning => {
+                const matchesSearch = !searchTerm || 
+                    earning.platform.toLowerCase().includes(searchTerm) ||
+                    earning.type.toLowerCase().includes(searchTerm) ||
+                    earning.amount.toString().includes(searchTerm);
+                
+                const matchesPlatform = !platformFilter || earning.platform === platformFilter;
+                
+                return matchesSearch && matchesPlatform;
+            });
+            
+            displayFilteredEarnings(filteredEarnings);
+        }
+
+        function displayFilteredEarnings(filteredEarnings) {
+            const list = document.getElementById('earningsList');
+            
+            if (filteredEarnings.length === 0) {
+                list.innerHTML = '<p class="text-gray-500">Nenhum ganho encontrado com os filtros aplicados.</p>';
+                return;
+            }
+
+            list.innerHTML = filteredEarnings.slice(-10).reverse().map(earning => `
+                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                    <div>
+                        <p class="font-semibold">${earning.platform} - ${earning.type}</p>
+                        <p class="text-sm text-gray-600">${new Date(earning.date).toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-green-600">R$ ${earning.amount.toFixed(2)}</span>
+                        <button onclick="editEarning(${earning.id})" class="text-blue-600 hover:text-blue-800 text-sm">
+                            ✏️
+                        </button>
+                        <button onclick="deleteEarning(${earning.id})" class="text-red-600 hover:text-red-800 text-sm">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterExpenses() {
+            const searchTerm = document.getElementById('searchExpenses').value.toLowerCase();
+            const categoryFilter = document.getElementById('filterExpensesCategory').value;
+            
+            const userExpenses = expenses.filter(e => e.userId === currentUser.id);
+            
+            const filteredExpenses = userExpenses.filter(expense => {
+                const matchesSearch = !searchTerm || 
+                    expense.category.toLowerCase().includes(searchTerm) ||
+                    (expense.description && expense.description.toLowerCase().includes(searchTerm)) ||
+                    expense.amount.toString().includes(searchTerm);
+                
+                const matchesCategory = !categoryFilter || expense.category === categoryFilter;
+                
+                return matchesSearch && matchesCategory;
+            });
+            
+            displayFilteredExpenses(filteredExpenses);
+        }
+
+        function displayFilteredExpenses(filteredExpenses) {
+            const list = document.getElementById('expensesList');
+            
+            if (filteredExpenses.length === 0) {
+                list.innerHTML = '<p class="text-gray-500">Nenhuma despesa encontrada com os filtros aplicados.</p>';
+                return;
+            }
+
+            list.innerHTML = filteredExpenses.slice(-10).reverse().map(expense => `
+                <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
+                    <div>
+                        <p class="font-semibold">${expense.category}</p>
+                        <p class="text-sm text-gray-600">${expense.description || 'Sem descrição'}</p>
+                        <p class="text-xs text-gray-500">${new Date(expense.date).toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-red-600">R$ ${expense.amount.toFixed(2)}</span>
+                        <button onclick="editExpense(${expense.id})" class="text-blue-600 hover:text-blue-800 text-sm">
+                            ✏️
+                        </button>
+                        <button onclick="deleteExpense(${expense.id})" class="text-red-600 hover:text-red-800 text-sm">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9755933991785444',t:'MTc1NjIzNDg1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9755d9a742a9544d',t:'MTc1NjIzNzc0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
