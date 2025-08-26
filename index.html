@@ -38,6 +38,13 @@
             justify-content: space-between;
         }
 
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+
         .logo-container {
             display: flex;
             align-items: center;
@@ -112,9 +119,13 @@
             to { transform: rotate(360deg); }
         }
 
+        .header-text {
+            text-align: center;
+        }
+
         .header-text h1 {
             font-size: 2.5rem;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
         
         .header-text h1 .volante {
@@ -125,10 +136,15 @@
             color: #16a34a;
         }
 
+        .header-text .app-logo {
+            margin: 10px auto;
+        }
+
         .header-text p {
             color: #22c55e;
             font-size: 1.1rem;
             font-weight: 600;
+            margin-top: 10px;
         }
 
         .dev-logo {
@@ -629,14 +645,14 @@
     <!-- Aplicativo Principal -->
     <div id="main-app" class="container hidden">
         <div class="header">
-            <div class="logo-container">
-                <div class="app-logo">
-                    <div class="volante-logo">
-                        <div class="dollar-center">$</div>
-                    </div>
-                </div>
+            <div class="header-content">
                 <div class="header-text">
                     <h1><span class="volante">Volante</span> <span class="financeiro">Financeiro</span></h1>
+                    <div class="app-logo">
+                        <div class="volante-logo">
+                            <div class="dollar-center">$</div>
+                        </div>
+                    </div>
                     <p>Sistema de Gestão Financeira para Motoristas</p>
                 </div>
             </div>
@@ -1320,7 +1336,9 @@ Wellington Cesar de Oliveira</textarea>
                     
                     if (cpf.length >= 14) { // CPF completo com máscara
                         if (validarCPF(cpf)) {
-                            const usuario = usuarios.find(u => u.cpf === cpf);
+                            // Normalizar CPF para comparação
+                            const cpfLimpo = cpf.replace(/\D/g, '');
+                            const usuario = usuarios.find(u => u.cpf.replace(/\D/g, '') === cpfLimpo);
                             if (usuario) {
                                 cpfStatus.innerHTML = '✅ CPF encontrado! Digite sua senha.';
                                 cpfStatus.style.color = '#16a34a';
@@ -1485,21 +1503,24 @@ Wellington Cesar de Oliveira</textarea>
 
         // Fazer login
         function fazerLogin() {
-            const cpf = document.getElementById('login-cpf').value;
-            const senha = document.getElementById('login-senha').value;
+            const cpf = document.getElementById('login-cpf').value.trim();
+            const senha = document.getElementById('login-senha').value.trim();
 
             if (!cpf || !senha) {
                 mostrarAviso('❌ Por favor, preencha CPF e senha!', 'danger');
                 return;
             }
 
+            // Normalizar CPF (remover pontos e traços para comparação)
+            const cpfLimpo = cpf.replace(/\D/g, '');
+            
             if (!validarCPF(cpf)) {
                 mostrarAviso('❌ CPF inválido! Verifique o formato: 000.000.000-00', 'danger');
                 return;
             }
 
-            // Verificar se usuário existe
-            const usuarioExiste = usuarios.find(u => u.cpf === cpf);
+            // Verificar se usuário existe (comparar CPF sem formatação)
+            const usuarioExiste = usuarios.find(u => u.cpf.replace(/\D/g, '') === cpfLimpo);
             
             if (!usuarioExiste) {
                 mostrarAviso('❌ CPF não cadastrado! Para acessar o sistema, você precisa criar uma conta primeiro. Clique em "Criar Conta" para se cadastrar.', 'warning');
@@ -1576,14 +1597,15 @@ Wellington Cesar de Oliveira</textarea>
                 return;
             }
 
-            // Verificar se CPF já existe
-            if (usuarios.find(u => u.cpf === cpf)) {
+            // Verificar se CPF já existe (normalizar para comparação)
+            const cpfLimpo = cpf.replace(/\D/g, '');
+            if (usuarios.find(u => u.cpf.replace(/\D/g, '') === cpfLimpo)) {
                 mostrarAviso('❌ Este CPF já está cadastrado! Se você já tem uma conta, use a opção "Entrar" para fazer login.', 'warning');
                 return;
             }
 
             // Verificar se email já existe
-            if (usuarios.find(u => u.email === email)) {
+            if (usuarios.find(u => u.email.toLowerCase() === email.toLowerCase())) {
                 mostrarAviso('❌ Este e-mail já está cadastrado! Use um e-mail diferente ou faça login se já tem uma conta.', 'warning');
                 return;
             }
@@ -1773,13 +1795,35 @@ Wellington Cesar de Oliveira</textarea>
 
         // Adicionar receita
         function adicionarReceita() {
+            const app = document.getElementById('receita-app').value;
+            const valor = parseFloat(document.getElementById('receita-valor').value);
+            const data = document.getElementById('receita-data').value;
+            const corridas = parseInt(document.getElementById('receita-corridas').value);
+            const observacoes = document.getElementById('receita-obs').value;
+
+            // Validações
+            if (!app || !valor || !data || !corridas) {
+                mostrarAviso('❌ Por favor, preencha todos os campos obrigatórios!', 'warning');
+                return;
+            }
+
+            if (valor <= 0) {
+                mostrarAviso('❌ O valor deve ser maior que zero!', 'warning');
+                return;
+            }
+
+            if (corridas <= 0) {
+                mostrarAviso('❌ O número de corridas deve ser maior que zero!', 'warning');
+                return;
+            }
+
             const receita = {
                 id: Date.now(),
-                app: document.getElementById('receita-app').value,
-                valor: parseFloat(document.getElementById('receita-valor').value),
-                data: document.getElementById('receita-data').value,
-                corridas: parseInt(document.getElementById('receita-corridas').value),
-                observacoes: document.getElementById('receita-obs').value,
+                app: app,
+                valor: valor,
+                data: data,
+                corridas: corridas,
+                observacoes: observacoes,
                 tipo: 'receita'
             };
 
@@ -1792,16 +1836,39 @@ Wellington Cesar de Oliveira</textarea>
             atualizarDashboard();
             atualizarListas();
             verificarAlertas();
+
+            mostrarAviso(`✅ Receita adicionada com sucesso! ${app}: R$ ${valor.toFixed(2)} (${corridas} corridas)`, 'success');
         }
 
         // Adicionar despesa
         function adicionarDespesa() {
+            const categoria = document.getElementById('despesa-categoria').value;
+            const valor = parseFloat(document.getElementById('despesa-valor').value);
+            const data = document.getElementById('despesa-data').value;
+            const descricao = document.getElementById('despesa-descricao').value;
+
+            // Validações
+            if (!categoria || !valor || !data || !descricao) {
+                mostrarAviso('❌ Por favor, preencha todos os campos obrigatórios!', 'warning');
+                return;
+            }
+
+            if (valor <= 0) {
+                mostrarAviso('❌ O valor deve ser maior que zero!', 'warning');
+                return;
+            }
+
+            if (descricao.trim().length < 3) {
+                mostrarAviso('❌ A descrição deve ter pelo menos 3 caracteres!', 'warning');
+                return;
+            }
+
             const despesa = {
                 id: Date.now(),
-                categoria: document.getElementById('despesa-categoria').value,
-                valor: parseFloat(document.getElementById('despesa-valor').value),
-                data: document.getElementById('despesa-data').value,
-                descricao: document.getElementById('despesa-descricao').value,
+                categoria: categoria,
+                valor: valor,
+                data: data,
+                descricao: descricao.trim(),
                 tipo: 'despesa'
             };
 
@@ -1814,6 +1881,8 @@ Wellington Cesar de Oliveira</textarea>
             atualizarDashboard();
             atualizarListas();
             verificarAlertas();
+
+            mostrarAviso(`✅ Despesa adicionada com sucesso! ${categoria}: R$ ${valor.toFixed(2)} - ${descricao}`, 'success');
         }
 
         // Salvar metas
@@ -1954,7 +2023,21 @@ Wellington Cesar de Oliveira</textarea>
 
         // Remover item
         function removerItem(tipo, id) {
-            if (confirm('Tem certeza que deseja remover este item?')) {
+            let item;
+            if (tipo === 'receitas') {
+                item = receitas.find(r => r.id === id);
+            } else {
+                item = despesas.find(d => d.id === id);
+            }
+            
+            if (!item) return;
+            
+            const tipoTexto = tipo === 'receitas' ? 'receita' : 'despesa';
+            const descricao = tipo === 'receitas' 
+                ? `${item.app} - R$ ${item.valor.toFixed(2)}`
+                : `${item.categoria} - R$ ${item.valor.toFixed(2)}`;
+            
+            if (confirm(`Tem certeza que deseja remover esta ${tipoTexto}?\n\n${descricao}\n\nEsta ação não pode ser desfeita.`)) {
                 if (tipo === 'receitas') {
                     receitas = receitas.filter(r => r.id !== id);
                 } else {
@@ -1965,6 +2048,8 @@ Wellington Cesar de Oliveira</textarea>
                 atualizarDashboard();
                 atualizarListas();
                 verificarAlertas();
+                
+                mostrarAviso(`✅ ${tipoTexto.charAt(0).toUpperCase() + tipoTexto.slice(1)} removida com sucesso!`, 'success');
             }
         }
 
@@ -2367,19 +2452,47 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         function salvarUsuarioAdmin() {
-            const nome = document.getElementById('admin-nome').value;
-            const cpf = document.getElementById('admin-cpf').value;
-            const email = document.getElementById('admin-email').value;
-            const whatsapp = document.getElementById('admin-whatsapp').value;
-            const senha = document.getElementById('admin-senha').value;
+            const nome = document.getElementById('admin-nome').value.trim();
+            const cpf = document.getElementById('admin-cpf').value.trim();
+            const email = document.getElementById('admin-email').value.trim();
+            const whatsapp = document.getElementById('admin-whatsapp').value.trim();
+            const senha = document.getElementById('admin-senha').value.trim();
 
-            if (!validarCPF(cpf)) {
-                alert('❌ CPF inválido!');
+            // Validações
+            if (!nome || !cpf || !email || !whatsapp || !senha) {
+                mostrarAviso('❌ Por favor, preencha todos os campos!', 'warning');
                 return;
             }
 
-            if (usuarios.find(u => u.cpf === cpf)) {
-                alert('❌ CPF já cadastrado!');
+            if (nome.length < 3) {
+                mostrarAviso('❌ Nome deve ter pelo menos 3 caracteres!', 'warning');
+                return;
+            }
+
+            if (!validarCPF(cpf)) {
+                mostrarAviso('❌ CPF inválido! Verifique o formato.', 'danger');
+                return;
+            }
+
+            const cpfLimpo = cpf.replace(/\D/g, '');
+            if (usuarios.find(u => u.cpf.replace(/\D/g, '') === cpfLimpo)) {
+                mostrarAviso('❌ Este CPF já está cadastrado no sistema!', 'warning');
+                return;
+            }
+
+            if (usuarios.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+                mostrarAviso('❌ Este e-mail já está cadastrado no sistema!', 'warning');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                mostrarAviso('❌ E-mail inválido! Digite um e-mail válido.', 'danger');
+                return;
+            }
+
+            if (senha.length < 6) {
+                mostrarAviso('❌ A senha deve ter pelo menos 6 caracteres!', 'warning');
                 return;
             }
 
@@ -2397,7 +2510,7 @@ Wellington Cesar de Oliveira</textarea>
             usuarios.push(novoUsuario);
             localStorage.setItem('usuarios', JSON.stringify(usuarios));
 
-            mostrarAviso(`✅ Usuário criado com sucesso! Senha: ${senha} - Copie esta senha para enviar ao usuário.`, 'success');
+            mostrarAviso(`✅ Usuário criado com sucesso! Nome: ${nome} | CPF: ${cpf} | Senha: ${senha} - Envie estas informações ao usuário via WhatsApp: ${whatsapp}`, 'success');
             
             cancelarNovoUsuario();
             carregarUsuariosAdmin();
@@ -2432,9 +2545,11 @@ Wellington Cesar de Oliveira</textarea>
         function toggleUsuario(id) {
             const usuario = usuarios.find(u => u.id === id);
             if (usuario) {
+                const acao = usuario.ativo ? 'desativado' : 'ativado';
                 usuario.ativo = !usuario.ativo;
                 localStorage.setItem('usuarios', JSON.stringify(usuarios));
                 carregarUsuariosAdmin();
+                mostrarAviso(`✅ Usuário ${usuario.nome} foi ${acao} com sucesso!`, 'success');
             }
         }
 
@@ -2450,15 +2565,19 @@ Wellington Cesar de Oliveira</textarea>
                 usuario.senha = novaSenha;
                 localStorage.setItem('usuarios', JSON.stringify(usuarios));
                 
-                alert(`✅ Nova senha gerada para ${usuario.nome}:\n\n${novaSenha}\n\nCopie esta senha para enviar ao usuário via WhatsApp: ${usuario.whatsapp}`);
+                mostrarAviso(`✅ Nova senha gerada para ${usuario.nome}: ${novaSenha} - Envie via WhatsApp: ${usuario.whatsapp}`, 'success');
             }
         }
 
         function excluirUsuario(id) {
-            if (confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
+            const usuario = usuarios.find(u => u.id === id);
+            if (!usuario) return;
+            
+            if (confirm(`Tem certeza que deseja excluir o usuário "${usuario.nome}"? Esta ação não pode ser desfeita e todos os dados do usuário serão perdidos.`)) {
                 usuarios = usuarios.filter(u => u.id !== id);
                 localStorage.setItem('usuarios', JSON.stringify(usuarios));
                 carregarUsuariosAdmin();
+                mostrarAviso(`✅ Usuário ${usuario.nome} foi excluído com sucesso!`, 'success');
             }
         }
 
@@ -2514,15 +2633,31 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         function salvarApoiador() {
-            const nome = document.getElementById('apoiador-nome').value;
+            const nome = document.getElementById('apoiador-nome').value.trim();
             const tipo = document.getElementById('apoiador-tipo').value;
-            const logo = document.getElementById('apoiador-logo').value;
-            const descricao = document.getElementById('apoiador-descricao').value;
+            const logo = document.getElementById('apoiador-logo').value.trim();
+            const descricao = document.getElementById('apoiador-descricao').value.trim();
+            
+            // Validações
+            if (!nome || !tipo || !descricao) {
+                mostrarAviso('❌ Por favor, preencha todos os campos obrigatórios!', 'warning');
+                return;
+            }
+
+            if (nome.length < 2) {
+                mostrarAviso('❌ Nome deve ter pelo menos 2 caracteres!', 'warning');
+                return;
+            }
+
+            if (descricao.length < 10) {
+                mostrarAviso('❌ Descrição deve ter pelo menos 10 caracteres!', 'warning');
+                return;
+            }
             
             // Verificar se há imagem carregada
             const preview = document.getElementById('apoiador-logo-preview');
             const img = preview.querySelector('img');
-            const logoFinal = img ? img.src : logo;
+            const logoFinal = img ? img.src : (logo || '🏢');
 
             const novoApoiador = {
                 id: Date.now(),
@@ -2536,7 +2671,7 @@ Wellington Cesar de Oliveira</textarea>
             apoiadores.push(novoApoiador);
             localStorage.setItem('apoiadores', JSON.stringify(apoiadores));
 
-            alert('✅ Apoiador adicionado com sucesso!');
+            mostrarAviso(`✅ Apoiador "${nome}" adicionado com sucesso como ${tipo}!`, 'success');
             
             cancelarNovoApoiador();
             carregarApoiadoresAdmin();
@@ -2568,24 +2703,39 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         function excluirApoiador(id) {
-            if (confirm('Tem certeza que deseja excluir este apoiador?')) {
+            const apoiador = apoiadores.find(a => a.id === id);
+            if (!apoiador) return;
+            
+            if (confirm(`Tem certeza que deseja excluir o apoiador "${apoiador.nome}"? Esta ação não pode ser desfeita.`)) {
                 apoiadores = apoiadores.filter(a => a.id !== id);
                 localStorage.setItem('apoiadores', JSON.stringify(apoiadores));
                 carregarApoiadoresAdmin();
+                mostrarAviso(`✅ Apoiador "${apoiador.nome}" foi excluído com sucesso!`, 'success');
             }
         }
 
         function salvarSobre() {
-            const projeto = document.getElementById('sobre-projeto').value;
-            const escola = document.getElementById('sobre-escola').value;
-            const equipe = document.getElementById('sobre-equipe').value;
-            const professores = document.getElementById('sobre-professores').value;
-            const versao = document.getElementById('sobre-versao').value;
+            const projeto = document.getElementById('sobre-projeto').value.trim();
+            const escola = document.getElementById('sobre-escola').value.trim();
+            const equipe = document.getElementById('sobre-equipe').value.trim();
+            const professores = document.getElementById('sobre-professores').value.trim();
+            const versao = document.getElementById('sobre-versao').value.trim();
+            
+            // Validações
+            if (!projeto || !escola || !equipe || !professores || !versao) {
+                mostrarAviso('❌ Por favor, preencha todos os campos!', 'warning');
+                return;
+            }
+
+            if (projeto.length < 50) {
+                mostrarAviso('❌ A descrição do projeto deve ter pelo menos 50 caracteres!', 'warning');
+                return;
+            }
             
             const sobreInfo = { projeto, escola, equipe, professores, versao };
             localStorage.setItem('sobre', JSON.stringify(sobreInfo));
             
-            alert('✅ Informações salvas com sucesso!');
+            mostrarAviso('✅ Informações sobre o sistema foram salvas com sucesso!', 'success');
         }
 
         // Configurar uploads de imagem
@@ -2801,5 +2951,5 @@ Wellington Cesar de Oliveira</textarea>
             }
         };
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97549624b059f217',t:'MTc1NjIyNDQ5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97549d7dc2b3f217',t:'MTc1NjIyNDc5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
