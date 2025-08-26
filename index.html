@@ -246,29 +246,32 @@
         <!-- Navegação -->
         <nav class="bg-white border-b">
             <div class="flex overflow-x-auto">
-                <button onclick="showTab('earnings')" class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-green-600 text-green-600">
-                    Ganhos
+                <button onclick="showTab('dashboard')" class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-green-600 text-green-600">
+                    📊 Dashboard
+                </button>
+                <button onclick="showTab('earnings')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    💰 Ganhos
                 </button>
                 <button onclick="showTab('expenses')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
-                    Despesas
+                    💸 Despesas
                 </button>
                 <button onclick="showTab('savings')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
-                    Cofres
+                    🏦 Cofres
                 </button>
                 <button onclick="showTab('analytics')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
-                    Análises
+                    📈 Análises
                 </button>
                 <button onclick="showTab('goals')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
-                    Metas
+                    🎯 Metas
                 </button>
                 <button onclick="showTab('supporters')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
-                    Apoiadores
+                    🤝 Apoiadores
                 </button>
                 <button onclick="showTab('about')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
-                    Sobre
+                    ℹ️ Sobre
                 </button>
                 <button onclick="showTab('export')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
-                    Exportar
+                    📤 Exportar
                 </button>
             </div>
         </nav>
@@ -280,6 +283,126 @@
 
         <!-- Conteúdo das Abas -->
         <div class="p-4">
+            <!-- Aba Dashboard Principal -->
+            <div id="dashboardTab" class="tab-content">
+                <!-- Cards de Resumo -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <!-- Card Ganhos -->
+                    <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-100 text-sm">Total Ganhos</p>
+                                <p class="text-2xl font-bold" id="dashTotalEarnings">R$ 0,00</p>
+                                <p class="text-green-100 text-xs" id="dashEarningsCount">0 registros</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Despesas -->
+                    <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-6 text-white shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-red-100 text-sm">Total Despesas</p>
+                                <p class="text-2xl font-bold" id="dashTotalExpenses">R$ 0,00</p>
+                                <p class="text-red-100 text-xs" id="dashExpensesCount">0 registros</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Cofres -->
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-blue-100 text-sm">Total em Cofres</p>
+                                <p class="text-2xl font-bold" id="dashTotalSavings">R$ 0,00</p>
+                                <p class="text-blue-100 text-xs" id="dashSavingsCount">0 cofres</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                                    <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Saldo Disponível -->
+                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-100 text-sm">Saldo Disponível</p>
+                                <p class="text-2xl font-bold" id="dashAvailableBalance">R$ 0,00</p>
+                                <p class="text-purple-100 text-xs">Para usar ou guardar</p>
+                            </div>
+                            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico e Atividades Recentes -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Gráfico de Visão Geral -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">📊 Visão Geral - Este Mês</h3>
+                        <div class="relative h-64">
+                            <canvas id="dashboardChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Atividades Recentes -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">🕒 Atividades Recentes</h3>
+                        <div id="recentActivities" class="space-y-3 max-h-64 overflow-y-auto">
+                            <!-- Atividades serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metas e Plataformas -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Metas em Progresso -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">🎯 Metas em Progresso</h3>
+                            <button onclick="showTab('goals')" class="text-purple-600 hover:text-purple-800 text-sm">
+                                Ver todas →
+                            </button>
+                        </div>
+                        <div id="dashGoalsProgress" class="space-y-3">
+                            <!-- Metas serão carregadas aqui -->
+                        </div>
+                    </div>
+
+                    <!-- Ganhos por Plataforma -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">🚗 Ganhos por Plataforma</h3>
+                            <button onclick="showTab('earnings')" class="text-green-600 hover:text-green-800 text-sm">
+                                Ver detalhes →
+                            </button>
+                        </div>
+                        <div id="dashPlatformEarnings" class="space-y-3">
+                            <!-- Plataformas serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Aba Ganhos -->
             <div id="earningsTab" class="tab-content">
                 <div class="bg-white rounded-lg shadow p-6 mb-6">
@@ -801,7 +924,7 @@
             <div id="aboutTab" class="tab-content hidden">
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="text-center mb-8">
-                        <div class="w-20 h-20 mx-auto mb-4 bg-green-600 rounded-full flex items-center justify-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-green-600 rounded-full flex items-center justify-center" id="aboutPageLogo">
                             <span class="text-white font-bold text-2xl">$</span>
                         </div>
                         <h2 class="text-2xl font-bold text-green-800 mb-2">Volante Financeiro</h2>
@@ -1017,6 +1140,27 @@
                                         Escolher Imagem
                                     </button>
                                     <p class="text-xs text-gray-500">Formatos: JPG, PNG, GIF (máx. 2MB)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3">Logo Volante Financeiro (Aba Sobre)</h3>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center" id="aboutLogoPreview">
+                                    <span class="text-white font-bold text-2xl">$</span>
+                                </div>
+                                <div>
+                                    <input type="file" id="aboutLogoInput" accept="image/png,image/jpeg" class="hidden">
+                                    <button onclick="document.getElementById('aboutLogoInput').click()" 
+                                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-2 block">
+                                        Escolher Logo PNG/JPEG
+                                    </button>
+                                    <button onclick="saveAboutLogo()" id="saveAboutLogoBtn" 
+                                            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-2 block disabled:bg-gray-400" disabled>
+                                        Salvar Logo da Aba Sobre
+                                    </button>
+                                    <p class="text-xs text-gray-500">Formatos: PNG, JPEG (máx. 2MB) - Aparecerá na aba Sobre</p>
                                 </div>
                             </div>
                         </div>
@@ -1420,6 +1564,7 @@
             // Upload de imagens
             document.getElementById('appLogoInput').addEventListener('change', handleAppLogoUpload);
             document.getElementById('devLogoInput').addEventListener('change', handleDevLogoUpload);
+            document.getElementById('aboutLogoInput').addEventListener('change', handleAboutLogoUpload);
         });
 
 
@@ -2303,8 +2448,16 @@
             
             summaryTitle.textContent = titles[period] || 'Resumo';
             
-            // Mostrar/esconder seletor de mês baseado no período
-            if (period === 'yearly') {
+            // Configurar seletor baseado no período
+            if (period === 'daily') {
+                monthInput.type = 'date';
+                monthInput.placeholder = '';
+                monthInput.value = new Date().toISOString().split('T')[0];
+            } else if (period === 'weekly') {
+                monthInput.type = 'date';
+                monthInput.placeholder = 'Selecione uma data da semana';
+                monthInput.value = new Date().toISOString().split('T')[0];
+            } else if (period === 'yearly') {
                 monthInput.type = 'number';
                 monthInput.placeholder = 'Ano (ex: 2024)';
                 monthInput.value = new Date().getFullYear();
@@ -2351,22 +2504,26 @@
             
             return data.filter(item => {
                 const itemDate = new Date(item.date);
-                const selected = new Date(selectedDate);
                 
                 switch (period) {
                     case 'daily':
-                        return itemDate.toDateString() === selected.toDateString();
+                        const selected = new Date(selectedDate);
+                        return itemDate.getFullYear() === selected.getFullYear() &&
+                               itemDate.getMonth() === selected.getMonth() &&
+                               itemDate.getDate() === selected.getDate();
                     
                     case 'weekly':
-                        const weekStart = new Date(selected);
-                        weekStart.setDate(selected.getDate() - selected.getDay());
+                        const weekSelected = new Date(selectedDate);
+                        const weekStart = new Date(weekSelected);
+                        weekStart.setDate(weekSelected.getDate() - weekSelected.getDay());
                         const weekEnd = new Date(weekStart);
                         weekEnd.setDate(weekStart.getDate() + 6);
                         return itemDate >= weekStart && itemDate <= weekEnd;
                     
                     case 'monthly':
-                        return itemDate.getFullYear() === selected.getFullYear() && 
-                               itemDate.getMonth() === selected.getMonth();
+                        const monthSelected = new Date(selectedDate);
+                        return itemDate.getFullYear() === monthSelected.getFullYear() && 
+                               itemDate.getMonth() === monthSelected.getMonth();
                     
                     case 'yearly':
                         const year = parseInt(selectedDate);
@@ -2672,6 +2829,290 @@
             loadSupportersList();
             updateExportCounts();
             updateDashboardSummary();
+            updateMainDashboard();
+        }
+
+        // Função para atualizar dashboard principal
+        function updateMainDashboard() {
+            if (!currentUser) return;
+
+            const userEarnings = db.find('earnings', { userId: currentUser.id });
+            const userExpenses = db.find('expenses', { userId: currentUser.id });
+            const userSavings = db.find('savings', { userId: currentUser.id });
+            const userGoals = db.find('goals', { userId: currentUser.id });
+
+            const totalEarnings = userEarnings.reduce((sum, e) => sum + e.amount, 0);
+            const totalExpenses = userExpenses.reduce((sum, e) => sum + e.amount, 0);
+            const totalSavingsDeposits = userSavings.filter(s => s.amount > 0).reduce((sum, s) => sum + s.amount, 0);
+            const availableBalance = totalEarnings - totalExpenses - totalSavingsDeposits;
+
+            // Atualizar cards
+            document.getElementById('dashTotalEarnings').textContent = `R$ ${totalEarnings.toFixed(2)}`;
+            document.getElementById('dashEarningsCount').textContent = `${userEarnings.length} registros`;
+            
+            document.getElementById('dashTotalExpenses').textContent = `R$ ${totalExpenses.toFixed(2)}`;
+            document.getElementById('dashExpensesCount').textContent = `${userExpenses.length} registros`;
+            
+            document.getElementById('dashTotalSavings').textContent = `R$ ${totalSavingsDeposits.toFixed(2)}`;
+            const savingsGroups = db.getSavingsByPurpose(currentUser.id);
+            document.getElementById('dashSavingsCount').textContent = `${Object.keys(savingsGroups).length} cofres`;
+            
+            const balanceElement = document.getElementById('dashAvailableBalance');
+            balanceElement.textContent = `R$ ${availableBalance.toFixed(2)}`;
+            balanceElement.className = availableBalance >= 0 ? 'text-2xl font-bold' : 'text-2xl font-bold text-red-200';
+
+            // Atualizar gráfico do dashboard
+            updateDashboardChart();
+            
+            // Atualizar atividades recentes
+            updateRecentActivities();
+            
+            // Atualizar metas em progresso
+            updateDashGoalsProgress();
+            
+            // Atualizar ganhos por plataforma
+            updateDashPlatformEarnings();
+        }
+
+        function updateDashboardChart() {
+            const ctx = document.getElementById('dashboardChart');
+            if (!ctx) return;
+            
+            // Destruir gráfico existente se houver
+            if (window.dashChart) {
+                window.dashChart.destroy();
+            }
+
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthlyEarnings = filterDataByPeriod(db.find('earnings', { userId: currentUser.id }), 'monthly', currentMonth);
+            const monthlyExpenses = filterDataByPeriod(db.find('expenses', { userId: currentUser.id }), 'monthly', currentMonth);
+            const monthlySavings = filterDataByPeriod(db.find('savings', { userId: currentUser.id }), 'monthly', currentMonth);
+
+            const totalEarnings = monthlyEarnings.reduce((sum, e) => sum + e.amount, 0);
+            const totalExpenses = monthlyExpenses.reduce((sum, e) => sum + e.amount, 0);
+            const totalSavingsDeposits = monthlySavings.filter(s => s.amount > 0).reduce((sum, s) => sum + s.amount, 0);
+
+            if (totalEarnings === 0 && totalExpenses === 0 && totalSavingsDeposits === 0) {
+                ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+                const context = ctx.getContext('2d');
+                context.font = '16px Arial';
+                context.fillStyle = '#9CA3AF';
+                context.textAlign = 'center';
+                context.fillText('Nenhum dado este mês', ctx.width / 2, ctx.height / 2);
+                return;
+            }
+
+            const chartData = [];
+            const chartLabels = [];
+            const chartColors = [];
+
+            if (totalEarnings > 0) {
+                chartData.push(totalEarnings);
+                chartLabels.push('Ganhos');
+                chartColors.push('#10b981');
+            }
+
+            if (totalExpenses > 0) {
+                chartData.push(totalExpenses);
+                chartLabels.push('Despesas');
+                chartColors.push('#ef4444');
+            }
+
+            if (totalSavingsDeposits > 0) {
+                chartData.push(totalSavingsDeposits);
+                chartLabels.push('Cofres');
+                chartColors.push('#3b82f6');
+            }
+
+            window.dashChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        data: chartData,
+                        backgroundColor: chartColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                usePointStyle: true,
+                                font: { size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: R$ ${value.toFixed(2)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateRecentActivities() {
+            const container = document.getElementById('recentActivities');
+            if (!container) return;
+
+            const allActivities = [];
+            
+            // Adicionar ganhos recentes
+            const recentEarnings = db.find('earnings', { userId: currentUser.id })
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 3);
+            
+            recentEarnings.forEach(earning => {
+                allActivities.push({
+                    type: 'earning',
+                    date: earning.date,
+                    description: `Ganho: ${earning.platform} - ${earning.type}`,
+                    amount: earning.amount,
+                    color: 'text-green-600',
+                    icon: '💰'
+                });
+            });
+
+            // Adicionar despesas recentes
+            const recentExpenses = db.find('expenses', { userId: currentUser.id })
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 3);
+            
+            recentExpenses.forEach(expense => {
+                allActivities.push({
+                    type: 'expense',
+                    date: expense.date,
+                    description: `Despesa: ${expense.category}`,
+                    amount: expense.amount,
+                    color: 'text-red-600',
+                    icon: '💸'
+                });
+            });
+
+            // Adicionar movimentações de cofres recentes
+            const recentSavings = db.find('savings', { userId: currentUser.id })
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 2);
+            
+            recentSavings.forEach(saving => {
+                allActivities.push({
+                    type: 'saving',
+                    date: saving.date,
+                    description: saving.amount > 0 ? `Guardado no cofre: ${saving.purpose}` : `Retirado do cofre: ${saving.purpose}`,
+                    amount: Math.abs(saving.amount),
+                    color: saving.amount > 0 ? 'text-blue-600' : 'text-green-600',
+                    icon: saving.amount > 0 ? '🏦' : '💸'
+                });
+            });
+
+            // Ordenar por data e pegar os 5 mais recentes
+            allActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const recentActivities = allActivities.slice(0, 5);
+
+            if (recentActivities.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma atividade recente</p>';
+                return;
+            }
+
+            container.innerHTML = recentActivities.map(activity => `
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xl">${activity.icon}</span>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">${activity.description}</p>
+                            <p class="text-xs text-gray-500">${new Date(activity.date).toLocaleDateString('pt-BR')}</p>
+                        </div>
+                    </div>
+                    <span class="font-semibold ${activity.color}">R$ ${activity.amount.toFixed(2)}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateDashGoalsProgress() {
+            const container = document.getElementById('dashGoalsProgress');
+            if (!container) return;
+
+            const userGoals = db.find('goals', { userId: currentUser.id })
+                .filter(g => !g.completed)
+                .slice(0, 3);
+
+            if (userGoals.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma meta em progresso</p>';
+                return;
+            }
+
+            container.innerHTML = userGoals.map(goal => {
+                const progress = (goal.currentAmount / goal.amount) * 100;
+                const daysLeft = Math.ceil((new Date(goal.date) - new Date()) / (1000 * 60 * 60 * 24));
+                
+                return `
+                    <div class="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-medium text-purple-800">${goal.name}</h4>
+                            <span class="text-xs text-purple-600">${daysLeft}d restantes</span>
+                        </div>
+                        <div class="mb-2">
+                            <div class="flex justify-between text-xs text-gray-600 mb-1">
+                                <span>R$ ${goal.currentAmount.toFixed(2)}</span>
+                                <span>R$ ${goal.amount.toFixed(2)}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-600 h-2 rounded-full" style="width: ${Math.min(progress, 100)}%"></div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600">${progress.toFixed(1)}% concluído</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateDashPlatformEarnings() {
+            const container = document.getElementById('dashPlatformEarnings');
+            if (!container) return;
+
+            const userEarnings = db.find('earnings', { userId: currentUser.id });
+            
+            if (userEarnings.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum ganho registrado</p>';
+                return;
+            }
+
+            const platformTotals = userEarnings.reduce((acc, earning) => {
+                acc[earning.platform] = (acc[earning.platform] || 0) + earning.amount;
+                return acc;
+            }, {});
+
+            const sortedPlatforms = Object.entries(platformTotals)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 4);
+
+            const totalEarnings = Object.values(platformTotals).reduce((sum, amount) => sum + amount, 0);
+
+            container.innerHTML = sortedPlatforms.map(([platform, amount]) => {
+                const percentage = ((amount / totalEarnings) * 100).toFixed(1);
+                
+                return `
+                    <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                        <div>
+                            <h4 class="font-medium text-green-800">${platform}</h4>
+                            <p class="text-xs text-green-600">${percentage}% do total</p>
+                        </div>
+                        <span class="font-semibold text-green-600">R$ ${amount.toFixed(2)}</span>
+                    </div>
+                `;
+            }).join('');
         }
 
         // Funções administrativas
@@ -2865,6 +3306,7 @@
         }
 
         let tempDevLogo = null;
+        let tempAboutLogo = null;
 
         function handleDevLogoUpload(e) {
             const file = e.target.files[0];
@@ -2903,6 +3345,55 @@
                 // Desabilitar botão salvar
                 document.getElementById('saveDevLogoBtn').disabled = true;
                 tempDevLogo = null;
+            }
+        }
+
+        function handleAboutLogoUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Verificar tipo de arquivo
+                if (!file.type.match(/^image\/(png|jpeg)$/)) {
+                    showNotification('Formato não suportado! Use apenas PNG ou JPEG.', 'error');
+                    return;
+                }
+
+                if (file.size > 2 * 1024 * 1024) {
+                    showNotification('Arquivo muito grande! Máximo 2MB.', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    tempAboutLogo = event.target.result;
+                    
+                    // Mostrar preview
+                    const preview = document.getElementById('aboutLogoPreview');
+                    preview.innerHTML = `<img src="${tempAboutLogo}" alt="Logo Sobre Preview" class="w-full h-full object-cover rounded-full">`;
+                    
+                    // Habilitar botão salvar
+                    document.getElementById('saveAboutLogoBtn').disabled = false;
+                    
+                    showNotification('Logo carregado! Clique em "Salvar" para aplicar.', 'info');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveAboutLogo() {
+            if (tempAboutLogo) {
+                localStorage.setItem('volante_about_logo', tempAboutLogo);
+                
+                // Atualizar logo na aba sobre
+                const aboutPageLogo = document.getElementById('aboutPageLogo');
+                if (aboutPageLogo) {
+                    aboutPageLogo.innerHTML = `<img src="${tempAboutLogo}" alt="Logo Volante Financeiro" class="w-full h-full object-cover rounded-full">`;
+                }
+                
+                showNotification('Logo da aba Sobre salvo com sucesso!', 'success');
+                
+                // Desabilitar botão salvar
+                document.getElementById('saveAboutLogoBtn').disabled = true;
+                tempAboutLogo = null;
             }
         }
 
@@ -3292,6 +3783,19 @@
                 const devPreview = document.getElementById('devLogoPreview');
                 if (devPreview) {
                     devPreview.innerHTML = `<img src="${devLogo}" alt="Logo Desenvolvedor" class="w-full h-full object-cover rounded-lg">`;
+                }
+            }
+
+            const aboutLogo = localStorage.getItem('volante_about_logo');
+            if (aboutLogo) {
+                const aboutPreview = document.getElementById('aboutLogoPreview');
+                const aboutPageLogo = document.getElementById('aboutPageLogo');
+                
+                if (aboutPreview) {
+                    aboutPreview.innerHTML = `<img src="${aboutLogo}" alt="Logo Sobre" class="w-full h-full object-cover rounded-full">`;
+                }
+                if (aboutPageLogo) {
+                    aboutPageLogo.innerHTML = `<img src="${aboutLogo}" alt="Logo Volante Financeiro" class="w-full h-full object-cover rounded-full">`;
                 }
             }
         }
@@ -3808,5 +4312,5 @@ Relatório gerado pelo Volante Financeiro
             `).join('');
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9755d9a742a9544d',t:'MTc1NjIzNzc0My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9755efd7d3fa3252',t:'MTc1NjIzODY1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
