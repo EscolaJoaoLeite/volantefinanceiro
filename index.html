@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volante Financeiro</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2310b981'/><text x='50' y='65' text-anchor='middle' fill='white' font-size='40' font-weight='bold'>$</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -24,13 +25,6 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
         }
     </style>
 </head>
@@ -72,452 +66,827 @@
                     <label for="rememberLogin" class="text-sm text-gray-600">Lembrar meus dados</label>
                 </div>
                 
-                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200 transform hover:scale-105">
+                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200">
                     Entrar
                 </button>
             </form>
 
             <div class="mt-6 space-y-3">
-                <button onclick="showRegister()" class="w-full bg-gray-100 text-green-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-200">
+                <button type="button" onclick="showRegister()" class="w-full bg-gray-100 text-green-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition duration-200">
                     Cadastrar Nova Conta
                 </button>
-                <button onclick="showPasswordReset()" class="w-full text-green-600 hover:text-green-800 text-sm transition duration-200">
+                <button type="button" onclick="showPasswordReset()" class="w-full text-green-600 hover:text-green-800 text-sm">
                     Esqueci minha senha
+                </button>
+                
+                <button type="button" onclick="showAdminLogin()" class="w-full text-gray-500 hover:text-gray-700 text-xs">
+                    Acesso Administrador
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Tela de Cadastro -->
-    <div id="registerScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4 hidden">
+    <div id="registerScreen" class="hidden min-h-screen gradient-bg flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
             <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-green-800">Criar Nova Conta</h2>
-                <p class="text-sm text-gray-600 mt-2">Preencha os dados abaixo</p>
+                <h2 class="text-2xl font-bold text-green-800">Novo Cadastro</h2>
+                <p class="text-gray-600">Preencha seus dados</p>
             </div>
 
             <form id="registerForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
-                    <input type="text" id="registerName" placeholder="Digite seu nome completo"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
+                    <input type="text" id="regName" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">CPF</label>
-                    <input type="text" id="registerCpf" placeholder="000.000.000-00"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+                    <input type="text" id="regCpf" placeholder="000.000.000-00" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input type="email" id="registerEmail" placeholder="seu@email.com"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Idade</label>
+                    <input type="number" id="regAge" min="18" max="80" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
-                    <input type="password" id="registerPassword" placeholder="Crie uma senha segura"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="regEmail" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirmar Senha</label>
-                    <input type="password" id="confirmPassword" placeholder="Confirme sua senha"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
+                    <input type="tel" id="regWhatsapp" placeholder="(67) 99999-9999" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                 </div>
-                
-                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200 transform hover:scale-105">
-                    Criar Conta
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <input type="password" id="regPassword" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Plataforma Principal</label>
+                    <select id="regPlatform" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                        <option value="">Selecione...</option>
+                        <option value="BR Car">BR Car</option>
+                        <option value="IBolt">IBolt</option>
+                        <option value="Ifood">Ifood</option>
+                        <option value="InDriver">InDriver</option>
+                        <option value="Uber">Uber</option>
+                        <option value="Tô Aqui">Tô Aqui</option>
+                        <option value="Taxi-Connect">Taxi-Connect</option>
+                        <option value="Urban">Urban</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700">
+                    Cadastrar
                 </button>
             </form>
 
-            <div class="mt-6">
-                <button onclick="showLogin()" class="w-full text-green-600 hover:text-green-800 text-sm transition duration-200">
-                    Já tenho uma conta - Fazer Login
-                </button>
-            </div>
+            <button type="button" onclick="showLogin()" class="w-full mt-4 text-green-600 hover:text-green-800">
+                Voltar ao Login
+            </button>
         </div>
     </div>
 
     <!-- Tela de Recuperação de Senha -->
-    <div id="passwordResetScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4 hidden">
+    <div id="passwordResetScreen" class="hidden min-h-screen gradient-bg flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
             <div class="text-center mb-6">
                 <h2 class="text-2xl font-bold text-green-800">Recuperar Senha</h2>
-                <p class="text-sm text-gray-600 mt-2">Digite seu CPF para receber instruções</p>
+                <p class="text-gray-600">Digite seu email cadastrado</p>
             </div>
 
-            <form id="passwordResetForm" class="space-y-6">
+            <form id="resetForm" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">CPF</label>
-                    <input type="text" id="resetCpf" placeholder="000.000.000-00"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="resetEmail" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                 </div>
                 
-                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200 transform hover:scale-105">
-                    Enviar Instruções
+                <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700">
+                    Enviar Nova Senha
                 </button>
             </form>
 
-            <div class="mt-6">
-                <button onclick="showLogin()" class="w-full text-green-600 hover:text-green-800 text-sm transition duration-200">
-                    Voltar ao Login
-                </button>
+            <button type="button" onclick="showLogin()" class="w-full mt-4 text-green-600 hover:text-green-800">
+                Voltar ao Login
+            </button>
+        </div>
+    </div>
+
+    <!-- Login Administrador -->
+    <div id="adminLoginScreen" class="hidden min-h-screen gradient-bg flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-red-600">Acesso Administrador</h2>
+                <p class="text-gray-600">Área restrita</p>
             </div>
+
+            <form id="adminLoginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Usuário</label>
+                    <input type="text" id="adminUser" value="desenvolvedor" readonly
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+                    <input type="password" id="adminPassword" placeholder="Digite a senha de administrador"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                </div>
+                
+                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700">
+                    Entrar como Admin
+                </button>
+            </form>
+
+            <button type="button" onclick="showLogin()" class="w-full mt-4 text-green-600 hover:text-green-800">
+                Voltar ao Login
+            </button>
         </div>
     </div>
 
     <!-- Dashboard Principal -->
-    <div id="dashboard" class="hidden">
-        <nav class="bg-white shadow-lg">
-            <div class="max-w-7xl mx-auto px-4">
-                <div class="flex justify-between items-center py-4">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
-                            <span class="text-white font-bold">$</span>
-                        </div>
-                        <h1 class="text-xl font-bold text-green-800">Volante Financeiro</h1>
+    <div id="dashboardScreen" class="hidden min-h-screen bg-gray-50 flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold">$</span>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <span id="welcomeUser" class="text-gray-700"></span>
-                        <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200">
-                            Sair
-                        </button>
+                    <div>
+                        <h1 class="font-bold text-green-800">Volante Financeiro</h1>
+                        <p class="text-xs text-gray-500" id="userWelcome">Bem-vindo!</p>
                     </div>
                 </div>
+                <button onclick="logout()" class="text-red-600 hover:text-red-800 text-sm">
+                    Sair
+                </button>
+            </div>
+        </header>
+
+        <!-- Navegação -->
+        <nav class="bg-white border-b">
+            <div class="flex overflow-x-auto">
+                <button onclick="showTab('dashboard')" class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-green-600 text-green-600">
+                    📊 Dashboard
+                </button>
+                <button onclick="showTab('earnings')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    💰 Ganhos
+                </button>
+                <button onclick="showTab('expenses')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    💸 Despesas
+                </button>
+                <button onclick="showTab('savings')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    🏦 Cofres
+                </button>
+                <button onclick="showTab('analytics')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    📈 Análises
+                </button>
+                <button onclick="showTab('goals')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    🎯 Metas
+                </button>
+                <button onclick="showTab('supporters')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    🤝 Apoiadores
+                </button>
+                <button onclick="showTab('about')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    ℹ️ Sobre
+                </button>
+                <button onclick="showTab('export')" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 hover:text-green-600">
+                    📤 Exportar
+                </button>
             </div>
         </nav>
 
-        <div class="max-w-7xl mx-auto px-4 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Card Saldo -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm">Saldo Atual</p>
-                            <p id="currentBalance" class="text-2xl font-bold text-green-600">R$ 0,00</p>
+        <!-- Sistema de Notificações -->
+        <div id="notificationContainer" class="fixed top-4 right-4 z-50 space-y-2">
+            <!-- Notificações aparecerão aqui -->
+        </div>
+
+        <!-- Conteúdo das Abas -->
+        <div class="p-4">
+            <!-- Aba Dashboard Principal -->
+            <div id="dashboardTab" class="tab-content">
+                <div class="text-center py-8">
+                    <h2 class="text-2xl font-bold text-green-800 mb-4">Bem-vindo ao Volante Financeiro!</h2>
+                    <p class="text-gray-600">Comece adicionando seus ganhos e despesas nas abas acima.</p>
+                </div>
+            </div>
+
+            <!-- Aba Ganhos -->
+            <div id="earningsTab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Registrar Ganho</h2>
+                    <form id="earningsForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Plataforma</label>
+                                <select id="earningPlatform" class="w-full px-3 py-2 border rounded-lg">
+                                    <option value="BR Car">BR Car</option>
+                                    <option value="IBolt">IBolt</option>
+                                    <option value="Ifood">Ifood</option>
+                                    <option value="InDriver">InDriver</option>
+                                    <option value="Uber">Uber</option>
+                                    <option value="Tô Aqui">Tô Aqui</option>
+                                    <option value="Taxi-Connect">Taxi-Connect</option>
+                                    <option value="Urban">Urban</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                                <input type="number" id="earningAmount" step="0.01" min="0" 
+                                       class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                                <input type="date" id="earningDate" 
+                                       class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+                                <select id="earningType" class="w-full px-3 py-2 border rounded-lg">
+                                    <option value="Corrida">Corrida</option>
+                                    <option value="Entrega">Entrega</option>
+                                    <option value="Gorjeta">Gorjeta</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                            <span class="text-green-600 text-xl">💰</span>
-                        </div>
-                    </div>
+                        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+                            Adicionar Ganho
+                        </button>
+                    </form>
                 </div>
 
-                <!-- Card Receitas -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm">Receitas do Mês</p>
-                            <p id="monthlyIncome" class="text-2xl font-bold text-blue-600">R$ 0,00</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span class="text-blue-600 text-xl">📈</span>
-                        </div>
+                <!-- Lista de Ganhos -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Ganhos Recentes</h3>
+                    <div id="earningsList" class="space-y-3">
+                        <p class="text-gray-500 text-center py-4">Nenhum ganho registrado ainda.</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Card Despesas -->
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-600 text-sm">Despesas do Mês</p>
-                            <p id="monthlyExpenses" class="text-2xl font-bold text-red-600">R$ 0,00</p>
+            <!-- Aba Despesas -->
+            <div id="expensesTab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Registrar Despesa</h2>
+                    <form id="expensesForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                                <select id="expenseCategory" class="w-full px-3 py-2 border rounded-lg">
+                                    <option value="Combustível">Combustível</option>
+                                    <option value="Manutenção">Manutenção</option>
+                                    <option value="Documentação">Documentação</option>
+                                    <option value="Alimentação">Alimentação</option>
+                                    <option value="Seguro">Seguro</option>
+                                    <option value="IPVA">IPVA</option>
+                                    <option value="Licenciamento">Licenciamento</option>
+                                    <option value="Multas">Multas</option>
+                                    <option value="Estacionamento">Estacionamento</option>
+                                    <option value="Lavagem">Lavagem do Veículo</option>
+                                    <option value="Pneus">Pneus</option>
+                                    <option value="Óleo">Óleo e Filtros</option>
+                                    <option value="Peças">Peças e Acessórios</option>
+                                    <option value="Telefone">Telefone/Internet</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                                <input type="number" id="expenseAmount" step="0.01" min="0" 
+                                       class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                                <input type="date" id="expenseDate" 
+                                       class="w-full px-3 py-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                                <input type="text" id="expenseDescription" placeholder="Descrição opcional"
+                                       class="w-full px-3 py-2 border rounded-lg">
+                            </div>
                         </div>
-                        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                            <span class="text-red-600 text-xl">📉</span>
+                        <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
+                            Adicionar Despesa
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Lista de Despesas -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Despesas Recentes</h3>
+                    <div id="expensesList" class="space-y-3">
+                        <p class="text-gray-500 text-center py-4">Nenhuma despesa registrada ainda.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outras abas -->
+            <div id="savingsTab" class="tab-content hidden">
+                <div class="text-center py-8">
+                    <h2 class="text-2xl font-bold text-blue-800 mb-4">Cofres</h2>
+                    <p class="text-gray-600">Funcionalidade em desenvolvimento...</p>
+                </div>
+            </div>
+
+            <div id="analyticsTab" class="tab-content hidden">
+                <div class="text-center py-8">
+                    <h2 class="text-2xl font-bold text-purple-800 mb-4">Análises</h2>
+                    <p class="text-gray-600">Funcionalidade em desenvolvimento...</p>
+                </div>
+            </div>
+
+            <div id="goalsTab" class="tab-content hidden">
+                <div class="text-center py-8">
+                    <h2 class="text-2xl font-bold text-orange-800 mb-4">Metas</h2>
+                    <p class="text-gray-600">Funcionalidade em desenvolvimento...</p>
+                </div>
+            </div>
+
+            <div id="supportersTab" class="tab-content hidden">
+                <div class="text-center py-8">
+                    <h2 class="text-2xl font-bold text-pink-800 mb-4">Apoiadores</h2>
+                    <p class="text-gray-600">Funcionalidade em desenvolvimento...</p>
+                </div>
+            </div>
+
+            <div id="aboutTab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-green-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-2xl">$</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-green-800 mb-2">Volante Financeiro</h2>
+                        <p class="text-gray-600">Sistema de Gestão Financeira para Motoristas</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Sobre o Projeto</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                O Volante Financeiro é um aplicativo desenvolvido especialmente para motoristas de aplicativo 
+                                e profissionais do transporte em Corumbá-MS e Ladário-MS. O sistema permite organizar despesas 
+                                pessoais e operacionais, planejar ganhos, monitorar custos e otimizar a rentabilidade, 
+                                adaptando-se à realidade local da região.
+                            </p>
+                        </div>
+
+                        <div class="text-center pt-6 border-t">
+                            <p class="text-sm text-gray-500">
+                                Versão 1.0 - 2024 | Desenvolvido com ❤️ para a comunidade de motoristas
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Botões de Ação -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <button onclick="showAddTransaction('income')" class="bg-green-600 text-white p-4 rounded-xl font-semibold hover:bg-green-700 transition duration-200 transform hover:scale-105">
-                    ➕ Adicionar Receita
-                </button>
-                <button onclick="showAddTransaction('expense')" class="bg-red-600 text-white p-4 rounded-xl font-semibold hover:bg-red-700 transition duration-200 transform hover:scale-105">
-                    ➖ Adicionar Despesa
-                </button>
-            </div>
-
-            <!-- Lista de Transações -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">Últimas Transações</h3>
-                <div id="transactionsList" class="space-y-3">
-                    <p class="text-gray-500 text-center py-8">Nenhuma transação encontrada</p>
+            <div id="exportTab" class="tab-content hidden">
+                <div class="text-center py-8">
+                    <h2 class="text-2xl font-bold text-indigo-800 mb-4">Exportar Dados</h2>
+                    <p class="text-gray-600">Funcionalidade em desenvolvimento...</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Modal para Adicionar Transação -->
-    <div id="transactionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md">
-            <h3 id="modalTitle" class="text-xl font-bold text-gray-800 mb-4">Adicionar Transação</h3>
-            
-            <form id="transactionForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
-                    <input type="text" id="transactionDescription" placeholder="Ex: Salário, Aluguel, Compras..."
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Valor</label>
-                    <input type="number" id="transactionAmount" placeholder="0,00" step="0.01"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
-                    <input type="date" id="transactionDate"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                </div>
-                
-                <div class="flex space-x-3 pt-4">
-                    <button type="button" onclick="closeTransactionModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400 transition duration-200">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200">
-                        Salvar
-                    </button>
-                </div>
-            </form>
-        </div>
+        <!-- Rodapé -->
+        <footer class="mt-auto bg-green-800 text-white py-3">
+            <div class="text-center">
+                <p class="text-sm">Desenvolvido por <strong>Escola Estadual Dr. João Leite de Barros</strong></p>
+            </div>
+        </footer>
     </div>
 
     <script>
-        // Dados do usuário e transações
+        // Sistema de Banco de Dados Local
+        class VolanteDB {
+            constructor() {
+                this.dbName = 'volante_financeiro_db';
+                this.version = 1;
+            }
+
+            setTable(tableName, data) {
+                localStorage.setItem(`db_${this.dbName}_${tableName}`, JSON.stringify(data));
+            }
+
+            getTable(tableName) {
+                return JSON.parse(localStorage.getItem(`db_${this.dbName}_${tableName}`) || '[]');
+            }
+
+            insert(tableName, record) {
+                const table = this.getTable(tableName);
+                record.id = record.id || Date.now() + Math.random();
+                record.createdAt = record.createdAt || new Date().toISOString();
+                record.updatedAt = new Date().toISOString();
+                table.push(record);
+                this.setTable(tableName, table);
+                return record;
+            }
+
+            findOne(tableName, query) {
+                const table = this.getTable(tableName);
+                return table.find(record => {
+                    return Object.entries(query).every(([key, value]) => {
+                        return record[key] === value;
+                    });
+                }) || null;
+            }
+
+            find(tableName, query = {}) {
+                const table = this.getTable(tableName);
+                if (Object.keys(query).length === 0) return table;
+                
+                return table.filter(record => {
+                    return Object.entries(query).every(([key, value]) => {
+                        return record[key] === value;
+                    });
+                });
+            }
+        }
+
+        // Inicializar banco de dados
+        const db = new VolanteDB();
         let currentUser = null;
-        let transactions = [];
-        let currentTransactionType = 'income';
 
-        // Formatação de CPF
-        function formatCPF(cpf) {
-            return cpf.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-        }
-
-        // Validação de CPF
-        function validateCPF(cpf) {
-            cpf = cpf.replace(/\D/g, '');
-            if (cpf.length !== 11) return false;
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // Definir data atual nos campos de data
+            const today = new Date().toISOString().split('T')[0];
+            const earningDateField = document.getElementById('earningDate');
+            const expenseDateField = document.getElementById('expenseDate');
             
-            // Verificação básica (não é uma validação completa de CPF)
-            if (/^(\d)\1{10}$/.test(cpf)) return false;
-            
-            return true;
-        }
+            if (earningDateField) earningDateField.value = today;
+            if (expenseDateField) expenseDateField.value = today;
 
-        // Formatação de moeda
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            }).format(value);
-        }
+            // Event listeners
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+            document.getElementById('resetForm').addEventListener('submit', handlePasswordReset);
+            document.getElementById('adminLoginForm').addEventListener('submit', handleAdminLogin);
+            document.getElementById('earningsForm').addEventListener('submit', handleAddEarning);
+            document.getElementById('expensesForm').addEventListener('submit', handleAddExpense);
 
-        // Navegação entre telas
+            // Formatação de CPF
+            document.getElementById('loginCpf').addEventListener('input', formatCPF);
+            document.getElementById('regCpf').addEventListener('input', formatCPF);
+        });
+
+        // Funções de navegação
         function showLogin() {
+            hideAllScreens();
             document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('registerScreen').classList.add('hidden');
-            document.getElementById('passwordResetScreen').classList.add('hidden');
         }
 
         function showRegister() {
-            document.getElementById('loginScreen').classList.add('hidden');
+            hideAllScreens();
             document.getElementById('registerScreen').classList.remove('hidden');
-            document.getElementById('passwordResetScreen').classList.add('hidden');
         }
 
         function showPasswordReset() {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('registerScreen').classList.add('hidden');
+            hideAllScreens();
             document.getElementById('passwordResetScreen').classList.remove('hidden');
         }
 
-        function showDashboard() {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('registerScreen').classList.add('hidden');
-            document.getElementById('passwordResetScreen').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            updateDashboard();
+        function showAdminLogin() {
+            hideAllScreens();
+            document.getElementById('adminLoginScreen').classList.remove('hidden');
         }
 
-        // Login
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        function showDashboard() {
+            hideAllScreens();
+            document.getElementById('dashboardScreen').classList.remove('hidden');
+        }
+
+        function hideAllScreens() {
+            const screens = ['loginScreen', 'registerScreen', 'passwordResetScreen', 'adminLoginScreen', 'dashboardScreen'];
+            screens.forEach(screen => {
+                const element = document.getElementById(screen);
+                if (element) {
+                    element.classList.add('hidden');
+                }
+            });
+        }
+
+        function logout() {
+            currentUser = null;
+            showLogin();
+            showNotification('Logout realizado com sucesso!', 'success');
+        }
+
+        // Função para mostrar abas
+        function showTab(tabName) {
+            // Esconder todas as abas
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.add('hidden'));
+
+            // Mostrar aba selecionada
+            const selectedTab = document.getElementById(tabName + 'Tab');
+            if (selectedTab) {
+                selectedTab.classList.remove('hidden');
+            }
+
+            // Atualizar botões de navegação
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => {
+                btn.classList.remove('border-green-600', 'text-green-600');
+                btn.classList.add('text-gray-500');
+            });
+
+            // Destacar botão ativo
+            const activeButton = event?.target;
+            if (activeButton) {
+                activeButton.classList.remove('text-gray-500');
+                activeButton.classList.add('border-green-600', 'text-green-600');
+            }
+        }
+
+        // Funções de autenticação
+        function handleLogin(e) {
             e.preventDefault();
-            
             const cpf = document.getElementById('loginCpf').value;
             const password = document.getElementById('loginPassword').value;
-            
-            if (!validateCPF(cpf)) {
-                alert('CPF inválido!');
+
+            if (!cpf || !password) {
+                showNotification('Por favor, preencha CPF e senha!', 'warning');
                 return;
             }
+
+            // Verificar usuário
+            const user = db.findOne('users', { cpf });
             
-            if (!password) {
-                alert('Digite sua senha!');
+            if (!user) {
+                showNotification('CPF não encontrado! Faça seu cadastro primeiro.', 'error');
                 return;
             }
+
+            if (user.password !== password) {
+                showNotification('Senha incorreta!', 'error');
+                return;
+            }
+
+            // Login bem-sucedido
+            currentUser = user;
+            document.getElementById('userWelcome').textContent = `Bem-vindo, ${user.name}!`;
             
-            // Simulação de login (em um sistema real, isso seria validado no servidor)
-            currentUser = {
-                name: 'Usuário Demo',
-                cpf: cpf
-            };
-            
-            document.getElementById('welcomeUser').textContent = `Olá, ${currentUser.name}`;
             showDashboard();
-        });
-
-        // Cadastro
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+            showNotification(`Login realizado com sucesso! Bem-vindo, ${user.name}!`, 'success');
             
-            const name = document.getElementById('registerName').value;
-            const cpf = document.getElementById('registerCpf').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (!name || !cpf || !email || !password) {
-                alert('Preencha todos os campos!');
-                return;
-            }
-            
-            if (!validateCPF(cpf)) {
-                alert('CPF inválido!');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                alert('As senhas não coincidem!');
-                return;
-            }
-            
-            alert('Conta criada com sucesso!');
-            showLogin();
-        });
-
-        // Recuperação de senha
-        document.getElementById('passwordResetForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const cpf = document.getElementById('resetCpf').value;
-            
-            if (!validateCPF(cpf)) {
-                alert('CPF inválido!');
-                return;
-            }
-            
-            alert('Instruções enviadas! Verifique seu email.');
-            showLogin();
-        });
-
-        // Formatação automática de CPF
-        document.querySelectorAll('input[type="text"][placeholder*="000.000.000-00"]').forEach(input => {
-            input.addEventListener('input', function(e) {
-                e.target.value = formatCPF(e.target.value);
-            });
-        });
-
-        // Modal de transação
-        function showAddTransaction(type) {
-            currentTransactionType = type;
-            document.getElementById('modalTitle').textContent = 
-                type === 'income' ? 'Adicionar Receita' : 'Adicionar Despesa';
-            document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('transactionModal').classList.remove('hidden');
+            // Limpar formulário
+            document.getElementById('loginForm').reset();
         }
 
-        function closeTransactionModal() {
-            document.getElementById('transactionModal').classList.add('hidden');
-            document.getElementById('transactionForm').reset();
-        }
-
-        // Adicionar transação
-        document.getElementById('transactionForm').addEventListener('submit', function(e) {
+        function handleRegister(e) {
             e.preventDefault();
             
-            const description = document.getElementById('transactionDescription').value;
-            const amount = parseFloat(document.getElementById('transactionAmount').value);
-            const date = document.getElementById('transactionDate').value;
-            
-            if (!description || !amount || !date) {
-                alert('Preencha todos os campos!');
+            const name = document.getElementById('regName').value;
+            const cpf = document.getElementById('regCpf').value;
+            const age = parseInt(document.getElementById('regAge').value);
+            const email = document.getElementById('regEmail').value;
+            const whatsapp = document.getElementById('regWhatsapp').value;
+            const password = document.getElementById('regPassword').value;
+            const platform = document.getElementById('regPlatform').value;
+
+            // Validações básicas
+            if (age < 18 || age > 80) {
+                showNotification('Idade deve estar entre 18 e 80 anos.', 'error');
                 return;
             }
-            
-            const transaction = {
-                id: Date.now(),
-                description,
-                amount: currentTransactionType === 'expense' ? -amount : amount,
-                date,
-                type: currentTransactionType
+
+            // Verificar se CPF já existe
+            if (db.findOne('users', { cpf })) {
+                showNotification('Este CPF já está cadastrado!', 'error');
+                return;
+            }
+
+            // Criar usuário
+            const newUser = {
+                name,
+                cpf,
+                age,
+                email,
+                whatsapp,
+                password,
+                platform,
+                active: true
             };
-            
-            transactions.push(transaction);
-            updateDashboard();
-            closeTransactionModal();
-        });
 
-        // Atualizar dashboard
-        function updateDashboard() {
-            const balance = transactions.reduce((sum, t) => sum + t.amount, 0);
-            const income = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
-            const expenses = Math.abs(transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + t.amount, 0));
+            db.insert('users', newUser);
             
-            document.getElementById('currentBalance').textContent = formatCurrency(balance);
-            document.getElementById('monthlyIncome').textContent = formatCurrency(income);
-            document.getElementById('monthlyExpenses').textContent = formatCurrency(expenses);
+            showNotification('Cadastro realizado com sucesso! Faça login com seus dados.', 'success');
+            showLogin();
             
-            updateTransactionsList();
+            // Pré-preencher CPF no login
+            document.getElementById('loginCpf').value = cpf;
         }
 
-        // Atualizar lista de transações
-        function updateTransactionsList() {
-            const container = document.getElementById('transactionsList');
+        function handlePasswordReset(e) {
+            e.preventDefault();
             
-            if (transactions.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">Nenhuma transação encontrada</p>';
+            const email = document.getElementById('resetEmail').value;
+            const user = db.findOne('users', { email });
+            
+            if (!user) {
+                showNotification('Email não encontrado no sistema!', 'error');
                 return;
             }
+
+            // Simular envio de nova senha
+            const newPassword = '123456';
+            alert(`Nova senha gerada para ${user.name}:\n\nSua nova senha é: ${newPassword}\n\nAnote esta senha e faça login.`);
             
-            const sortedTransactions = transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            showLogin();
+            document.getElementById('loginCpf').value = user.cpf;
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
             
-            container.innerHTML = sortedTransactions.map(transaction => `
-                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center ${
-                            transaction.amount > 0 ? 'bg-green-100' : 'bg-red-100'
-                        }">
-                            <span class="${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'}">
-                                ${transaction.amount > 0 ? '📈' : '📉'}
-                            </span>
-                        </div>
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === 'admin123') {
+                showNotification('Acesso de administrador autorizado!', 'success');
+                alert('Painel administrativo em desenvolvimento!');
+            } else {
+                showNotification('Senha de administrador incorreta!', 'error');
+            }
+        }
+
+        // Funções de dados financeiros
+        function handleAddEarning(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                showNotification('Erro: usuário não logado!', 'error');
+                return;
+            }
+
+            const platform = document.getElementById('earningPlatform').value;
+            const amount = parseFloat(document.getElementById('earningAmount').value);
+            const date = document.getElementById('earningDate').value;
+            const type = document.getElementById('earningType').value;
+
+            if (!amount || amount <= 0) {
+                showNotification('Digite um valor válido para o ganho!', 'error');
+                return;
+            }
+
+            const earning = {
+                userId: currentUser.id,
+                platform,
+                amount,
+                date,
+                type
+            };
+
+            db.insert('earnings', earning);
+            
+            showNotification(`Ganho de R$ ${amount.toFixed(2)} adicionado com sucesso!`, 'success');
+            
+            // Limpar formulário
+            document.getElementById('earningsForm').reset();
+            document.getElementById('earningDate').value = new Date().toISOString().split('T')[0];
+            
+            // Atualizar lista
+            loadEarningsList();
+        }
+
+        function handleAddExpense(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                showNotification('Erro: usuário não logado!', 'error');
+                return;
+            }
+
+            const category = document.getElementById('expenseCategory').value;
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const date = document.getElementById('expenseDate').value;
+            const description = document.getElementById('expenseDescription').value;
+
+            if (!amount || amount <= 0) {
+                showNotification('Digite um valor válido para a despesa!', 'error');
+                return;
+            }
+
+            const expense = {
+                userId: currentUser.id,
+                category,
+                amount,
+                date,
+                description
+            };
+
+            db.insert('expenses', expense);
+            
+            showNotification(`Despesa de R$ ${amount.toFixed(2)} adicionada com sucesso!`, 'success');
+            
+            // Limpar formulário
+            document.getElementById('expensesForm').reset();
+            document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
+            
+            // Atualizar lista
+            loadExpensesList();
+        }
+
+        // Função para carregar listas
+        function loadEarningsList() {
+            if (!currentUser) return;
+
+            const earnings = db.find('earnings', { userId: currentUser.id });
+            const earningsList = document.getElementById('earningsList');
+            
+            if (earnings.length === 0) {
+                earningsList.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum ganho registrado ainda.</p>';
+                return;
+            }
+
+            earningsList.innerHTML = earnings.map(earning => `
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center">
                         <div>
-                            <p class="font-medium text-gray-800">${transaction.description}</p>
-                            <p class="text-sm text-gray-500">${new Date(transaction.date).toLocaleDateString('pt-BR')}</p>
+                            <h4 class="font-semibold text-green-800">${earning.platform} - ${earning.type}</h4>
+                            <p class="text-sm text-gray-600">${new Date(earning.date).toLocaleDateString('pt-BR')}</p>
                         </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-bold ${transaction.amount > 0 ? 'text-green-600' : 'text-red-600'}">
-                            ${formatCurrency(Math.abs(transaction.amount))}
-                        </p>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-green-600">R$ ${earning.amount.toFixed(2)}</p>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Logout
-        function logout() {
-            currentUser = null;
-            transactions = [];
-            document.getElementById('dashboard').classList.add('hidden');
-            showLogin();
+        function loadExpensesList() {
+            if (!currentUser) return;
+
+            const expenses = db.find('expenses', { userId: currentUser.id });
+            const expensesList = document.getElementById('expensesList');
+            
+            if (expenses.length === 0) {
+                expensesList.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma despesa registrada ainda.</p>';
+                return;
+            }
+
+            expensesList.innerHTML = expenses.map(expense => `
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold text-red-800">${expense.category}</h4>
+                            <p class="text-sm text-gray-600">${new Date(expense.date).toLocaleDateString('pt-BR')}</p>
+                            ${expense.description ? `<p class="text-xs text-gray-500">${expense.description}</p>` : ''}
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-red-600">R$ ${expense.amount.toFixed(2)}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', function() {
-            showLogin();
-        });
+        // Função para mostrar notificações
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer') || document.body;
+            
+            const notification = document.createElement('div');
+            notification.className = `p-4 rounded-lg shadow-lg text-white max-w-sm ${
+                type === 'success' ? 'bg-green-600' :
+                type === 'error' ? 'bg-red-600' :
+                type === 'warning' ? 'bg-yellow-600' :
+                'bg-blue-600'
+            }`;
+            
+            notification.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="text-sm">${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                        ✕
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Auto remover após 5 segundos
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Função para formatar CPF
+        function formatCPF(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'975672d840155446',t:'MTc1NjI0NDAxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9756abae03825442',t:'MTc1NjI0NjM0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
