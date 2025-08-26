@@ -54,6 +54,62 @@
             justify-content: center;
             font-size: 2rem;
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .volante-logo {
+            width: 50px;
+            height: 50px;
+            border: 4px solid white;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotate 3s linear infinite;
+        }
+
+        .volante-logo::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 4px;
+            background: white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .volante-logo::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background: white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .dollar-center {
+            position: absolute;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #22c55e;
+            background: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .header-text h1 {
@@ -424,7 +480,11 @@
     <!-- Tela de Login -->
     <div id="login-screen" class="login-container">
         <div class="logo-container" style="justify-content: center; margin-bottom: 30px;">
-            <div class="app-logo">🚗</div>
+            <div class="app-logo">
+                <div class="volante-logo">
+                    <div class="dollar-center">$</div>
+                </div>
+            </div>
             <div class="header-text">
                 <h1 style="font-size: 2rem;">Volante Financeiro</h1>
                 <p>Sistema de Gestão Financeira</p>
@@ -435,20 +495,50 @@
             <div class="form-group">
                 <label>CPF</label>
                 <input type="text" id="login-cpf" placeholder="000.000.000-00" required>
+                <div id="cpf-status" style="margin-top: 5px; font-size: 0.9rem; font-weight: 600;"></div>
             </div>
             <div class="form-group">
                 <label>Senha</label>
                 <input type="password" id="login-senha" required>
             </div>
             <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">🔐 Entrar</button>
-            <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="showCadastro()">👤 Criar Conta</button>
+            <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;" onclick="showCadastro()">👤 Criar Conta</button>
+            <button type="button" class="btn" style="width: 100%; background: linear-gradient(135deg, #374151, #1f2937);" onclick="showAdminLogin()">⚙️ Acesso Administrador</button>
+        </form>
+    </div>
+
+    <!-- Tela de Login Administrativo -->
+    <div id="admin-login-screen" class="login-container hidden">
+        <div class="logo-container" style="justify-content: center; margin-bottom: 30px;">
+            <div class="app-logo">⚙️</div>
+            <div class="header-text">
+                <h1 style="font-size: 2rem; color: #374151;">Acesso Administrativo</h1>
+                <p style="color: #6b7280;">Volante Financeiro</p>
+            </div>
+        </div>
+
+        <form id="admin-login-form">
+            <div class="form-group">
+                <label>Login</label>
+                <input type="text" id="admin-login-user" placeholder="Digite seu login" required>
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="admin-login-senha" required>
+            </div>
+            <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px; background: linear-gradient(135deg, #374151, #1f2937);">🔐 Entrar como Admin</button>
+            <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="showLogin()">🔙 Voltar ao Login</button>
         </form>
     </div>
 
     <!-- Tela de Cadastro -->
     <div id="cadastro-screen" class="login-container hidden">
         <div class="logo-container" style="justify-content: center; margin-bottom: 30px;">
-            <div class="app-logo">🚗</div>
+            <div class="app-logo">
+                <div class="volante-logo">
+                    <div class="dollar-center">$</div>
+                </div>
+            </div>
             <div class="header-text">
                 <h1 style="font-size: 2rem;">Criar Conta</h1>
                 <p>Cadastre-se no Volante Financeiro</p>
@@ -489,7 +579,11 @@
     <div id="main-app" class="container hidden">
         <div class="header">
             <div class="logo-container">
-                <div class="app-logo">🚗</div>
+                <div class="app-logo">
+                    <div class="volante-logo">
+                        <div class="dollar-center">$</div>
+                    </div>
+                </div>
                 <div class="header-text">
                     <h1>Volante Financeiro</h1>
                     <p>Sistema de Gestão Financeira para Motoristas</p>
@@ -795,6 +889,7 @@
 
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showAdminTab('admin-usuarios')">👥 Usuários</button>
+            <button class="nav-tab" onclick="showAdminTab('admin-administradores')">👨‍💼 Administradores</button>
             <button class="nav-tab" onclick="showAdminTab('admin-config')">⚙️ Configurações</button>
             <button class="nav-tab" onclick="showAdminTab('admin-apoiadores')">🤝 Apoiadores</button>
             <button class="nav-tab" onclick="showAdminTab('admin-sobre')">📝 Editar Sobre</button>
@@ -855,18 +950,92 @@
             </table>
         </div>
 
+        <!-- Admin Administradores -->
+        <div id="admin-administradores" class="tab-content">
+            <h2>👨‍💼 Gerenciar Administradores</h2>
+            
+            <button class="btn" onclick="showNovoAdmin()" style="margin-bottom: 20px;">➕ Novo Administrador</button>
+            
+            <div id="novo-admin-form" class="hidden" style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                <h3>Cadastrar Novo Administrador</h3>
+                <form id="admin-admin-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome Completo</label>
+                            <input type="text" id="admin-admin-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Login de Acesso</label>
+                            <input type="text" id="admin-admin-login" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="admin-admin-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nível de Acesso</label>
+                            <select id="admin-admin-nivel" required>
+                                <option value="admin">Administrador</option>
+                                <option value="super">Super Administrador</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha Inicial</label>
+                        <input type="text" id="admin-admin-senha" required>
+                        <button type="button" class="btn btn-secondary" onclick="gerarSenhaAdmin()" style="margin-top: 5px;">🎲 Gerar Senha</button>
+                    </div>
+                    <button type="submit" class="btn">💾 Salvar Administrador</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelarNovoAdmin()">❌ Cancelar</button>
+                </form>
+            </div>
+
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Login</th>
+                        <th>E-mail</th>
+                        <th>Nível</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="admins-table">
+                </tbody>
+            </table>
+        </div>
+
         <!-- Admin Configurações -->
         <div id="admin-config" class="tab-content">
             <h2>⚙️ Configurações do Sistema</h2>
             
             <form id="config-form">
                 <div class="form-group">
-                    <label>Logo do Aplicativo (Emoji ou Texto)</label>
-                    <input type="text" id="config-app-logo" value="🚗">
+                    <label>Logo do Aplicativo</label>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                        <input type="text" id="config-app-logo" value="🚗" placeholder="Emoji ou texto" style="flex: 1;">
+                        <span>ou</span>
+                        <input type="file" id="config-app-image" accept="image/png,image/jpeg,image/jpg" style="flex: 1;">
+                    </div>
+                    <div id="app-logo-preview" style="width: 60px; height: 60px; border: 2px dashed #ccc; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; background: #f8fafc;">
+                        <span style="font-size: 2rem;">🚗</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="limparLogoApp()" style="padding: 5px 10px; font-size: 0.9rem;">🗑️ Limpar</button>
                 </div>
                 <div class="form-group">
                     <label>Logo do Desenvolvedor</label>
-                    <input type="text" id="config-dev-logo" value="JLB">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                        <input type="text" id="config-dev-logo" value="JLB" placeholder="Emoji ou texto" style="flex: 1;">
+                        <span>ou</span>
+                        <input type="file" id="config-dev-image" accept="image/png,image/jpeg,image/jpg" style="flex: 1;">
+                    </div>
+                    <div id="dev-logo-preview" style="width: 50px; height: 50px; border: 2px dashed #ccc; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; background: #f8fafc;">
+                        <span style="font-size: 1.5rem;">JLB</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="limparLogoDev()" style="padding: 5px 10px; font-size: 0.9rem;">🗑️ Limpar</button>
                 </div>
                 <button type="submit" class="btn">💾 Salvar Configurações</button>
             </form>
@@ -897,8 +1066,16 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Logo (Emoji ou Texto)</label>
-                        <input type="text" id="apoiador-logo" placeholder="🏢">
+                        <label>Logo do Apoiador</label>
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                            <input type="text" id="apoiador-logo" placeholder="🏢" style="flex: 1;">
+                            <span>ou</span>
+                            <input type="file" id="apoiador-image" accept="image/png,image/jpeg,image/jpg" style="flex: 1;">
+                        </div>
+                        <div id="apoiador-logo-preview" style="width: 80px; height: 80px; border: 2px dashed #ccc; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; background: #f8fafc;">
+                            <span style="font-size: 2rem;">🏢</span>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="limparLogoApoiador()" style="padding: 5px 10px; font-size: 0.9rem;">🗑️ Limpar</button>
                     </div>
                     <div class="form-group">
                         <label>Descrição</label>
@@ -917,6 +1094,11 @@
             <h2>📝 Editar Informações</h2>
             
             <form id="admin-sobre-form">
+                <div class="form-group">
+                    <label>Sobre o Projeto</label>
+                    <textarea id="sobre-projeto" rows="4">O Volante Financeiro é um aplicativo desenvolvido especialmente para motoristas de aplicativo e profissionais do transporte em Corumbá-MS e Ladário-MS. O sistema permite organizar despesas pessoais e operacionais, planejar ganhos, monitorar custos e otimizar a rentabilidade, adaptando-se à realidade local da região.</textarea>
+                </div>
+                
                 <div class="form-group">
                     <label>Nome da Escola/Instituição</label>
                     <input type="text" id="sobre-escola" value="IFMS - Campus Corumbá">
@@ -953,11 +1135,24 @@ Wellington Cesar de Oliveira</textarea>
         let metas = JSON.parse(localStorage.getItem('metas')) || { lucroMensal: 0, limiteDiario: 0 };
         let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
         let apoiadores = JSON.parse(localStorage.getItem('apoiadores')) || [];
+        let administradores = JSON.parse(localStorage.getItem('administradores')) || [];
         let currentUser = null;
         let isAdmin = false;
 
-        // Usuário admin padrão
-        const adminUser = { cpf: 'adminjlb', senha: 'jlb@1964', nome: 'Administrador' };
+        // Inicializar administrador padrão se não existir
+        if (administradores.length === 0) {
+            administradores = [{
+                id: 1,
+                nome: 'Desenvolvedor Principal',
+                login: 'Desenvolvedor',
+                email: 'dev@volantefinanceiro.com',
+                senha: 'jlb@1964',
+                nivel: 'super',
+                ativo: true,
+                dataCriacao: new Date().toISOString()
+            }];
+            localStorage.setItem('administradores', JSON.stringify(administradores));
+        }
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
@@ -971,9 +1166,45 @@ Wellington Cesar de Oliveira</textarea>
             // Aplicar máscaras
             aplicarMascaras();
             
+            // Configurar verificação de CPF
+            configurarVerificacaoCPF();
+            
             // Configurar formulários
             configurarFormularios();
+            
+            // Configurar uploads de imagem
+            configurarUploads();
         });
+
+        // Configurar verificação de CPF em tempo real
+        function configurarVerificacaoCPF() {
+            const cpfInput = document.getElementById('login-cpf');
+            const cpfStatus = document.getElementById('cpf-status');
+            
+            if (cpfInput && cpfStatus) {
+                cpfInput.addEventListener('input', function() {
+                    const cpf = this.value;
+                    
+                    if (cpf.length >= 14) { // CPF completo com máscara
+                        if (validarCPF(cpf)) {
+                            const usuario = usuarios.find(u => u.cpf === cpf);
+                            if (usuario) {
+                                cpfStatus.innerHTML = '✅ CPF encontrado! Digite sua senha.';
+                                cpfStatus.style.color = '#16a34a';
+                            } else {
+                                cpfStatus.innerHTML = '❌ CPF não cadastrado. <a href="#" onclick="showCadastro()" style="color: #2563eb; text-decoration: underline;">Criar conta</a>';
+                                cpfStatus.style.color = '#e53e3e';
+                            }
+                        } else {
+                            cpfStatus.innerHTML = '❌ CPF inválido!';
+                            cpfStatus.style.color = '#e53e3e';
+                        }
+                    } else {
+                        cpfStatus.innerHTML = '';
+                    }
+                });
+            }
+        }
 
         // Aplicar máscaras nos campos
         function aplicarMascaras() {
@@ -1006,6 +1237,15 @@ Wellington Cesar de Oliveira</textarea>
                 e.preventDefault();
                 fazerLogin();
             });
+
+            // Login Admin
+            const adminLoginForm = document.getElementById('admin-login-form');
+            if (adminLoginForm) {
+                adminLoginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    fazerLoginAdmin();
+                });
+            }
 
             // Cadastro
             document.getElementById('cadastro-form').addEventListener('submit', function(e) {
@@ -1072,6 +1312,14 @@ Wellington Cesar de Oliveira</textarea>
                     salvarSobre();
                 });
             }
+
+            const adminAdminForm = document.getElementById('admin-admin-form');
+            if (adminAdminForm) {
+                adminAdminForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    salvarAdministrador();
+                });
+            }
         }
 
         // Validar CPF
@@ -1107,78 +1355,168 @@ Wellington Cesar de Oliveira</textarea>
             const cpf = document.getElementById('login-cpf').value;
             const senha = document.getElementById('login-senha').value;
 
-            // Verificar admin
-            if (cpf === adminUser.cpf && senha === adminUser.senha) {
-                currentUser = adminUser;
-                isAdmin = true;
-                showAdminPanel();
+            if (!cpf || !senha) {
+                alert('❌ Por favor, preencha CPF e senha!');
                 return;
             }
 
-            // Verificar usuário comum
-            const usuario = usuarios.find(u => u.cpf === cpf && u.senha === senha && u.ativo);
+            if (!validarCPF(cpf)) {
+                alert('❌ CPF inválido! Verifique o formato: 000.000.000-00');
+                return;
+            }
+
+            // Verificar se usuário existe
+            const usuarioExiste = usuarios.find(u => u.cpf === cpf);
             
-            if (usuario) {
-                currentUser = usuario;
-                isAdmin = false;
-                showMainApp();
+            if (!usuarioExiste) {
+                alert('❌ CPF não cadastrado!\n\nPara acessar o sistema, você precisa criar uma conta primeiro.\n\nClique em "Criar Conta" para se cadastrar.');
+                return;
+            }
+
+            // Verificar se usuário está ativo
+            if (!usuarioExiste.ativo) {
+                alert('❌ Sua conta está inativa!\n\nEntre em contato com o administrador do sistema para reativar sua conta.');
+                return;
+            }
+
+            // Verificar senha
+            if (usuarioExiste.senha !== senha) {
+                alert('❌ Senha incorreta!\n\nVerifique sua senha e tente novamente.');
+                return;
+            }
+
+            // Login bem-sucedido
+            console.log('Login bem-sucedido:', usuarioExiste);
+            currentUser = usuarioExiste;
+            isAdmin = false;
+            showMainApp();
+        }
+
+        // Fazer login administrativo
+        function fazerLoginAdmin() {
+            const login = document.getElementById('admin-login-user').value;
+            const senha = document.getElementById('admin-login-senha').value;
+
+            // Verificar administrador
+            const admin = administradores.find(a => a.login === login && a.senha === senha && a.ativo);
+            
+            if (admin) {
+                currentUser = admin;
+                isAdmin = true;
+                showAdminPanel();
             } else {
-                alert('❌ CPF ou senha incorretos, ou usuário inativo!');
+                alert('❌ Login ou senha incorretos, ou administrador inativo!');
             }
         }
 
         // Criar conta
         function criarConta() {
-            const nome = document.getElementById('cadastro-nome').value;
-            const cpf = document.getElementById('cadastro-cpf').value;
-            const email = document.getElementById('cadastro-email').value;
-            const whatsapp = document.getElementById('cadastro-whatsapp').value;
+            const nome = document.getElementById('cadastro-nome').value.trim();
+            const cpf = document.getElementById('cadastro-cpf').value.trim();
+            const email = document.getElementById('cadastro-email').value.trim();
+            const whatsapp = document.getElementById('cadastro-whatsapp').value.trim();
             const senha = document.getElementById('cadastro-senha').value;
             const confirmaSenha = document.getElementById('cadastro-confirma-senha').value;
 
-            // Validações
-            if (!validarCPF(cpf)) {
-                alert('❌ CPF inválido!');
+            console.log('Tentativa de cadastro:', { nome, cpf, email, whatsapp });
+
+            // Validações básicas
+            if (!nome || !cpf || !email || !whatsapp || !senha || !confirmaSenha) {
+                alert('❌ Por favor, preencha todos os campos obrigatórios!');
                 return;
             }
 
+            if (nome.length < 3) {
+                alert('❌ Nome deve ter pelo menos 3 caracteres!');
+                return;
+            }
+
+            if (!validarCPF(cpf)) {
+                alert('❌ CPF inválido! Verifique o formato: 000.000.000-00');
+                return;
+            }
+
+            // Verificar se CPF já existe
             if (usuarios.find(u => u.cpf === cpf)) {
-                alert('❌ CPF já cadastrado!');
+                alert('❌ Este CPF já está cadastrado!\n\nSe você já tem uma conta, use a opção "Entrar" para fazer login.');
+                return;
+            }
+
+            // Verificar se email já existe
+            if (usuarios.find(u => u.email === email)) {
+                alert('❌ Este e-mail já está cadastrado!\n\nUse um e-mail diferente ou faça login se já tem uma conta.');
+                return;
+            }
+
+            // Validar email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('❌ E-mail inválido! Digite um e-mail válido.');
+                return;
+            }
+
+            // Validar WhatsApp
+            const whatsappLimpo = whatsapp.replace(/\D/g, '');
+            if (whatsappLimpo.length < 10 || whatsappLimpo.length > 11) {
+                alert('❌ WhatsApp inválido! Digite um número válido com DDD.');
                 return;
             }
 
             if (senha !== confirmaSenha) {
-                alert('❌ Senhas não conferem!');
+                alert('❌ As senhas não conferem! Digite a mesma senha nos dois campos.');
                 return;
             }
 
             if (senha.length < 6) {
-                alert('❌ Senha deve ter pelo menos 6 caracteres!');
+                alert('❌ A senha deve ter pelo menos 6 caracteres!');
                 return;
             }
 
             // Criar usuário
             const novoUsuario = {
                 id: Date.now(),
-                nome,
-                cpf,
-                email,
-                whatsapp,
-                senha,
+                nome: nome,
+                cpf: cpf,
+                email: email,
+                whatsapp: whatsapp,
+                senha: senha,
                 ativo: true,
                 dataCadastro: new Date().toISOString()
             };
 
-            usuarios.push(novoUsuario);
-            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+            try {
+                usuarios.push(novoUsuario);
+                localStorage.setItem('usuarios', JSON.stringify(usuarios));
+                
+                console.log('✅ Usuário criado com sucesso:', novoUsuario);
+                console.log('Total de usuários cadastrados:', usuarios.length);
 
-            alert('✅ Conta criada com sucesso! Faça login para continuar.');
-            showLogin();
+                alert(`🎉 Conta criada com sucesso!\n\n👤 Nome: ${nome}\n📱 CPF: ${cpf}\n📧 E-mail: ${email}\n📞 WhatsApp: ${whatsapp}\n\n✅ Agora você pode fazer login com seu CPF e senha!`);
+                
+                // Limpar formulário
+                document.getElementById('cadastro-form').reset();
+                
+                // Voltar para tela de login
+                showLogin();
+                
+            } catch (error) {
+                console.error('Erro ao salvar usuário:', error);
+                alert('❌ Erro ao criar conta! Tente novamente.');
+            }
         }
 
         // Mostrar telas
         function showLogin() {
             document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('admin-login-screen').classList.add('hidden');
+            document.getElementById('cadastro-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('admin-panel').classList.add('hidden');
+        }
+
+        function showAdminLogin() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.remove('hidden');
             document.getElementById('cadastro-screen').classList.add('hidden');
             document.getElementById('main-app').classList.add('hidden');
             document.getElementById('admin-panel').classList.add('hidden');
@@ -1186,6 +1524,7 @@ Wellington Cesar de Oliveira</textarea>
 
         function showCadastro() {
             document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.add('hidden');
             document.getElementById('cadastro-screen').classList.remove('hidden');
             document.getElementById('main-app').classList.add('hidden');
             document.getElementById('admin-panel').classList.add('hidden');
@@ -1193,24 +1532,29 @@ Wellington Cesar de Oliveira</textarea>
 
         function showMainApp() {
             document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.add('hidden');
             document.getElementById('cadastro-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             document.getElementById('admin-panel').classList.add('hidden');
             
-            document.getElementById('user-name').textContent = currentUser.nome;
-            carregarDadosUsuario();
-            atualizarDashboard();
-            atualizarListas();
-            verificarAlertas();
+            if (currentUser) {
+                document.getElementById('user-name').textContent = currentUser.nome;
+                carregarDadosUsuario();
+                atualizarDashboard();
+                atualizarListas();
+                verificarAlertas();
+            }
         }
 
         function showAdminPanel() {
             document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('admin-login-screen').classList.add('hidden');
             document.getElementById('cadastro-screen').classList.add('hidden');
             document.getElementById('main-app').classList.add('hidden');
             document.getElementById('admin-panel').classList.remove('hidden');
             
             carregarUsuariosAdmin();
+            carregarAdministradoresAdmin();
             carregarApoiadoresAdmin();
         }
 
@@ -1736,6 +2080,130 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         // Funções Admin
+        function showNovoAdmin() {
+            document.getElementById('novo-admin-form').classList.remove('hidden');
+        }
+
+        function cancelarNovoAdmin() {
+            document.getElementById('novo-admin-form').classList.add('hidden');
+            document.getElementById('admin-admin-form').reset();
+        }
+
+        function gerarSenhaAdmin() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
+            let senha = '';
+            for (let i = 0; i < 10; i++) {
+                senha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('admin-admin-senha').value = senha;
+        }
+
+        function salvarAdministrador() {
+            const nome = document.getElementById('admin-admin-nome').value;
+            const login = document.getElementById('admin-admin-login').value;
+            const email = document.getElementById('admin-admin-email').value;
+            const nivel = document.getElementById('admin-admin-nivel').value;
+            const senha = document.getElementById('admin-admin-senha').value;
+
+            if (administradores.find(a => a.login === login)) {
+                alert('❌ Login já existe!');
+                return;
+            }
+
+            if (senha.length < 6) {
+                alert('❌ Senha deve ter pelo menos 6 caracteres!');
+                return;
+            }
+
+            const novoAdmin = {
+                id: Date.now(),
+                nome,
+                login,
+                email,
+                senha,
+                nivel,
+                ativo: true,
+                dataCriacao: new Date().toISOString()
+            };
+
+            administradores.push(novoAdmin);
+            localStorage.setItem('administradores', JSON.stringify(administradores));
+
+            alert(`✅ Administrador criado com sucesso!\n\nLogin: ${login}\nSenha: ${senha}\n\nCopie estas informações para o novo administrador.`);
+            
+            cancelarNovoAdmin();
+            carregarAdministradoresAdmin();
+        }
+
+        function carregarAdministradoresAdmin() {
+            const tbody = document.getElementById('admins-table');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+
+            administradores.forEach(admin => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${admin.nome}</td>
+                    <td>${admin.login}</td>
+                    <td>${admin.email}</td>
+                    <td>${admin.nivel === 'super' ? '👑 Super Admin' : '👨‍💼 Admin'}</td>
+                    <td>${admin.ativo ? '✅ Ativo' : '❌ Inativo'}</td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="toggleAdmin(${admin.id})" style="margin-right: 5px; padding: 5px 10px;">
+                            ${admin.ativo ? '⏸️' : '▶️'}
+                        </button>
+                        <button class="btn" onclick="gerarNovaSenhaAdmin(${admin.id})" style="margin-right: 5px; padding: 5px 10px;">🔑</button>
+                        ${admin.id !== 1 ? `<button class="btn btn-danger" onclick="excluirAdmin(${admin.id})" style="padding: 5px 10px;">🗑️</button>` : ''}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleAdmin(id) {
+            if (id === 1) {
+                alert('❌ Não é possível desativar o administrador principal!');
+                return;
+            }
+            
+            const admin = administradores.find(a => a.id === id);
+            if (admin) {
+                admin.ativo = !admin.ativo;
+                localStorage.setItem('administradores', JSON.stringify(administradores));
+                carregarAdministradoresAdmin();
+            }
+        }
+
+        function gerarNovaSenhaAdmin(id) {
+            const admin = administradores.find(a => a.id === id);
+            if (admin) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
+                let novaSenha = '';
+                for (let i = 0; i < 10; i++) {
+                    novaSenha += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                
+                admin.senha = novaSenha;
+                localStorage.setItem('administradores', JSON.stringify(administradores));
+                
+                alert(`✅ Nova senha gerada para ${admin.nome}:\n\n${novaSenha}\n\nCopie esta senha para enviar ao administrador.`);
+            }
+        }
+
+        function excluirAdmin(id) {
+            if (id === 1) {
+                alert('❌ Não é possível excluir o administrador principal!');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja excluir este administrador? Esta ação não pode ser desfeita.')) {
+                administradores = administradores.filter(a => a.id !== id);
+                localStorage.setItem('administradores', JSON.stringify(administradores));
+                carregarAdministradoresAdmin();
+            }
+        }
+
         function showNovoUsuario() {
             document.getElementById('novo-usuario-form').classList.remove('hidden');
         }
@@ -1854,17 +2322,39 @@ Wellington Cesar de Oliveira</textarea>
             const appLogo = document.getElementById('config-app-logo').value;
             const devLogo = document.getElementById('config-dev-logo').value;
             
+            // Verificar se há imagens carregadas
+            const appPreview = document.getElementById('app-logo-preview');
+            const devPreview = document.getElementById('dev-logo-preview');
+            const appImg = appPreview.querySelector('img');
+            const devImg = devPreview.querySelector('img');
+            
+            const appLogoFinal = appImg ? appImg.src : appLogo;
+            const devLogoFinal = devImg ? devImg.src : devLogo;
+            
             // Atualizar logos na interface
             document.querySelectorAll('.app-logo').forEach(el => {
-                el.textContent = appLogo;
+                if (appImg) {
+                    el.innerHTML = `<img src="${appLogoFinal}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                } else {
+                    el.innerHTML = `<div class="volante-logo"><div class="dollar-center">$</div></div>`;
+                }
             });
             
             document.querySelectorAll('.dev-logo').forEach(el => {
-                el.textContent = devLogo;
+                if (devImg) {
+                    el.innerHTML = `<img src="${devLogoFinal}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                } else {
+                    el.textContent = devLogoFinal;
+                }
             });
             
             // Salvar configurações
-            const config = { appLogo, devLogo };
+            const config = { 
+                appLogo: appLogoFinal, 
+                devLogo: devLogoFinal,
+                appIsImage: !!appImg,
+                devIsImage: !!devImg
+            };
             localStorage.setItem('config', JSON.stringify(config));
             
             alert('✅ Configurações salvas com sucesso!');
@@ -1884,13 +2374,19 @@ Wellington Cesar de Oliveira</textarea>
             const tipo = document.getElementById('apoiador-tipo').value;
             const logo = document.getElementById('apoiador-logo').value;
             const descricao = document.getElementById('apoiador-descricao').value;
+            
+            // Verificar se há imagem carregada
+            const preview = document.getElementById('apoiador-logo-preview');
+            const img = preview.querySelector('img');
+            const logoFinal = img ? img.src : logo;
 
             const novoApoiador = {
                 id: Date.now(),
                 nome,
                 tipo,
-                logo,
-                descricao
+                logo: logoFinal,
+                descricao,
+                isImage: !!img
             };
 
             apoiadores.push(novoApoiador);
@@ -1911,8 +2407,13 @@ Wellington Cesar de Oliveira</textarea>
             apoiadores.forEach(apoiador => {
                 const card = document.createElement('div');
                 card.className = 'apoiador-card';
+                
+                const logoHtml = apoiador.isImage 
+                    ? `<img src="${apoiador.logo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`
+                    : apoiador.logo;
+                
                 card.innerHTML = `
-                    <div class="apoiador-logo">${apoiador.logo}</div>
+                    <div class="apoiador-logo">${logoHtml}</div>
                     <h3>${apoiador.nome}</h3>
                     <p><strong>${apoiador.tipo}</strong></p>
                     <p>${apoiador.descricao}</p>
@@ -1931,16 +2432,105 @@ Wellington Cesar de Oliveira</textarea>
         }
 
         function salvarSobre() {
+            const projeto = document.getElementById('sobre-projeto').value;
             const escola = document.getElementById('sobre-escola').value;
             const equipe = document.getElementById('sobre-equipe').value;
             const professores = document.getElementById('sobre-professores').value;
             const versao = document.getElementById('sobre-versao').value;
             
-            const sobreInfo = { escola, equipe, professores, versao };
+            const sobreInfo = { projeto, escola, equipe, professores, versao };
             localStorage.setItem('sobre', JSON.stringify(sobreInfo));
             
             alert('✅ Informações salvas com sucesso!');
         }
+
+        // Configurar uploads de imagem
+        function configurarUploads() {
+            // Upload logo do app
+            const appImageInput = document.getElementById('config-app-image');
+            if (appImageInput) {
+                appImageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (file.size > 2 * 1024 * 1024) { // 2MB
+                            alert('❌ Imagem muito grande! Máximo 2MB.');
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('app-logo-preview');
+                            preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                            document.getElementById('config-app-logo').value = ''; // Limpar texto
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Upload logo do dev
+            const devImageInput = document.getElementById('config-dev-image');
+            if (devImageInput) {
+                devImageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (file.size > 2 * 1024 * 1024) { // 2MB
+                            alert('❌ Imagem muito grande! Máximo 2MB.');
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('dev-logo-preview');
+                            preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                            document.getElementById('config-dev-logo').value = ''; // Limpar texto
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Upload logo do apoiador
+            const apoiadorImageInput = document.getElementById('apoiador-image');
+            if (apoiadorImageInput) {
+                apoiadorImageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (file.size > 2 * 1024 * 1024) { // 2MB
+                            alert('❌ Imagem muito grande! Máximo 2MB.');
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('apoiador-logo-preview');
+                            preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">`;
+                            document.getElementById('apoiador-logo').value = ''; // Limpar texto
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        // Funções para limpar logos
+        function limparLogoApp() {
+            document.getElementById('config-app-logo').value = '🚗';
+            document.getElementById('config-app-image').value = '';
+            document.getElementById('app-logo-preview').innerHTML = '<span style="font-size: 2rem;">🚗</span>';
+        }
+
+        function limparLogoDev() {
+            document.getElementById('config-dev-logo').value = 'JLB';
+            document.getElementById('config-dev-image').value = '';
+            document.getElementById('dev-logo-preview').innerHTML = '<span style="font-size: 1.5rem;">JLB</span>';
+        }
+
+        function limparLogoApoiador() {
+            document.getElementById('apoiador-logo').value = '🏢';
+            document.getElementById('apoiador-image').value = '';
+            document.getElementById('apoiador-logo-preview').innerHTML = '<span style="font-size: 2rem;">🏢</span>';
+        }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97541c373397f213',t:'MTc1NjIxOTQ5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97545dc38353f1f6',t:'MTc1NjIyMjE4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
